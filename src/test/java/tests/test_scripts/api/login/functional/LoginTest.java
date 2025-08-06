@@ -1,4 +1,4 @@
-package test.test_scripts.api.login.functional;
+package tests.test_scripts.api.login.functional;
 
 import com.google.gson.Gson;
 import io.restassured.RestAssured;
@@ -15,7 +15,7 @@ import static org.testng.Assert.assertEquals;
 
 import common.utilities.FileHelper;
 import common.models.login.LoginResponse;
-import test.test_config.TestConfig;
+import tests.test_config.TestConfig;
 
 import static common.utilities.Constants.*;
 
@@ -60,19 +60,19 @@ public class LoginTest extends TestConfig {
 
     @Test(priority = 2)
     public void testLoginWrongUsername() throws IOException {
-        Response response = sendLoginRequestFromJson("src/main/resources/data/login/case2-login-wrong-username.json");
+        Response response = sendLoginRequestFromJson("src/main/resources/input_json_file/login/case2-login-wrong-username.json");
         assertEquals(response.getStatusCode(), 500,"Expected status code 500 for wrong username, but got: " + response.getStatusCode());
     }
 
     @Test(priority = 3)
     public void testLoginWrongPassword() throws IOException {
-        Response response = sendLoginRequestFromJson("src/test/resources/data/login/case3-login-wrong-password.json");
+        Response response = sendLoginRequestFromJson("src/main/resources/input_json_file/login/case3-login-wrong-password.json");
         assertEquals(response.getStatusCode(), 400, "Expected status code 400 for wrong password, but got: " + response.getStatusCode());
     }
 
     @Test(priority = 4)
     public void testLoginWrongUsernameAndPassword() throws IOException {
-        Response response = sendLoginRequestFromJson("src/test/resources/data/login/case4-login-wrong-userpass.json");
+        Response response = sendLoginRequestFromJson("src/main/resources/input_json_file/login/case4-login-wrong-userpass.json");
         assertEquals(response.getStatusCode(), 500, "Expected status code 500 for wrong username and password, but got: " + response.getStatusCode());
     }
 }

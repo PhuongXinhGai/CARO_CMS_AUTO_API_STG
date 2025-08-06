@@ -1,4 +1,4 @@
-package test.test_config;
+package tests.test_config;
 
 import com.google.gson.Gson;
 import io.restassured.http.ContentType;

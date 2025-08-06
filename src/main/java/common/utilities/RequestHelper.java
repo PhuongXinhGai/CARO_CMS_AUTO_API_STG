@@ -1,17 +1,49 @@
 package common.utilities;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+import io.restassured.RestAssured;
+import io.restassured.specification.RequestSpecification;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
-        }
+public class RequestHelper {
+    public static RequestSpecification getDefaultRequestWithToken(String token, String BASE_URL) {
+        return RestAssured
+                .given()
+                .header("Accept", "application/json")
+                .header("Accept-Language", "en-US,en;q=0.9")
+                .header("Authorization", token)
+                .header("Connection", "keep-alive")
+                .header("Origin", BASE_URL)
+                .header("Referer", BASE_URL)
+                .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
+    }
+
+    public static RequestSpecification getRequestNoAuth(String BASE_URL) {
+        return RestAssured
+                .given()
+                .header("Accept", "application/json")
+                .header("Accept-Language", "en-US,en;q=0.9")
+                .header("Connection", "keep-alive")
+                .header("Origin", BASE_URL)
+                .header("Referer", BASE_URL)
+                .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
+    }
+
+    public static RequestSpecification getRequestWithParams(String key, String value) {
+        return RestAssured
+                .given()
+                .queryParam(key, value)
+                .header("Content-Type", "application/json");
+    }
+
+    public static RequestSpecification getDefaultRequestWithTokenParams(String token, String key, String value, String BASE_URL) {
+        return RestAssured
+                .given()
+                .header("Accept", "application/json")
+                .header("Accept-Language", "en-US,en;q=0.9")
+                .header("Authorization", token)
+                .header("Connection", "keep-alive")
+                .header("Origin", BASE_URL)
+                .header("Referer", BASE_URL)
+                .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
+                .queryParam(key, value);
     }
 }
