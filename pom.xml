@@ -40,15 +40,16 @@
         </dependency>
 
         <!-- Apache POI for Excel file handling -->
+        <!-- Thư viện để đọc và ghi file Excel (cả .xls và .xlsx) -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>5.2.2</version>
+            <version>5.2.3</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>5.2.2</version>
+            <version>5.2.3</version>
         </dependency>
 
         <!-- Lombok support -->
