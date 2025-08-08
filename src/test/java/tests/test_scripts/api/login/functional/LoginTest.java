@@ -37,51 +37,36 @@ public class LoginTest extends TestConfig {
         return ExcelUtils.getTestData(filePath, "testcase");
     }
 
-    // --- BƯỚC 2: XÓA CÁC THAM SỐ KHÔNG CẦN THIẾT ---
-    // Bỏ 'actual_result' và 'log_result' vì báo cáo Extent Reports sẽ thay thế chúng.
     @Test(dataProvider = "loginData")
     public void testLogin(String tc_id, String tc_description, String expected_result, String user_name, String password, String expectedValidationData) throws IOException {
 
         System.out.println("Đang chạy test case: " + tc_id + " - " + tc_description);
-
-        // --- BƯỚC 3: CHUẨN BỊ "BẪY" ĐỂ GHI LẠI LOG REQUEST ---
         // Tạo một StringWriter để hoạt động như một bộ đệm, lưu lại log dưới dạng chuỗi.
         StringWriter requestWriter = new StringWriter();
         // Tạo một PrintStream để RestAssured có thể ghi log vào đó.
         PrintStream requestCapture = new PrintStream(new WriterOutputStream(requestWriter), true);
 
-        // --- ĐỌC VÀ CHUẨN BỊ REQUEST BODY (Giữ nguyên logic của bạn) ---
+        // --- ĐỌC VÀ CHUẨN BỊ REQUEST BODY ---
         String templatePath = System.getProperty("user.dir") + "/src/main/resources/input_json_file/login/login_request_template.json";
         String requestBodyTemplate = new String(Files.readAllBytes(Paths.get(templatePath)));
         String requestBody = requestBodyTemplate
                 .replace("${userName}", user_name)
                 .replace("${password}", password);
 
-        // --- BƯỚC 4: CẬP NHẬT LẠI VIỆC GỬI REQUEST ĐỂ GHI LOG ---
         Response response = given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .filter(new RequestLoggingFilter(LogDetail.ALL, true, requestCapture))
                 .when()
-                .post(BASE_URL + LOGIN_ENDPOINT) // <-- Sử dụng hằng số LOGIN_ENDPOINT của bạn
+                .post(BASE_URL + LOGIN_ENDPOINT)
                 .then()
-                // .log().all() // <-- Không cần log ra console nữa vì đã có báo cáo
+                .log().all()
                 .extract().response();
 
-        // --- BƯỚC 5: ĐÍNH KÈM CÁC LOG ĐÃ GHI ĐƯỢC VÀO KẾT QUẢ TEST ---
-        // Lấy đối tượng kết quả test hiện tại mà TestNG đang chạy
         ITestResult currentResult = Reporter.getCurrentTestResult();
-        // Đính kèm log request vào kết quả với tên là "requestLog"
         currentResult.setAttribute("requestLog", requestWriter.toString());
-        // Đính kèm response body vào kết quả với tên là "responseLog"
-        // Dùng prettyPrint() để format JSON cho đẹp trong báo cáo
         currentResult.setAttribute("responseLog", response.getBody().prettyPrint());
 
-        // --- BƯỚC 6: DỌN DẸP LOGIC ASSERTION CŨ (Quan trọng) ---
-        // Xóa khối if/else kiểm tra status code cũ vì logic mới trong vòng lặp đã bao hàm và mạnh mẽ hơn.
-        // Điều này giúp tránh việc kiểm tra trùng lặp và làm code sạch hơn.
-
-        // --- KIỂM TRA DỮ LIỆU BÊN TRONG RESPONSE (Giữ nguyên logic của bạn) ---
         if (expectedValidationData != null && !expectedValidationData.isEmpty()) {
             JsonPath actualResponseJson = response.jsonPath();
             Gson gson = new Gson();
