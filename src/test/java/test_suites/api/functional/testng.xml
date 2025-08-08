@@ -6,6 +6,6 @@
         </classes>
     </test>
     <listeners>
-<!--        <listener class-name="listener.TestListener" />-->
+        <listener class-name="listeners.TestListener" />
     </listeners>
 </suite>

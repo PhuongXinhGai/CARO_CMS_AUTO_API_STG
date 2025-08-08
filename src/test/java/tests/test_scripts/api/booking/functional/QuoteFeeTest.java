@@ -29,7 +29,7 @@ public class QuoteFeeTest extends TestConfig {
 
     @Test(priority = 1)
     public void testQuoteFee_TotalAmount_Case1() throws IOException {
-        Response response = sendQuoteFeeRequest("src/main/resources/input_json_file/booking/quote-fee-body-case1.json");
+        Response response = sendQuoteFeeRequest("src/main/resources/input_json_file/booking/quote_fee_request_template.json");
         assertEquals(response.getStatusCode(), 200);
 
         JsonPath jsonPath = response.jsonPath();
@@ -40,13 +40,13 @@ public class QuoteFeeTest extends TestConfig {
 
     @Test(priority = 2)
     public void testQuoteFee_Status200_Case2() throws IOException {
-        Response response = sendQuoteFeeRequest("src/main/resources/input_json_file/booking/quote-fee-body-case1.json");
+        Response response = sendQuoteFeeRequest("src/main/resources/input_json_file/booking/quote_fee_request_template.json");
         assertEquals(response.getStatusCode(), 200);
     }
 
     @Test(priority = 3)
     public void testQuoteFee_EmptyVoucher() throws IOException {
-        Response response = sendQuoteFeeRequest("src/main/resources/input_json_file/booking/quote-fee-body-case1.json");
+        Response response = sendQuoteFeeRequest("src/main/resources/input_json_file/booking/quote_fee_request_template.json");
         assertEquals(response.getStatusCode(), 200);
 
         int amount = response.jsonPath().getInt("total_amount");
@@ -56,7 +56,7 @@ public class QuoteFeeTest extends TestConfig {
 
     @Test(priority = 4)
     public void testQuoteFee_InvalidHole() throws IOException {
-        Response response = sendQuoteFeeRequest("src/main/resources/input_json_file/booking/quote-fee-body-case1.json");
+        Response response = sendQuoteFeeRequest("src/main/resources/input_json_file/booking/quote_fee_request_template.json");
         assertEquals(response.getStatusCode(), 400, "❌ Trường hợp hole không hợp lệ phải trả về 400");
     }
 }
