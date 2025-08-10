@@ -3,6 +3,7 @@
     <test name="API Tests">
         <classes>
             <class name="tests.test_scripts.api.login.functional.LoginTest"/>
+            <class name="tests.test_scripts.api.booking.functional.QuoteFeeTest"/>
         </classes>
     </test>
     <listeners>

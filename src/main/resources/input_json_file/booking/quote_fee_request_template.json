@@ -1,28 +1,7 @@
 {
-  "course_uid": "DEMO-DONGTRIEU",
-  "partner_uid": "DEMO",
-  "list_player": [
-    {
-      "booking_date": "20/07/2025",
-      "guest_style": "4D_package_ptt",
-      "caddie_code": "",
-      "tee_type": "1",
-      "tee_time": "19:56",
-      "hole": 18,
-      "add_ons": [],
-      "player_idx": "19:5610",
-      "voucher_apply": []
-    },
-    {
-      "booking_date": "20/07/2025",
-      "guest_style": "4D_package_ptt",
-      "caddie_code": "",
-      "tee_type": "1",
-      "tee_time": "19:56",
-      "hole": 18,
-      "add_ons": [],
-      "player_idx": "19:5611",
-      "voucher_apply": []
-    }
-  ]
+  "course_uid": "CHI-LINH-01",
+  "partner_uid": "CHI-LINH",
+  "list_player": ${listPlayerJson},
+  "agency_id": ${agencyId},
+  "booking_date": "${bookingDate}"
 }
