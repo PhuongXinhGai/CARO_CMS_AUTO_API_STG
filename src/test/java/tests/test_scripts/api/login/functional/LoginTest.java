@@ -60,7 +60,7 @@ public class LoginTest extends TestConfig {
                 .when()
                 .post(BASE_URL + LOGIN_ENDPOINT)
                 .then()
-                .log().all()
+//                .log().all()
                 .extract().response();
 
         ITestResult currentResult = Reporter.getCurrentTestResult();

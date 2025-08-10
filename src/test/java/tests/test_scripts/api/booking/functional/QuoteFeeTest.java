@@ -57,9 +57,9 @@ public class QuoteFeeTest extends TestConfig {
         String templatePath = System.getProperty("user.dir") + "/src/main/resources/input_json_file/booking/quote_fee_request_template.json";
         String requestBodyTemplate = new String(Files.readAllBytes(Paths.get(templatePath)));
         String requestBody = requestBodyTemplate
-                .replace("${bookingDate}", booking_date)
+                .replace("${bookingDate}", resolvedBookingDate)
                 .replace("${agencyId}", agency_id)
-                .replace("${listPlayerJson}",list_player_json);
+                .replace("${listPlayerJson}",resolvedListPlayerJson);
 
         Response response = given()
                 .header("Authorization", AUTH_TOKEN)
@@ -69,7 +69,7 @@ public class QuoteFeeTest extends TestConfig {
                 .when()
                 .post(BASE_URL + QUOTE_FEE_ENDPOINT)
                 .then()
-                .log().all()
+//                .log().all()
                 .extract().response();
 
         ITestResult currentResult = Reporter.getCurrentTestResult();
@@ -93,10 +93,23 @@ public class QuoteFeeTest extends TestConfig {
                 }
 
                 Object actualValue = actualResponseJson.get(keyPath);
-                if (expectedValue.toString().equalsIgnoreCase("NOT_NULL")) {
+
+//                if (expectedValue.toString().equalsIgnoreCase("NOT_NULL")) {
+//                    assertNotNull(actualValue, "TC_ID: " + tc_id + " - Key '" + keyPath + "' should not be null.");
+//                } else {
+//                    assertEquals(String.valueOf(actualValue), String.valueOf(expectedValue), "TC_ID: " + tc_id + " - Mismatch for key '" + keyPath + "'");
+//                }
+                if (expectedValue instanceof Number && actualValue instanceof Number) {
+                    // So sánh số: tránh lỗi 2 vs 2.0
+                    java.math.BigDecimal ev = new java.math.BigDecimal(expectedValue.toString());
+                    java.math.BigDecimal av = new java.math.BigDecimal(actualValue.toString());
+                    org.testng.Assert.assertEquals(av.compareTo(ev), 0,
+                            "TC_ID: " + tc_id + " - Mismatch for numeric key '" + keyPath + "'");
+                } else if ("NOT_NULL".equalsIgnoreCase(String.valueOf(expectedValue))) {
                     assertNotNull(actualValue, "TC_ID: " + tc_id + " - Key '" + keyPath + "' should not be null.");
                 } else {
-                    assertEquals(String.valueOf(actualValue), String.valueOf(expectedValue), "TC_ID: " + tc_id + " - Mismatch for key '" + keyPath + "'");
+                    assertEquals(String.valueOf(actualValue), String.valueOf(expectedValue),
+                            "TC_ID: " + tc_id + " - Mismatch for key '" + keyPath + "'");
                 }
             }
         }
