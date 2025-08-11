@@ -12,6 +12,7 @@ import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.apache.commons.io.output.WriterOutputStream; // <-- Thư viện hỗ trợ tạo stream để ghi log
+import org.testng.ITestContext;
 import org.testng.ITestResult; // <-- Đối tượng chứa kết quả test
 import org.testng.Reporter; // <-- Cầu nối để đính kèm dữ liệu vào kết quả test
 import org.testng.annotations.DataProvider;
@@ -38,7 +39,7 @@ public class LoginTest extends TestConfig {
     }
 
     @Test(dataProvider = "loginData")
-    public void testLogin(String tc_id, String tc_description, String expected_result, String user_name, String password, String expectedValidationData) throws IOException {
+    public void testLogin(String tc_id, String tc_description, String expected_result, String user_name, String password, String expectedValidationData, ITestContext context) throws IOException {
 
         System.out.println("Đang chạy test case: " + tc_id + " - " + tc_description);
         // Tạo một StringWriter để hoạt động như một bộ đệm, lưu lại log dưới dạng chuỗi.
@@ -63,6 +64,15 @@ public class LoginTest extends TestConfig {
 //                .log().all()
                 .extract().response();
 
+//        Lưu token dùng cho api sau
+        if (expected_result.equalsIgnoreCase("success") && response.getStatusCode() == 200) {
+            String token = response.jsonPath().getString("token");
+            if (token != null && !token.isEmpty()) {
+                context.setAttribute("AUTH_TOKEN", token);
+                System.out.println("Đã lấy và lưu token thành công từ test case: " + tc_id);
+            }
+        }
+
         ITestResult currentResult = Reporter.getCurrentTestResult();
         currentResult.setAttribute("requestLog", requestWriter.toString());
         currentResult.setAttribute("responseLog", response.getBody().prettyPrint());
@@ -84,10 +94,18 @@ public class LoginTest extends TestConfig {
                 }
 
                 Object actualValue = actualResponseJson.get(keyPath);
-                if (expectedValue.toString().equalsIgnoreCase("NOT_NULL")) {
+
+                if (expectedValue instanceof Number && actualValue instanceof Number) {
+                    // So sánh số: tránh lỗi 2 vs 2.0
+                    java.math.BigDecimal ev = new java.math.BigDecimal(expectedValue.toString());
+                    java.math.BigDecimal av = new java.math.BigDecimal(actualValue.toString());
+                    org.testng.Assert.assertEquals(av.compareTo(ev), 0,
+                            "TC_ID: " + tc_id + " - Mismatch for numeric key '" + keyPath + "'");
+                } else if ("NOT_NULL".equalsIgnoreCase(String.valueOf(expectedValue))) {
                     assertNotNull(actualValue, "TC_ID: " + tc_id + " - Key '" + keyPath + "' should not be null.");
                 } else {
-                    assertEquals(String.valueOf(actualValue), String.valueOf(expectedValue), "TC_ID: " + tc_id + " - Mismatch for key '" + keyPath + "'");
+                    assertEquals(String.valueOf(actualValue), String.valueOf(expectedValue),
+                            "TC_ID: " + tc_id + " - Mismatch for key '" + keyPath + "'");
                 }
             }
         }

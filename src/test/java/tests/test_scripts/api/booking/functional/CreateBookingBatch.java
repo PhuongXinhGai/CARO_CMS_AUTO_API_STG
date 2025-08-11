@@ -2,6 +2,7 @@ package tests.test_scripts.api.booking.functional;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import common.utilities.DynamicDataHelper;
 import common.utilities.ExcelUtils;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -24,45 +25,41 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 
-import static common.utilities.Constants.QUOTE_FEE_ENDPOINT;
-import common.utilities.DynamicDataHelper;
+import static common.utilities.Constants.CREATE_BOOKING_BATCH_ENDPOINT;
 import static io.restassured.RestAssured.given;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
-public class QuoteFeeTest extends TestConfig {
+public class CreateBookingBatch extends TestConfig {
 
 
 
-    @DataProvider(name = "quoteFeeData")
+    @DataProvider(name = "createBookingBatch")
     public Object[][] getQuoteFeeData() {
-        String filePath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/Booking_Quote_Fee.xlsx";
+        String filePath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/Create_Booking_Batch.xlsx";
         return ExcelUtils.getTestData(filePath, "testcase");
     }
 
-    @Test(dataProvider = "quoteFeeData")
-    public void testLogin(String tc_id, String tc_description, String expected_result, String booking_date, String agency_id, String list_player_json, String expectedValidationData, ITestContext context) throws IOException {
+    @Test(dataProvider = "createBookingBatch")
+    public void testLogin(String tc_id, String tc_description, String expected_result, String booking_list_json, String expectedValidationData, ITestContext context) throws IOException {
         // --- PHẦN NÂNG CẤP: LẤY TOKEN ĐỘNG TỪ CONTEXT ---
         String authToken = (String) context.getAttribute("AUTH_TOKEN");
         assertNotNull(authToken, "Token không được null. Hãy chắc chắn rằng LoginTest đã chạy thành công trước.");
 
         System.out.println("Đang chạy test case: " + tc_id + " - " + tc_description);
-        // Tạo một StringWriter để hoạt động như một bộ đệm, lưu lại log dưới dạng chuỗi.
+
+        // --- Chuẩn bị ghi log (giữ nguyên) ---
         StringWriter requestWriter = new StringWriter();
-        // Tạo một PrintStream để RestAssured có thể ghi log vào đó.
         PrintStream requestCapture = new PrintStream(new WriterOutputStream(requestWriter), true);
 
         // --- Xử lý dữ liệu động (ví dụ: {{TODAY}}) ---
-        String resolvedBookingDate = DynamicDataHelper.resolveDynamicValue(booking_date);
-        String resolvedListPlayerJson = DynamicDataHelper.resolveDynamicValue(list_player_json);
+        String resolvedBookingListJson = DynamicDataHelper.resolveDynamicValue(booking_list_json);
 
         // --- ĐỌC VÀ CHUẨN BỊ REQUEST BODY ---
-        String templatePath = System.getProperty("user.dir") + "/src/main/resources/input_json_file/booking/quote_fee_request_template.json";
+        String templatePath = System.getProperty("user.dir") + "/src/main/resources/input_json_file/booking/create_booking_batch_template.json";
         String requestBodyTemplate = new String(Files.readAllBytes(Paths.get(templatePath)));
         String requestBody = requestBodyTemplate
-                .replace("${bookingDate}", resolvedBookingDate)
-                .replace("${agencyId}", agency_id)
-                .replace("${listPlayerJson}",resolvedListPlayerJson);
+                .replace("${bookingListJson}",resolvedBookingListJson);
 
         Response response = given()
                 .header("Authorization", authToken)
@@ -70,7 +67,7 @@ public class QuoteFeeTest extends TestConfig {
                 .body(requestBody)
                 .filter(new RequestLoggingFilter(LogDetail.ALL, true, requestCapture))
                 .when()
-                .post(BASE_URL + QUOTE_FEE_ENDPOINT)
+                .post(BASE_URL + CREATE_BOOKING_BATCH_ENDPOINT)
                 .then()
 //                .log().all()
                 .extract().response();
