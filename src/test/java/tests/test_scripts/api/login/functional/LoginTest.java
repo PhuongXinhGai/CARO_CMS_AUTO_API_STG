@@ -96,7 +96,6 @@ public class LoginTest extends TestConfig {
                 Object actualValue = actualResponseJson.get(keyPath);
 
                 if (expectedValue instanceof Number && actualValue instanceof Number) {
-                    // So sánh số: tránh lỗi 2 vs 2.0
                     java.math.BigDecimal ev = new java.math.BigDecimal(expectedValue.toString());
                     java.math.BigDecimal av = new java.math.BigDecimal(actualValue.toString());
                     org.testng.Assert.assertEquals(av.compareTo(ev), 0,
