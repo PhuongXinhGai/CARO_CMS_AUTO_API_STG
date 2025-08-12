@@ -1,6 +1,6 @@
 {
-  "course_uid": "CHI-LINH-01",
-  "partner_uid": "CHI-LINH",
+  "course_uid": "${courseUid}",
+  "partner_uid": "${partnerUid}",
   "list_player": ${listPlayerJson},
   "agency_id": ${agencyId},
   "booking_date": "${bookingDate}"

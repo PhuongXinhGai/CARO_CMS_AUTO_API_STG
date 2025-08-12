@@ -36,7 +36,7 @@ public class CreateBookingBatch extends TestConfig {
 
     @DataProvider(name = "createBookingBatch")
     public Object[][] getQuoteFeeData() {
-        String filePath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/Create_Booking_Batch.xlsx";
+        String filePath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/booking/Create_Booking_Batch.xlsx";
         return ExcelUtils.getTestData(filePath, "testcase");
     }
 

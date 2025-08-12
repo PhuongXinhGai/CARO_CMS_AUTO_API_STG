@@ -14,10 +14,10 @@ import common.models.login.LoginResponse;
 
 
 public class TestConfig {
-    protected static String BASE_URL = ConfigReader.get("base_url");
+    protected static String BASE_URL = ConfigReader.getProperty("base_url");
 
     public static String getToken() throws IOException {
-        String BASE_URL = ConfigReader.get("base_url") + "/golf-cms/api/user/login";
+        String BASE_URL = ConfigReader.getProperty("base_url") + "/golf-cms/api/user/login";
         String requestLoginBody = FileHelper.readJsonFileAsString("src/main/resources/input_json_file/login/case1-login-success.json");
 
         Response response = getRequestNoAuth(BASE_URL)

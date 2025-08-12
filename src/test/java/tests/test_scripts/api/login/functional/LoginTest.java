@@ -34,7 +34,7 @@ public class LoginTest extends TestConfig {
 
     @DataProvider(name = "loginData")
     public Object[][] getLoginData() {
-        String filePath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/Login.xlsx";
+        String filePath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/login/Login.xlsx";
         return ExcelUtils.getTestData(filePath, "testcase");
     }
 
@@ -64,12 +64,28 @@ public class LoginTest extends TestConfig {
 //                .log().all()
                 .extract().response();
 
-//        Lưu token dùng cho api sau
+        // --- Logic lưu token và các thông tin quan trọng ---
         if (expected_result.equalsIgnoreCase("success") && response.getStatusCode() == 200) {
-            String token = response.jsonPath().getString("token");
+            JsonPath responseJson = response.jsonPath();
+
+            // 1. Lấy và lưu token (như cũ)
+            String token = responseJson.getString("token");
             if (token != null && !token.isEmpty()) {
                 context.setAttribute("AUTH_TOKEN", token);
                 System.out.println("Đã lấy và lưu token thành công từ test case: " + tc_id);
+            }
+
+            // --- PHẦN NÂNG CẤP: LẤY VÀ LƯU UID ---
+            // Giả sử response login trả về partner_uid và course_uid trong object "data"
+            String partnerUid = responseJson.getString("data.partner_uid");
+            String courseUid = responseJson.getString("data.course_uid");
+            String userName = responseJson.getString("data.user_name");
+
+            if (partnerUid != null && !partnerUid.isEmpty() && courseUid != null && !courseUid.isEmpty()) {
+                context.setAttribute("PARTNER_UID", partnerUid);
+                context.setAttribute("COURSE_UID", courseUid);
+                context.setAttribute("USER_NAME", userName);
+                System.out.println("Đã lấy và lưu Partner UID: " + partnerUid + " & Course UID: " + courseUid + " & User Name: " + userName + " từ test case: " + tc_id);
             }
         }
 
