@@ -30,7 +30,7 @@ import static io.restassured.RestAssured.given;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
-public class CreateBookingBatch extends TestConfig {
+public class CreateBookingBatchTest extends TestConfig {
 
 
 

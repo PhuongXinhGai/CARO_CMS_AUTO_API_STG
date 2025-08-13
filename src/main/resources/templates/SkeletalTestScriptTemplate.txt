@@ -1,4 +1,4 @@
-package tests.test_scripts.api.booking/functional;
+package tests.test_scripts.api.@@module@@;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -30,16 +30,16 @@ import static io.restassured.RestAssured.given;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
-public class GetBookingListSelect extends TestConfig {
+public class @@ClassName@@ extends TestConfig {
 
-    @DataProvider(name = "getBookingData")
+    @DataProvider(name = "@@DataProviderName@@")
     public Object[][] getData() {
-        String filePath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/GetBookingList.xlsx";
+        String filePath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/@@ExcelFile@@";
         return ExcelUtils.getTestData(filePath, "testcase");
     }
 
-    @Test(dataProvider = "getBookingData")
-    public void GetBookingListSelectTest(/* TODO: Thêm các tham số từ Excel vào đây */ ITestContext context) throws IOException {
+    @Test(dataProvider = "@@DataProviderName@@")
+    public void @@TestMethodName@@(/* TODO: Thêm các tham số từ Excel vào đây */ ITestContext context) throws IOException {
 
         // --- Lấy token (nếu cần) ---
         String authToken = (String) context.getAttribute("AUTH_TOKEN");
@@ -54,21 +54,7 @@ public class GetBookingListSelect extends TestConfig {
         // =====================================================================
         // === KHỐI CODE GỬI REQUEST SẼ ĐƯỢC TỰ ĐỘNG SINH RA VÀ CHÈN VÀO ĐÂY ===
         // =====================================================================
-        // --- Gửi Request ---
-RequestSpecification requestSpec = new RequestSpecBuilder()
-        .addHeader("Authorization", "Bearer " + authToken)
-        .addFilter(new RequestLoggingFilter(requestCapture))
-        .addFilter(new ResponseLoggingFilter(responseCapture))
-        .build();
-
-Response response = given()
-        .spec(requestSpec)
-        // TODO: Thêm các lệnh .queryParam("key", value) cần thiết ở đây
-        .when()
-        .get("/golf-cms/api/booking/list/select")
-        .then()
-        .extract().response();
-
+        @@RequestBlock@@
         // =====================================================================
 
         // --- Đính kèm log và nghiệm thu ---
