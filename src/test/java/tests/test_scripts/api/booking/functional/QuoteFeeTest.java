@@ -41,7 +41,7 @@ public class QuoteFeeTest extends TestConfig {
     }
 
     @Test(dataProvider = "quoteFeeData")
-    public void testLogin(String tc_id, String tc_description, String expected_result, String partner_uid, String course_uid, String booking_date, String agency_id, String list_player_json, String expectedValidationData, ITestContext context) throws IOException {
+    public void testQuoteFee(String tc_id, String tc_description, String expected_result, String partner_uid, String course_uid, String booking_date, String agency_id, String list_player_json, String expectedValidationData, ITestContext context) throws IOException {
         // --- PHẦN NÂNG CẤP: LẤY TOKEN ĐỘNG TỪ CONTEXT ---
         String authToken = (String) context.getAttribute("AUTH_TOKEN");
         assertNotNull(authToken, "Token không được null. Hãy chắc chắn rằng LoginTest đã chạy thành công trước.");

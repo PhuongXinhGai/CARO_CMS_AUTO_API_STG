@@ -42,9 +42,7 @@ public class LoginTest extends TestConfig {
     public void testLogin(String tc_id, String tc_description, String expected_result, String user_name, String password, String expectedValidationData, ITestContext context) throws IOException {
 
         System.out.println("Đang chạy test case: " + tc_id + " - " + tc_description);
-        // Tạo một StringWriter để hoạt động như một bộ đệm, lưu lại log dưới dạng chuỗi.
         StringWriter requestWriter = new StringWriter();
-        // Tạo một PrintStream để RestAssured có thể ghi log vào đó.
         PrintStream requestCapture = new PrintStream(new WriterOutputStream(requestWriter), true);
 
         // --- ĐỌC VÀ CHUẨN BỊ REQUEST BODY ---

@@ -28,14 +28,14 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
 public class GetBookingListSelectTest extends TestConfig {
-    @DataProvider(name = "getBookingListSelect")
+    @DataProvider(name = "getBookingListSelectData")
     public Object[][] getQuoteFeeData() {
         String filePath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/booking/Get_Booking_List_Select.xlsx";
         return ExcelUtils.getTestData(filePath, "testcase");
     }
 
-    @Test(dataProvider = "getBookingListSelect")
-    public void testLogin(String tc_id, String tc_description, String expected_result, String sort_by, String sort_dir, String booking_date, String is_ignore_tournament_booking, String is_single_book, String expectedValidationData, ITestContext context) throws IOException {
+    @Test(dataProvider = "getBookingListSelectData")
+    public void testGetBookingListSelect(String tc_id, String tc_description, String expected_result, String sort_by, String sort_dir, String booking_date, String is_ignore_tournament_booking, String is_single_book, String expectedValidationData, ITestContext context) throws IOException {
         // --- PHẦN NÂNG CẤP: LẤY TOKEN ĐỘNG TỪ CONTEXT ---
         String authToken = (String) context.getAttribute("AUTH_TOKEN");
         String partnerUid = (String) context.getAttribute("PARTNER_UID");

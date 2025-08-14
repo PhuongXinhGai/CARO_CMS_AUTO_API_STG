@@ -34,14 +34,14 @@ public class CreateBookingBatchTest extends TestConfig {
 
 
 
-    @DataProvider(name = "createBookingBatch")
+    @DataProvider(name = "createBookingBatchData")
     public Object[][] getQuoteFeeData() {
         String filePath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/booking/Create_Booking_Batch.xlsx";
         return ExcelUtils.getTestData(filePath, "testcase");
     }
 
-    @Test(dataProvider = "createBookingBatch")
-    public void testLogin(String tc_id, String tc_description, String expected_result, String booking_list_json, String expectedValidationData, ITestContext context) throws IOException {
+    @Test(dataProvider = "createBookingBatchData")
+    public void testCreateBookingBatch(String tc_id, String tc_description, String expected_result, String booking_list_json, String expectedValidationData, ITestContext context) throws IOException {
         // --- PHẦN NÂNG CẤP: LẤY TOKEN ĐỘNG TỪ CONTEXT ---
         String authToken = (String) context.getAttribute("AUTH_TOKEN");
         assertNotNull(authToken, "Token không được null. Hãy chắc chắn rằng LoginTest đã chạy thành công trước.");
@@ -58,6 +58,7 @@ public class CreateBookingBatchTest extends TestConfig {
         // --- ĐỌC VÀ CHUẨN BỊ REQUEST BODY ---
         String templatePath = System.getProperty("user.dir") + "/src/main/resources/input_json_file/booking/create_booking_batch_template.json";
         String requestBodyTemplate = new String(Files.readAllBytes(Paths.get(templatePath)));
+        // Thay thế biến trong template bằng dữ liệu đã xử lý
         String requestBody = requestBodyTemplate
                 .replace("${bookingListJson}",resolvedBookingListJson);
 

@@ -1,4 +1,4 @@
-package tests.test_scripts.api.booking/functional;
+package tests.test_scripts.api.booking.functional;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -25,62 +25,66 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 
-import static common.utilities.Constants.CREATE_BOOKING_BATCH_ENDPOINT;
+import static common.utilities.Constants.BOOKING_PRICE_ENDPOINT;
 import static io.restassured.RestAssured.given;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.specification.RequestSpecification;
 
-public class GetBookingListSelect extends TestConfig {
+public class GetBookingPriceTest extends TestConfig {
 
-    @DataProvider(name = "getBookingData")
+    @DataProvider(name = "getBookingPriceData")
     public Object[][] getData() {
-        String filePath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/GetBookingList.xlsx";
+        String filePath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/booking/Get_Booking_Price.xlsx";
         return ExcelUtils.getTestData(filePath, "testcase");
     }
 
-    @Test(dataProvider = "getBookingData")
-    public void GetBookingListSelectTest(/* TODO: Thêm các tham số từ Excel vào đây */ ITestContext context) throws IOException {
+    @Test(dataProvider = "getBookingPriceData")
+    public void testGetBookingPrice(String tc_id, String tc_description, String expected_result, String partner_uid, String course_uid, String booking_date, String expected_validation_data, ITestContext context) throws IOException {
 
-        // --- Lấy token (nếu cần) ---
         String authToken = (String) context.getAttribute("AUTH_TOKEN");
-        assertNotNull(authToken, "Token không được null.");
+        assertNotNull(authToken, "Token không được null. Hãy chắc chắn rằng LoginTest đã chạy thành công trước.");
+
+        System.out.println("Đang chạy test case: " + tc_id + " - " + tc_description);
 
         // --- Chuẩn bị ghi log ---
         StringWriter requestWriter = new StringWriter();
         PrintStream requestCapture = new PrintStream(new WriterOutputStream(requestWriter), true);
-        StringWriter responseWriter = new StringWriter();
-        PrintStream responseCapture = new PrintStream(new WriterOutputStream(responseWriter), true);
 
-        // =====================================================================
-        // === KHỐI CODE GỬI REQUEST SẼ ĐƯỢC TỰ ĐỘNG SINH RA VÀ CHÈN VÀO ĐÂY ===
-        // =====================================================================
-        // --- Gửi Request ---
-RequestSpecification requestSpec = new RequestSpecBuilder()
-        .addHeader("Authorization", "Bearer " + authToken)
-        .addFilter(new RequestLoggingFilter(requestCapture))
-        .addFilter(new ResponseLoggingFilter(responseCapture))
-        .build();
+        // --- Xử lý dữ liệu động (ví dụ: {{TODAY}}) ---
+        String resolvedBookingDate = DynamicDataHelper.resolveDynamicValue(booking_date);
+        // --- ĐỌC VÀ CHUẨN BỊ REQUEST BODY ---
+        RequestSpecification requestSpec = new RequestSpecBuilder()
+                .addHeader("Authorization", authToken)
+                .addFilter(new RequestLoggingFilter(LogDetail.ALL, true, requestCapture))
+                .build();
 
-Response response = given()
-        .spec(requestSpec)
-        // TODO: Thêm các lệnh .queryParam("key", value) cần thiết ở đây
-        .when()
-        .get("/golf-cms/api/booking/list/select")
-        .then()
-        .extract().response();
+        Response response = given()
+                .spec(requestSpec)
+                .queryParam("partner_uid", partner_uid)
+                .queryParam("course_uid", course_uid)
+                .queryParam("booking_date", resolvedBookingDate)
+                .when()
+                .get(BASE_URL + BOOKING_PRICE_ENDPOINT)
+                .then()
+                .extract().response();
 
         // =====================================================================
 
         // --- Đính kèm log và nghiệm thu ---
         ITestResult currentResult = Reporter.getCurrentTestResult();
+        // Lấy request log từ bộ đệm
         currentResult.setAttribute("requestLog", requestWriter.toString());
-        currentResult.setAttribute("responseLog", responseWriter.toString());
+        // Lấy response log trực tiếp từ đối tượng response
+        currentResult.setAttribute("responseLog", response.getBody().prettyPrint());
 
-        if (expectedValidationData != null && !expectedValidationData.isEmpty()) {
+
+        if (expected_validation_data != null && !expected_validation_data.isEmpty()) {
                     JsonPath actualResponseJson = response.jsonPath();
                     Gson gson = new Gson();
                     Type type = new TypeToken<Map<String, Object>>() {}.getType();
-                    Map<String, Object> expectedDataMap = gson.fromJson(expectedValidationData, type);
+                    Map<String, Object> expectedDataMap = gson.fromJson(expected_validation_data, type);
 
                     for (Map.Entry<String, Object> entry : expectedDataMap.entrySet()) {
                         String keyPath = entry.getKey();

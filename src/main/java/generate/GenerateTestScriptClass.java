@@ -41,7 +41,7 @@ public class GenerateTestScriptClass {
             if (outputFile.exists()) {
                 System.out.println("--------------------------------------------------");
                 System.out.println("Cảnh báo: File '" + className + ".java' đã tồn tại.");
-                System.out.print("--> Bạn có muốn ghi đè không? (gõ 'yes' để đồng ý): ");
+                System.out.print("--> Bạn có muốn ghi đè không? (gõ 'yes' or 'no'): ");
 
                 // 2. Đọc câu trả lời của bạn từ console
                 String userInput = scanner.nextLine().trim().toLowerCase();
@@ -63,6 +63,7 @@ public class GenerateTestScriptClass {
                 requestBlockCode = "// TODO: Tự định nghĩa logic gửi request cho loại API này.";
             }
 
+            // --- Thay thế các biến trong template ---
             String finalContent = templateContent
                     .replace("@@module@@", module)
                     .replace("@@ClassName@@", className)
@@ -79,7 +80,7 @@ public class GenerateTestScriptClass {
             }
         }
 
-        scanner.close(); // Đóng scanner
+        scanner.close();
         System.out.println("--------------------------------------------------");
         System.out.println("Quá trình tạo file test script đã hoàn tất.");
     }
@@ -94,14 +95,16 @@ public class GenerateTestScriptClass {
                 
                 // TODO: Thêm các lệnh .replace() cho các biến trong template
                 String requestBody = requestBodyTemplate; 
-                // requestBody = DynamicDataHelper.resolveDynamicValue(requestBody); // Nếu cần
-
+                // Ví dụ: .replace("${bookingListJson}",resolvedBookingListJson);
+                
+                // --- Xử lý dữ liệu động (nếu cần) ---
+                // String resolvedValue = DynamicDataHelper.resolveDynamicValue(someValue);
+                
                 // --- Gửi Request ---
                 RequestSpecification requestSpec = new RequestSpecBuilder()
-                        .addHeader("Authorization", "Bearer " + authToken)
+                        .addHeader("Authorization", authToken)
                         .setContentType(ContentType.JSON)
                         .addFilter(new RequestLoggingFilter(requestCapture))
-                        .addFilter(new ResponseLoggingFilter(responseCapture))
                         .setBody(requestBody)
                         .build();
 
@@ -116,11 +119,13 @@ public class GenerateTestScriptClass {
 
     private static String buildGetQueryParamRequestBlock(String endpoint) {
         return """
+                // --- Xử lý dữ liệu động (nếu cần) ---
+                // String resolvedValue = DynamicDataHelper.resolveDynamicValue(someValue);
+                
                 // --- Gửi Request ---
                 RequestSpecification requestSpec = new RequestSpecBuilder()
-                        .addHeader("Authorization", "Bearer " + authToken)
+                        .addHeader("Authorization", authToken)
                         .addFilter(new RequestLoggingFilter(requestCapture))
-                        .addFilter(new ResponseLoggingFilter(responseCapture))
                         .build();
 
                 Response response = given()
