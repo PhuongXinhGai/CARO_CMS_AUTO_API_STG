@@ -25,7 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 
-import static common.utilities.Constants.CREATE_BOOKING_BATCH_ENDPOINT;
+import static common.utilities.Constants.*;
 import static io.restassured.RestAssured.given;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
@@ -41,7 +41,7 @@ public class @@ClassName@@ extends TestConfig {
     }
 
     @Test(dataProvider = "@@DataProviderName@@")
-    public void @@TestMethodName@@(/* TODO: Thêm các tham số từ Excel vào đây */ ITestContext context) throws IOException {
+    public void @@TestMethodName@@(String tc_id, String tc_description, String expected_result, /* TODO: Thêm các tham số từ Excel vào đây */ String expectedValidationData, ITestContext context) throws IOException {
 
         // --- Lấy token (nếu cần) ---
         String authToken = (String) context.getAttribute("AUTH_TOKEN");

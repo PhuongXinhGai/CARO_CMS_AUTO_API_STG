@@ -6,6 +6,7 @@ public class Constants {
     public static final String QUOTE_FEE_ENDPOINT = "/golf-cms/api/booking/quote-fee";
     public static final String BOOKING_LIST_SELECT_ENDPOINT = "/golf-cms/api/booking/list/select";
     public static final String CREATE_BOOKING_BATCH_ENDPOINT = "/golf-cms/api/booking/batch";
+    public static final String  REPORT_BOOKING_STATISTIC_ENDPOINT = "/golf-cms/api/report/booking-statistic";
 
     public static final String HEADER_ACCEPT = "Accept";
     public static final String HEADER_AUTHORIZATION = "Authorization";

@@ -1,0 +1,5 @@
+{
+  "partner_uid": "${partnerUid}",
+  "course_uid": "${courseUid}",
+  "booking_date": "${bookingDate}"
+}

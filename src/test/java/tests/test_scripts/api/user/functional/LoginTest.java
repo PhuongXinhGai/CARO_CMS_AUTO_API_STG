@@ -1,4 +1,4 @@
-package tests.test_scripts.api.login.functional;
+package tests.test_scripts.api.user.functional;
 
 // --- BƯỚC 1: THÊM CÁC IMPORT CẦN THIẾT CHO VIỆC GHI LOG VÀ BÁO CÁO ---
 import com.google.gson.Gson;
@@ -34,7 +34,7 @@ public class LoginTest extends TestConfig {
 
     @DataProvider(name = "loginData")
     public Object[][] getLoginData() {
-        String filePath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/login/Login.xlsx";
+        String filePath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/user/Login.xlsx";
         return ExcelUtils.getTestData(filePath, "testcase");
     }
 
@@ -46,7 +46,7 @@ public class LoginTest extends TestConfig {
         PrintStream requestCapture = new PrintStream(new WriterOutputStream(requestWriter), true);
 
         // --- ĐỌC VÀ CHUẨN BỊ REQUEST BODY ---
-        String templatePath = System.getProperty("user.dir") + "/src/main/resources/input_json_file/login/login_request_template.json";
+        String templatePath = System.getProperty("user.dir") + "/src/main/resources/input_json_file/user/login_request_template.json";
         String requestBodyTemplate = new String(Files.readAllBytes(Paths.get(templatePath)));
         String requestBody = requestBodyTemplate
                 .replace("${userName}", user_name)

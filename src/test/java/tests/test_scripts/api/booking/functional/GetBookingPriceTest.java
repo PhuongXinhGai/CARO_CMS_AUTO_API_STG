@@ -41,7 +41,7 @@ public class GetBookingPriceTest extends TestConfig {
     }
 
     @Test(dataProvider = "getBookingPriceData")
-    public void testGetBookingPrice(String tc_id, String tc_description, String expected_result, String partner_uid, String course_uid, String booking_date, String expected_validation_data, ITestContext context) throws IOException {
+    public void testGetBookingPrice(String tc_id, String tc_description, String expected_result, String partner_uid, String course_uid, String booking_date, String expectedValidationData, ITestContext context) throws IOException {
 
         String authToken = (String) context.getAttribute("AUTH_TOKEN");
         assertNotNull(authToken, "Token không được null. Hãy chắc chắn rằng LoginTest đã chạy thành công trước.");
@@ -80,11 +80,11 @@ public class GetBookingPriceTest extends TestConfig {
         currentResult.setAttribute("responseLog", response.getBody().prettyPrint());
 
 
-        if (expected_validation_data != null && !expected_validation_data.isEmpty()) {
+        if (expectedValidationData != null && !expectedValidationData.isEmpty()) {
                     JsonPath actualResponseJson = response.jsonPath();
                     Gson gson = new Gson();
                     Type type = new TypeToken<Map<String, Object>>() {}.getType();
-                    Map<String, Object> expectedDataMap = gson.fromJson(expected_validation_data, type);
+                    Map<String, Object> expectedDataMap = gson.fromJson(expectedValidationData, type);
 
                     for (Map.Entry<String, Object> entry : expectedDataMap.entrySet()) {
                         String keyPath = entry.getKey();

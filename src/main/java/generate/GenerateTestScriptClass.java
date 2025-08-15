@@ -88,14 +88,18 @@ public class GenerateTestScriptClass {
     // --- Các phương thức "thợ xây" để "viết" code ---
 
     private static String buildPostJsonRequestBlock(String jsonTemplate, String module, String endpoint) {
+        String jsonModulePath = module.split("/")[0];
+
         return """
                 // --- ĐỌC VÀ CHUẨN BỊ REQUEST BODY ---
                 String templatePath = System.getProperty("user.dir") + "/src/main/resources/input_json_file/%s/%s";
                 String requestBodyTemplate = new String(Files.readAllBytes(Paths.get(templatePath)));
-                
+                            
                 // TODO: Thêm các lệnh .replace() cho các biến trong template
-                String requestBody = requestBodyTemplate; 
-                // Ví dụ: .replace("${bookingListJson}",resolvedBookingListJson);
+                String requestBody = requestBodyTemplate
+                        .replace("${bookingListJson}",resolvedBookingListJson);
+                        .replace("${partnerUid}", partnerUid)
+                        .replace("${courseUid}", courseUid)
                 
                 // --- Xử lý dữ liệu động (nếu cần) ---
                 // String resolvedValue = DynamicDataHelper.resolveDynamicValue(someValue);
@@ -111,10 +115,10 @@ public class GenerateTestScriptClass {
                 Response response = given()
                         .spec(requestSpec)
                         .when()
-                        .post("%s")
+                        .post(BASE_URL + "%s")
                         .then()
                         .extract().response();
-                """.formatted(module, jsonTemplate, endpoint);
+                """.formatted(jsonModulePath, jsonTemplate, endpoint);
     }
 
     private static String buildGetQueryParamRequestBlock(String endpoint) {
@@ -132,7 +136,7 @@ public class GenerateTestScriptClass {
                         .spec(requestSpec)
                         // TODO: Thêm các lệnh .queryParam("key", value) cần thiết ở đây
                         .when()
-                        .get("%s")
+                        .get(BASE_URL + "%s")
                         .then()
                         .extract().response();
                 """.formatted(endpoint);
