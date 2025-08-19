@@ -35,14 +35,10 @@ public class GetBookingListSelectTest extends TestConfig {
     }
 
     @Test(dataProvider = "getBookingListSelectData")
-    public void testGetBookingListSelect(String tc_id, String tc_description, String expected_result, String sort_by, String sort_dir, String booking_date, String is_ignore_tournament_booking, String is_single_book, String expectedValidationData, ITestContext context) throws IOException {
+    public void testGetBookingListSelect(String tc_id, String tc_description, String expected_result, String partner_uid, String course_uid, String sort_by, String sort_dir, String booking_date, String is_ignore_tournament_booking, String is_single_book, String expectedValidationData, ITestContext context) throws IOException {
         // --- PHẦN NÂNG CẤP: LẤY TOKEN ĐỘNG TỪ CONTEXT ---
         String authToken = (String) context.getAttribute("AUTH_TOKEN");
-        String partnerUid = (String) context.getAttribute("PARTNER_UID");
-        String courseUid = (String) context.getAttribute("COURSE_UID");
         assertNotNull(authToken, "Token không được null. Hãy chắc chắn rằng LoginTest đã chạy thành công trước.");
-        assertNotNull(partnerUid, "ParterUid không được null. Hãy chắc chắn rằng LoginTest đã chạy thành công trước.");
-        assertNotNull(courseUid, "CourseUid không được null. Hãy chắc chắn rằng LoginTest đã chạy thành công trước.");
 
         System.out.println("Đang chạy test case: " + tc_id + " - " + tc_description);
 
@@ -53,12 +49,6 @@ public class GetBookingListSelectTest extends TestConfig {
         // --- Xử lý dữ liệu động (ví dụ: {{TODAY}}) ---
         String resolvedBookingDate = DynamicDataHelper.resolveDynamicValue(booking_date);
 
-        // --- ĐỌC VÀ CHUẨN BỊ REQUEST BODY ---
-//        String templatePath = System.getProperty("user.dir") + "/src/main/resources/input_json_file/booking/create_booking_batch_template.json";
-//        String requestBodyTemplate = new String(Files.readAllBytes(Paths.get(templatePath)));
-//        String requestBody = requestBodyTemplate
-//                .replace("${bookingListJson}",resolvedBookingListJson);
-
         Response response = given()
                 .header("Authorization", authToken)
                 .queryParam("sort_by", sort_by)
@@ -67,8 +57,8 @@ public class GetBookingListSelectTest extends TestConfig {
                 .queryParam("is_ignore_tournament_booking", is_ignore_tournament_booking)
                 .queryParam("is_single_book", is_single_book)
                 // Các param cố định khác có thể thêm ở đây
-                .queryParam("partner_uid", partnerUid)
-                .queryParam("course_uid", courseUid)
+                .queryParam("partner_uid", partner_uid)
+                .queryParam("course_uid", course_uid)
                 .filter(new RequestLoggingFilter(LogDetail.ALL, true, requestCapture))
                 .when()
                 .get(BASE_URL + BOOKING_LIST_SELECT_ENDPOINT)
