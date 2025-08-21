@@ -5,6 +5,7 @@ import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.apache.commons.io.output.WriterOutputStream;
+import tests.models.ActionResult;
 import tests.test_config.TestConfig;
 
 import java.io.IOException;
@@ -24,7 +25,7 @@ public class LoginActions extends TestConfig {
      * @param password Mật khẩu
      * @return Đối tượng Response từ RestAssured
      */
-    public Response loginAndGetResponse(String user_name, String password) throws IOException {
+    public ActionResult loginAndGetResponse(String user_name, String password) throws IOException {
         // --- Logic được "copy" từ LoginTest.java ---
 
         // Chuẩn bị để ghi log (chỉ cần cho request)
@@ -48,10 +49,7 @@ public class LoginActions extends TestConfig {
 //                .log().all()
                 .extract().response();
 
-        // Gắn request log vào response để các bước sau có thể lấy ra
-        // Đây là một "mẹo" nhỏ để truyền log đi
-        response.then().header("X-Request-Log", requestWriter.toString());
-
-        return response;
+        // Trả về đối tượng ActionResult chứa cả hai
+        return new ActionResult(response, requestWriter.toString());
     }
 }

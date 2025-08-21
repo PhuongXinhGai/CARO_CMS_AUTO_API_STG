@@ -1,12 +1,12 @@
 package tests.actions;
 
-import common.utilities.DynamicDataHelper;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.io.output.WriterOutputStream;
+import tests.models.ActionResult;
 import tests.test_config.TestConfig; // Kế thừa TestConfig để có BASE_URL
 
 import java.io.IOException;
@@ -31,7 +31,7 @@ public class BookingActions extends TestConfig {
      * @return Đối tượng Response từ RestAssured.
      * @throws IOException Nếu không đọc được file JSON template.
      */
-    public Response createBookingBatch(String authToken, String finalBookingListJson) throws IOException {
+    public ActionResult createBookingBatch(String authToken, String finalBookingListJson) throws IOException {
         StringWriter requestWriter = new StringWriter();
         PrintStream requestCapture = new PrintStream(new WriterOutputStream(requestWriter), true);
 
@@ -41,18 +41,20 @@ public class BookingActions extends TestConfig {
         String requestBody = requestBodyTemplate.replace("${bookingListJson}", finalBookingListJson);
 
         // --- Gửi Request ---
+        RequestSpecification requestSpec = new RequestSpecBuilder()
+                .addHeader("Authorization", authToken) // Dùng .addHeader()
+                .setContentType(ContentType.JSON)
+                .addFilter(new RequestLoggingFilter(requestCapture))
+                .setBody(requestBody) // Đặt body vào trong spec
+                .build();
         Response response = given()
-                .header("Authorization", authToken)
-                .contentType(ContentType.JSON)
-                .body(requestBody)
-                .filter(new RequestLoggingFilter(requestCapture))
+                .spec(requestSpec) // Sử dụng spec đã được xây dựng
                 .when()
                 .post(BASE_URL + CREATE_BOOKING_BATCH_ENDPOINT)
                 .then()
                 .extract().response();
 
-        response.then().header("X-Request-Log", requestWriter.toString());
-        return response;
+        return new ActionResult(response, requestWriter.toString());
     }
 
     /**
@@ -62,7 +64,7 @@ public class BookingActions extends TestConfig {
      * @param params Một Map chứa tất cả các query parameters.
      * @return Đối tượng Response chứa kết quả trả về từ API.
      */
-    public Response getBookingList(String authToken, Map<String, String> params) {
+    public ActionResult getBookingList(String authToken, Map<String, String> params) {
         // --- Chuẩn bị ghi log ---
         StringWriter requestWriter = new StringWriter();
         PrintStream requestCapture = new PrintStream(new WriterOutputStream(requestWriter), true);
@@ -80,9 +82,6 @@ public class BookingActions extends TestConfig {
                 .get(BASE_URL + BOOKING_LIST_SELECT_ENDPOINT)
                 .then()
                 .extract().response();
-
-        // Đính kèm log request vào response
-        response.then().header("X-Request-Log", requestWriter.toString());
-        return response;
+        return new ActionResult(response, requestWriter.toString());
     }
 }

@@ -4,7 +4,7 @@
         <listener class-name="listeners.TestListener"/>
     </listeners>
 
-    <test name="LOGIN TEST">
+    <test name="BOOKING TEST">
         <classes>
             <class name="tests.test_scripts.api.booking.integration.Integration_CreateAndVerifyBookingTest"/>
         </classes>

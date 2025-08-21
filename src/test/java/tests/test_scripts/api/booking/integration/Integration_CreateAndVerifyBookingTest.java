@@ -5,18 +5,22 @@ import com.google.gson.reflect.TypeToken;
 import common.utilities.DynamicDataHelper;
 import common.utilities.ExcelUtils;
 import io.restassured.response.Response;
+import org.testng.ITestResult;
+import org.testng.Reporter;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import tests.actions.BookingActions;
 import tests.actions.LoginActions;
 import tests.test_config.TestConfig;
+import helpers.ReportHelper;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import tests.models.ActionResult;
 
 import static org.testng.Assert.*;
 
@@ -63,20 +67,33 @@ public class Integration_CreateAndVerifyBookingTest extends TestConfig {
         Map<String, String> createBookingData = ExcelUtils.getTestCaseData(createBookingDataFile, "testcase", create_booking_case_id);
         Map<String, String> getListData = ExcelUtils.getTestCaseData(getListDataFile, "testcase", get_list_case_id);
 
-        // === BƯỚC 1: LOGIN ===
+        /// === BƯỚC 1: LOGIN ===
         System.out.println("--- Bước 1: Đang thực hiện Login...");
-        Response loginResponse = loginActions.loginAndGetResponse(loginData.get("user_name"), loginData.get("password"));
+        // Nhận về ActionResult
+        ActionResult loginResult = loginActions.loginAndGetResponse(loginData.get("user_name"), loginData.get("password"));
+        // Lấy response từ kết quả
+        Response loginResponse = loginResult.getResponse();
+
+        // GHI LOG CHO BƯỚC 1
+        ReportHelper.logApiActionStep("Bước 1: Login to get token", loginResult);
+
         assertEquals(loginResponse.getStatusCode(), 200, "Bước 1: Login thất bại!");
         String authToken = loginResponse.jsonPath().getString("token");
-        String partnerUid = loginResponse.jsonPath().getString("data.partner_uid"); // Sửa lại đường dẫn nếu cần
-        String courseUid = loginResponse.jsonPath().getString("data.course_uid"); // Sửa lại đường dẫn nếu cần
 
         // === BƯỚC 2: TẠO BOOKING ===
         System.out.println("--- Bước 2: Đang tạo Booking mới...");
-        String rawBookingListJson = createBookingData.get("booking_list_json");
+        String rawBookingListJson = createBookingData.get("booking_list");
+        assertNotNull(rawBookingListJson, "Không tìm thấy cột 'booking_list' trong file Create_Booking_Batch.xlsx cho test case ID: " + create_booking_case_id);
         String resolvedBookingJson = DynamicDataHelper.resolveDynamicValue(rawBookingListJson);
-        Response createBookingResponse = bookingActions.createBookingBatch(authToken, resolvedBookingJson);
+        // ...
+        ActionResult createBookingResult = bookingActions.createBookingBatch(authToken, resolvedBookingJson);
+        Response createBookingResponse = createBookingResult.getResponse();
+
+        // GHI LOG CHO BƯỚC 2
+        ReportHelper.logApiActionStep("Bước 2: Create new bookings", createBookingResult);
+
         assertEquals(createBookingResponse.getStatusCode(), 200, "Bước 2: Tạo booking thất bại!");
+
         List<String> createdBookingUids = createBookingResponse.jsonPath().getList("uid");
         assertNotNull(createdBookingUids, "UID của booking vừa tạo không được null.");
         assertFalse(createdBookingUids.isEmpty(), "Danh sách UID của booking vừa tạo không được rỗng.");
@@ -85,10 +102,8 @@ public class Integration_CreateAndVerifyBookingTest extends TestConfig {
         // === BƯỚC 3: LẤY DANH SÁCH VÀ NGHIỆM THU ---
         System.out.println("--- Bước 3: Đang lấy danh sách Booking để nghiệm thu...");
         Map<String, String> getListParams = new HashMap<>();
-
-        getListParams.put("partner_uid", partnerUid);
-        getListParams.put("course_uid", courseUid);
-
+        getListParams.put("partner_uid", getListData.get("partner_uid"));
+        getListParams.put("course_uid", getListData.get("course_uid"));
         getListParams.put("sort_by", getListData.get("sort_by"));
         getListParams.put("sort_dir", getListData.get("sort_dir"));
         getListParams.put("is_single_book", getListData.get("is_single_book"));
@@ -98,7 +113,13 @@ public class Integration_CreateAndVerifyBookingTest extends TestConfig {
 
     // --- BƯỚC 3.2: GỌI ACTION VỚI MAP ĐÃ ĐƯỢC CHUẨN BỊ ---
     // Bây giờ, lời gọi hàm này sẽ khớp với định nghĩa trong BookingActions
-        Response getListResponse = bookingActions.getBookingList(authToken, getListParams);
+        // 1. Nhận về đối tượng ActionResult
+        ActionResult getListResult = bookingActions.getBookingList(authToken, getListParams);
+        // 2. Lấy Response ra từ ActionResult
+        Response getListResponse = getListResult.getResponse();
+        // GHI LOG CHO BƯỚC 3
+        ReportHelper.logApiActionStep("Bước 3: Get booking list to verify", getListResult);
+
         assertEquals(getListResponse.getStatusCode(), 200, "Bước 3: Lấy danh sách booking thất bại!");
         List<String> actualBookingUidsInList = getListResponse.jsonPath().getList("data.uid");
         System.out.println("    -> Tìm thấy " + actualBookingUidsInList.size() + " booking trong danh sách.");

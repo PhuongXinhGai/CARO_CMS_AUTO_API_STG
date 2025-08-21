@@ -14,6 +14,10 @@ public class TestListener implements ITestListener {
     private static final ExtentReports extent = ExtentReportManager.createInstance();
     private static final ThreadLocal<ExtentTest> extentTest = new ThreadLocal<>();
 
+    public static ExtentTest getExtentTest() {
+        return extentTest.get();
+    }
+
     @Override
     public void onTestStart(ITestResult result) {
         // Lấy tc_id + tc_description an toàn
