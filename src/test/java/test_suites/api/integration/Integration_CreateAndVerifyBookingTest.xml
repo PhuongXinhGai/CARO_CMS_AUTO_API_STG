@@ -6,7 +6,7 @@
 
     <test name="BOOKING TEST">
         <classes>
-            <class name="tests.test_scripts.api.booking.integration.Integration_CreateAndVerifyBookingTest"/>
+            <class name="tests.test_scripts.api.booking.integration.Integration_CreateAndVerifyBookingTest01"/>
         </classes>
     </test>
 </suite>
