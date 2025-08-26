@@ -4,27 +4,25 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import common.utilities.DynamicDataHelper;
 import common.utilities.ExcelUtils;
+import helpers.ReportHelper;
 import io.restassured.response.Response;
-import org.testng.ITestResult;
-import org.testng.Reporter;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import tests.actions.BookingActions;
 import tests.actions.LoginActions;
+import tests.models.ActionResult;
 import tests.test_config.TestConfig;
-import helpers.ReportHelper;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import tests.models.ActionResult;
 
 import static org.testng.Assert.*;
 
-public class Integration_CreateAndVerifyBookingTest extends TestConfig {
+public class Integration_CreateAndVerifyBookingTest01 extends TestConfig {
 
     // Khai báo các "người thực thi hành động" và các công cụ
     private LoginActions loginActions;
