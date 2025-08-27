@@ -1,10 +1,14 @@
 package tests.test_config;
 
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.markuputils.CodeLanguage;
+import com.aventstack.extentreports.markuputils.MarkupHelper;
 import com.google.gson.Gson;
 import common.utilities.ConfigReader;
 import common.utilities.DynamicDataHelper;
 import common.utilities.ExcelUtils;
 import io.restassured.response.Response;
+import listeners.IntegrationListener;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import tests.actions.BookingActions;
@@ -57,6 +61,20 @@ public class TestConfig {
         getListDataFile = baseFilePath + "booking/Get_Booking_List_Select.xlsx";
     }
 
+    private void logApiStepInReport(String stepName, ActionResult actionResult, boolean isSuccess) {
+        ExtentTest parentTest = IntegrationListener.getExtentTest();
+        if (parentTest != null) {
+            ExtentTest stepNode = parentTest.createNode(stepName);
+            if (isSuccess) {
+                stepNode.pass("Step executed successfully.");
+            } else {
+                stepNode.fail("Step failed. Status code: " + actionResult.getResponse().getStatusCode());
+            }
+            stepNode.info(MarkupHelper.createCodeBlock(actionResult.getRequestLog()));
+            stepNode.info(MarkupHelper.createCodeBlock(actionResult.getResponse().getBody().prettyPrint(), CodeLanguage.JSON));
+        }
+    }
+
     /**
      * Phương thức này sẽ tự động chạy TRƯỚC MỖI method @Test được cung cấp dữ liệu bởi DataProvider.
      * Nó sẽ kiểm tra xem class test có được "dán nhãn" @IntegrationFlow hay không.
@@ -88,6 +106,7 @@ public class TestConfig {
             // === BƯỚC A: LOGIN ===
             System.out.println("--- Setup Step 1: Login...");
             ActionResult loginResult = loginActions.loginAndGetResponse(loginData.get("user_name"), loginData.get("password"));
+            logApiStepInReport("Step 1: Login", loginResult, loginResult.getResponse().getStatusCode() == 200);
             assertEquals(loginResult.getResponse().getStatusCode(), 200, "Setup thất bại tại Bước 1: Login");
             Response loginResponse = loginResult.getResponse();
             this.authToken = loginResponse.jsonPath().getString("token");
@@ -99,6 +118,7 @@ public class TestConfig {
             String rawBookingJson = createData.get("booking_list");
             String resolvedBookingJson = DynamicDataHelper.resolveDynamicValue(rawBookingJson);
             ActionResult createResult = bookingActions.createBookingBatch(this.authToken, resolvedBookingJson);
+            logApiStepInReport("Step 2: Create Booking", createResult, createResult.getResponse().getStatusCode() == 200);
             assertEquals(createResult.getResponse().getStatusCode(), 200, "Setup thất bại tại Bước 2: Create Booking");
             this.createdBookingUids = createResult.getResponse().jsonPath().getList("uid");
 
@@ -114,6 +134,7 @@ public class TestConfig {
             getListParams.put("booking_date", resolvedBookingDate);
 
             ActionResult getListResult = bookingActions.getBookingList(this.authToken, getListParams);
+            logApiStepInReport("Step 3: Get Booking List", getListResult, getListResult.getResponse().getStatusCode() == 200);
             assertEquals(getListResult.getResponse().getStatusCode(), 200, "Setup thất bại tại Bước 3: Get List");
             this.actualBookingUidsInList = getListResult.getResponse().jsonPath().getList("data.uid");
 
