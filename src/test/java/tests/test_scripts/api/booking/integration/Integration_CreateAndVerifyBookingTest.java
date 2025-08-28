@@ -27,29 +27,29 @@ import static org.testng.Assert.*;
 public class Integration_CreateAndVerifyBookingTest extends TestConfig {
 
     // Khai báo các "người thực thi hành động" và các công cụ
-    private LoginActions loginActions;
-    private BookingActions bookingActions;
-    private Gson gson;
-
-    // Khai báo đường dẫn đến các file Excel để dễ quản lý
-    private String loginDataFile;
-    private String createBookingDataFile;
-    private String getListDataFile;
-
-    // Annotation @BeforeClass sẽ chạy một lần duy nhất trước khi tất cả các test trong class này bắt đầu
-    @BeforeClass
-    public void setup() {
-        // Khởi tạo các đối tượng cần thiết
-        loginActions = new LoginActions();
-        bookingActions = new BookingActions();
-        gson = new Gson();
-
-        // Định nghĩa đường dẫn file tập trung ở một nơi
-        String baseFilePath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/";
-        loginDataFile = baseFilePath + "user/Login.xlsx";
-        createBookingDataFile = baseFilePath + "booking/Create_Booking_Batch.xlsx";
-        getListDataFile = baseFilePath + "booking/Get_Booking_List_Select.xlsx";
-    }
+//    private LoginActions loginActions;
+//    private BookingActions bookingActions;
+//    private Gson gson;
+//
+//    // Khai báo đường dẫn đến các file Excel để dễ quản lý
+//    private String loginDataFile;
+//    private String createBookingDataFile;
+//    private String getListDataFile;
+//
+//    // Annotation @BeforeClass sẽ chạy một lần duy nhất trước khi tất cả các test trong class này bắt đầu
+//    @BeforeClass
+//    public void setup() {
+//        // Khởi tạo các đối tượng cần thiết
+//        loginActions = new LoginActions();
+//        bookingActions = new BookingActions();
+//        gson = new Gson();
+//
+//        // Định nghĩa đường dẫn file tập trung ở một nơi
+//        String baseFilePath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/";
+//        loginDataFile = baseFilePath + "user/Login.xlsx";
+//        createBookingDataFile = baseFilePath + "booking/Create_Booking_Batch.xlsx";
+//        getListDataFile = baseFilePath + "booking/Get_Booking_List_Select.xlsx";
+//    }
 
     @DataProvider(name = "integrationFlows")
     public Object[][] getFlows() {
