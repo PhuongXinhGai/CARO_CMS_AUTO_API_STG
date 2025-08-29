@@ -1,50 +1,44 @@
 package common.utilities; // <-- Gói này phải khớp với vị trí bạn đặt file
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import common.utilities.ConfigReader;
 
 
 public class DynamicDataHelper {
 
     // Định dạng ngày tháng mà API của bạn mong muốn, ví dụ: "dd/MM/yyyy"
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    // Nếu muốn theo giờ VN (đúng với bối cảnh của bạn), set zone cố định:
+    private static final ZoneId DEFAULT_ZONE = ZoneId.of("Asia/Ho_Chi_Minh");
 
+    private static final Pattern TODAY_PATTERN = Pattern.compile("\\{\\{TODAY\\}\\}", Pattern.CASE_INSENSITIVE);
+    private static final Pattern TODAY_MATH_PATTERN = Pattern.compile("\\{\\{TODAY\\s*([+-])\\s*(\\d+)\\}\\}", Pattern.CASE_INSENSITIVE);
 
-    public static String resolveDynamicValue(String value) {
-        if (value == null || !value.contains("{{")) {
-            // Nếu không chứa từ khóa, trả về ngay lập tức để tiết kiệm thời gian
-            return value;
+    public static String resolveDynamicValue(String input) {
+        if (input == null || !input.contains("{{")) return input;
+
+        String value = input;
+
+        // 1) Thay {{TODAY}} trước (replaceAll đơn giản)
+        String todayStr = LocalDate.now(DEFAULT_ZONE).format(DATE_FORMATTER);
+        value = TODAY_PATTERN.matcher(value).replaceAll(todayStr);
+
+        // 2) Thay {{TODAY±n}} bằng appendReplacement để không “lệch pha”
+        Matcher m = TODAY_MATH_PATTERN.matcher(value);
+        StringBuffer sb = new StringBuffer();
+        while (m.find()) {
+            String op = m.group(1);
+            int days = Integer.parseInt(m.group(2));
+            LocalDate date = LocalDate.now(DEFAULT_ZONE);
+            date = op.equals("+") ? date.plusDays(days) : date.minusDays(days);
+            String repl = date.format(DATE_FORMATTER);
+            m.appendReplacement(sb, Matcher.quoteReplacement(repl));
         }
-
-        // Tạo các pattern để tìm kiếm từ khóa
-        // Pattern cho {{TODAY}}
-        Pattern todayPattern = Pattern.compile("\\{\\{TODAY\\}\\}", Pattern.CASE_INSENSITIVE);
-        // Pattern cho {{TODAY+n}} hoặc {{TODAY-n}}
-        Pattern todayMathPattern = Pattern.compile("\\{\\{TODAY\\s*([+-])\\s*(\\d+)\\}\\}", Pattern.CASE_INSENSITIVE);
-
-        // --- Xử lý {{TODAY}} ---
-        Matcher todayMatcher = todayPattern.matcher(value);
-        if (todayMatcher.find()) {
-            String todayString = LocalDate.now().format(DATE_FORMATTER);
-            value = todayMatcher.replaceAll(todayString);
-        }
-
-        // --- Xử lý {{TODAY+/-n}} ---
-        Matcher todayMathMatcher = todayMathPattern.matcher(value);
-        while (todayMathMatcher.find()) {
-            String operator = todayMathMatcher.group(1); // Lấy dấu "+" hoặc "-"
-            int days = Integer.parseInt(todayMathMatcher.group(2)); // Lấy số ngày
-            LocalDate newDate;
-            if (operator.equals("+")) {
-                newDate = LocalDate.now().plusDays(days);
-            } else {
-                newDate = LocalDate.now().minusDays(days);
-            }
-            value = value.replace(todayMathMatcher.group(0), newDate.format(DATE_FORMATTER));
-        }
+        m.appendTail(sb);
+        value = sb.toString();
 
         return value;
     }
