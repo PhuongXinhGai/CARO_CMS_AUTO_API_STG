@@ -22,7 +22,11 @@ public class TestConfig {
     protected String loginDataFile;
     protected String createBookingDataFile;
     protected String getListDataFile;
-    protected String integrationFlowsFile; // Thêm file cho luồng tích hợp
+    protected String getBookingPriceFile;
+
+    protected String integrationFlowsFile;
+    protected String integrationPriceCheckFlowsFile;
+
 
     /**
      * Phương thức này sẽ được TestNG tự động gọi một lần duy nhất
@@ -42,9 +46,13 @@ public class TestConfig {
         // Định nghĩa đường dẫn đến các file dữ liệu.
         // Việc tập trung ở đây giúp dễ dàng thay đổi nếu cấu trúc thư mục thay đổi.
         String baseFilePath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/";
-        loginDataFile = baseFilePath + "user/Login.xlsx"; // Sửa lại đường dẫn của bạn nếu cần
+        loginDataFile = baseFilePath + "user/Login.xlsx";
         createBookingDataFile = baseFilePath + "booking/Create_Booking_Batch.xlsx";
         getListDataFile = baseFilePath + "booking/Get_Booking_List_Select.xlsx";
-        integrationFlowsFile = baseFilePath + "IntegrationFlows.xlsx"; // Sửa lại đường dẫn của bạn nếu cần
+        getBookingPriceFile = baseFilePath + "booking/GetBookingPrice.xlsx"; // <-- THÊM MỚI
+
+        // --- Các file dữ liệu "Điều phối" Integration ---
+        integrationFlowsFile = baseFilePath + "booking/IntegrationFlows.xlsx";
+        integrationPriceCheckFlowsFile = baseFilePath + "booking/IntegrationFlows_WithPriceCheck.xlsx";
     }
 }

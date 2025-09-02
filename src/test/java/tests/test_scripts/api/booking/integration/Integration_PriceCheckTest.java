@@ -3,38 +3,39 @@ package tests.test_scripts.api.booking.integration;
 import com.google.gson.reflect.TypeToken;
 import common.utilities.DynamicDataHelper;
 import common.utilities.ExcelUtils;
+import helpers.ReportHelper;
 import io.restassured.response.Response;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import tests.models.ActionResult;
 import tests.test_config.TestConfig;
-import helpers.ReportHelper;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import tests.models.ActionResult;
 
 import static org.testng.Assert.*;
 
-public class Integration_CreateAndVerifyBookingTest extends TestConfig {
+public class Integration_PriceCheckTest extends TestConfig {
 
-    @DataProvider(name = "integrationFlows")
+    @DataProvider(name = "integrationPriceCheckFlows")
     public Object[][] getFlows() {
-        String filePath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/booking/IntegrationFlows.xlsx";
+        String filePath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/booking/IntegrationFlows_WithPriceCheck.xlsx";
         return ExcelUtils.getTestData(filePath, "flows");
     }
 
-    @Test(dataProvider = "integrationFlows")
-    public void testCreateAndVerifyBookingFlow(String flow_id, String flow_description, String login_case_id, String create_booking_case_id, String get_list_case_id, String final_validation_data) throws IOException {
+    @Test(dataProvider = "integrationPriceCheckFlows")
+    public void testBookingPriceVerificationFlow(String flow_id, String flow_description, String login_case_id, String create_booking_case_id, String get_list_case_id, String get_booking_price_case_id, String final_validation_data) throws IOException {
 
-        System.out.println("====== BẮT ĐẦU LUỒNG TEST: " + flow_id + " - " + flow_description + " ======");
+        System.out.println("====== BẮT ĐẦU LUỒNG TEST: " + flow_id + " - " + flow_description + " ======");!
 
-        // --- LẤY DỮ LIỆU TĨNH TỪ CÁC FILE EXCEL ---
+        // --- LẤY DỮ LIỆU TĨNH TỪ CÁC FILE EXCEL ---z
         Map<String, String> loginData = ExcelUtils.getTestCaseData(loginDataFile, "testcase", login_case_id);
         Map<String, String> createBookingData = ExcelUtils.getTestCaseData(createBookingDataFile, "testcase", create_booking_case_id);
         Map<String, String> getListData = ExcelUtils.getTestCaseData(getListDataFile, "testcase", get_list_case_id);
+        Map<String, String> getPriceData = ExcelUtils.getTestCaseData(getBookingPriceFile, "testcase", get_booking_price_case_id);
 
         /// === BƯỚC 1: LOGIN ===
         System.out.println("--- Bước 1: Đang thực hiện Login...");
@@ -61,8 +62,8 @@ public class Integration_CreateAndVerifyBookingTest extends TestConfig {
         assertFalse(createdBookingUids.isEmpty(), "Danh sách UID của booking vừa tạo không được rỗng.");
         System.out.println("    -> Đã tạo thành công " + createdBookingUids.size() + " booking với UIDs: " + createdBookingUids);
 
-        // === BƯỚC 3: LẤY DANH SÁCH VÀ NGHIỆM THU ---
-        System.out.println("--- Bước 3: Đang lấy danh sách Booking để nghiệm thu...");
+        // === BƯỚC 3: BƯỚC 3: GET BOOKING LIST ---
+        System.out.println("--- Bước 3: Đang lấy danh sách Booking để xác nhận...");
         Map<String, String> getListParams = new HashMap<>();
         getListParams.put("partner_uid", getListData.get("partner_uid"));
         getListParams.put("course_uid", getListData.get("course_uid"));
@@ -81,9 +82,25 @@ public class Integration_CreateAndVerifyBookingTest extends TestConfig {
 
         List<String> actualBookingUidsInList = getListResponse.jsonPath().getList("data.uid");
         System.out.println("    -> Tìm thấy " + actualBookingUidsInList.size() + " booking trong danh sách.");
+        assertTrue(actualBookingUidsInList.containsAll(createdBookingUids), "Lỗi Bước 3: Các booking vừa tạo không có trong danh sách!");
+        System.out.println("    -> Xác nhận booking đã có trong danh sách thành công.");
 
-        // === NGHIỆM THU CUỐI CÙNG ===
-        System.out.println("--- Bước 4: Đang thực hiện nghiệm thu cuối cùng...");
+        // === BƯỚC 4: GET BOOKING PRICE ===
+        System.out.println("--- Bước 4: Đang lấy Bảng giá Booking...");
+        Map<String, String> getPriceParams = new HashMap<>();
+        getListParams.put("partner_uid", getListData.get("partner_uid"));
+        getListParams.put("course_uid", getListData.get("course_uid"));
+        String resolvedPriceDate = DynamicDataHelper.resolveDynamicValue(getPriceData.get("booking_date"));
+        getPriceParams.put("booking_date", resolvedPriceDate);
+
+        ActionResult getPriceResult = bookingActions.getBookingPrice(authToken, getPriceParams);
+        Response getPriceResponse = getPriceResult.getResponse();
+        assertEquals(getPriceResponse.getStatusCode(), 200, "Bước 4: Lấy bảng giá thất bại!");
+        List<Map<String, Object>> priceListData = getPriceResponse.jsonPath().getList("data");
+        System.out.println("    -> Lấy bảng giá thành công.");
+
+        // === BƯỚC 5: NGHIỆM THU CUỐI CÙNG (Logic so sánh giá) ===
+        System.out.println("--- Bước 5: Đang thực hiện nghiệm thu giá...");
         Type type = new TypeToken<Map<String, Object>>() {}.getType();
         Map<String, Object> validationRules = gson.fromJson(final_validation_data, type);
 

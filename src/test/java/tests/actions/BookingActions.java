@@ -16,8 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 
-import static common.utilities.Constants.CREATE_BOOKING_BATCH_ENDPOINT;
-import static common.utilities.Constants.BOOKING_LIST_SELECT_ENDPOINT;
+import static common.utilities.Constants.*;
 import static io.restassured.RestAssured.given;
 
 // Kế thừa TestConfig giúp class này có thể truy cập BASE_URL
@@ -80,6 +79,27 @@ public class BookingActions extends TestConfig {
                 .spec(requestSpec)
                 .when()
                 .get(BASE_URL + BOOKING_LIST_SELECT_ENDPOINT)
+                .then()
+                .extract().response();
+        return new ActionResult(response, requestWriter.toString());
+    }
+
+    public ActionResult getBookingPrice(String authToken, Map<String, String> params) {
+        // --- Chuẩn bị ghi log ---
+        StringWriter requestWriter = new StringWriter();
+        PrintStream requestCapture = new PrintStream(new WriterOutputStream(requestWriter), true);
+
+        // --- Xây dựng và gửi Request ---
+        RequestSpecification requestSpec = new RequestSpecBuilder()
+                .addHeader("Authorization", authToken)
+                .addFilter(new RequestLoggingFilter(requestCapture))
+                .addQueryParams(params) // Thêm tất cả các tham số từ Map
+                .build();
+
+        Response response = given()
+                .spec(requestSpec)
+                .when()
+                .get(BASE_URL + BOOKING_PRICE_ENDPOINT)
                 .then()
                 .extract().response();
         return new ActionResult(response, requestWriter.toString());
