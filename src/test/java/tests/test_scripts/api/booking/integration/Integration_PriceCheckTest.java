@@ -1,5 +1,6 @@
 package tests.test_scripts.api.booking.integration;
 
+import com.beust.jcommander.Parameterized;
 import com.google.gson.reflect.TypeToken;
 import common.utilities.DynamicDataHelper;
 import common.utilities.ExcelUtils;
@@ -29,7 +30,7 @@ public class Integration_PriceCheckTest extends TestConfig {
     @Test(dataProvider = "integrationPriceCheckFlows")
     public void testBookingPriceVerificationFlow(String flow_id, String flow_description, String login_case_id, String create_booking_case_id, String get_list_case_id, String get_booking_price_case_id, String final_validation_data) throws IOException {
 
-        System.out.println("====== BẮT ĐẦU LUỒNG TEST: " + flow_id + " - " + flow_description + " ======");!
+        System.out.println("====== BẮT ĐẦU LUỒNG TEST: " + flow_id + " - " + flow_description + " ======");
 
         // --- LẤY DỮ LIỆU TĨNH TỪ CÁC FILE EXCEL ---z
         Map<String, String> loginData = ExcelUtils.getTestCaseData(loginDataFile, "testcase", login_case_id);
@@ -88,14 +89,17 @@ public class Integration_PriceCheckTest extends TestConfig {
         // === BƯỚC 4: GET BOOKING PRICE ===
         System.out.println("--- Bước 4: Đang lấy Bảng giá Booking...");
         Map<String, String> getPriceParams = new HashMap<>();
-        getListParams.put("partner_uid", getListData.get("partner_uid"));
-        getListParams.put("course_uid", getListData.get("course_uid"));
+        getPriceParams.put("partner_uid", getListData.get("partner_uid"));
+        getPriceParams.put("course_uid", getListData.get("course_uid"));
         String resolvedPriceDate = DynamicDataHelper.resolveDynamicValue(getPriceData.get("booking_date"));
         getPriceParams.put("booking_date", resolvedPriceDate);
 
         ActionResult getPriceResult = bookingActions.getBookingPrice(authToken, getPriceParams);
         Response getPriceResponse = getPriceResult.getResponse();
+
+        ReportHelper.logApiActionStep("Bước 4: Get booking price list", getPriceResult);
         assertEquals(getPriceResponse.getStatusCode(), 200, "Bước 4: Lấy bảng giá thất bại!");
+
         List<Map<String, Object>> priceListData = getPriceResponse.jsonPath().getList("data");
         System.out.println("    -> Lấy bảng giá thành công.");
 
@@ -105,11 +109,45 @@ public class Integration_PriceCheckTest extends TestConfig {
         Map<String, Object> validationRules = gson.fromJson(final_validation_data, type);
 
         for (Map.Entry<String, Object> rule : validationRules.entrySet()) {
-            if ("created_bookings_in_list".equalsIgnoreCase(rule.getKey())) {
-                boolean expected = (Boolean) rule.getValue();
+            String ruleKey = rule.getKey();
+            Object ruleValue = rule.getValue();
+
+            // Logic cũ (nếu bạn muốn giữ lại để dùng cho các flow khác)
+            if ("created_bookings_in_list".equalsIgnoreCase(ruleKey)) {
+                boolean expected = (Boolean) ruleValue;
                 boolean actual = actualBookingUidsInList.containsAll(createdBookingUids);
                 assertEquals(actual, expected,"Nghiệm thu cuối cùng thất bại! Kỳ vọng các booking vừa tạo có trong danh sách là: " + expected + ", nhưng thực tế là: " + actual);
                 System.out.println("    -> Nghiệm thu 'created_bookings_in_list' thành công!");
+            }
+
+            // --- PHẦN BỊ THIẾU MÀ BẠN CẦN THÊM VÀO ---
+            if ("price_validation".equalsIgnoreCase(ruleKey)) {
+                // Ép kiểu giá trị của rule thành một danh sách các Map
+                List<Map<String, Object>> priceChecks = (List<Map<String, Object>>) ruleValue;
+
+                // Duyệt qua từng yêu cầu kiểm tra giá
+                for (Map<String, Object> check : priceChecks) {
+                    int bookingIndex = ((Double) check.get("booking_index")).intValue();
+                    int expectedAmount = ((Double) check.get("expected_amount")).intValue();
+
+                    // Lấy ra UID của booking cần kiểm tra từ danh sách đã tạo
+                    String targetUid = createdBookingUids.get(bookingIndex);
+
+                    // Tìm thông tin giá của UID đó trong response của API booking-price
+                    Map<String, Object> priceInfo = priceListData.stream()
+                            .filter(p -> targetUid.equals(p.get("booking_uid")))
+                            .findFirst()
+                            .orElse(null);
+
+                    // Nghiệm thu
+                    assertNotNull(priceInfo, "Nghiệm thu thất bại: Không tìm thấy thông tin giá cho booking UID: " + targetUid);
+
+                    Number actualAmountNumber = (Number) priceInfo.get("total_amount");
+                    int actualAmount = actualAmountNumber.intValue();
+                    assertEquals(actualAmount, expectedAmount, "Nghiệm thu thất bại: Giá của booking UID " + targetUid + " không khớp!");
+
+                    System.out.println("    -> Nghiệm thu giá cho booking UID " + targetUid + " thành công!");
+                }
             }
         }
         System.out.println("====== KẾT THÚC LUỒNG TEST: " + flow_id + " - THÀNH CÔNG ======");

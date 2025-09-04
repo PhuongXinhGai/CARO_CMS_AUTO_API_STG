@@ -49,7 +49,7 @@ public class TestConfig {
         loginDataFile = baseFilePath + "user/Login.xlsx";
         createBookingDataFile = baseFilePath + "booking/Create_Booking_Batch.xlsx";
         getListDataFile = baseFilePath + "booking/Get_Booking_List_Select.xlsx";
-        getBookingPriceFile = baseFilePath + "booking/GetBookingPrice.xlsx"; // <-- THÊM MỚI
+        getBookingPriceFile = baseFilePath + "booking/Get_Booking_Price.xlsx"; // <-- THÊM MỚI
 
         // --- Các file dữ liệu "Điều phối" Integration ---
         integrationFlowsFile = baseFilePath + "booking/IntegrationFlows.xlsx";

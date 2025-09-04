@@ -4,9 +4,9 @@
         <listener class-name="listeners.TestListener"/>
     </listeners>
 
-    <test name="BOOKING LIST TEST">
+    <test name="BOOKING PRICE TEST">
         <classes>
-            <class name="tests.test_scripts.api.booking.integration.Integration_CreateAndVerifyBookingTest"/>
+            <class name="tests.test_scripts.api.booking.integration.Integration_PriceCheckTest"/>
         </classes>
     </test>
 </suite>
