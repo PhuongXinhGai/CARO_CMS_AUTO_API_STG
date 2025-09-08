@@ -1,4 +1,4 @@
-{
+  {
   "course_uid": "${courseUid}",
   "partner_uid": "${partnerUid}",
   "list_player": ${listPlayerJson},
