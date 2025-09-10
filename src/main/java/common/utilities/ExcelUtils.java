@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 
 public class ExcelUtils {
 
@@ -100,6 +101,67 @@ public class ExcelUtils {
         // Nếu duyệt hết mà không tìm thấy, sẽ trả về một Map rỗng
         System.err.println("Cảnh báo: Không tìm thấy Test Case ID '" + testCaseId + "' trong file " + filePath);
         return testData;
+    }
+
+    /**
+     * "Dựng" lại chuỗi JSON từ một sheet có cấu trúc "Key-Cấu trúc" và "Value-Dữ liệu" theo chiều dọc.
+     * Phiên bản này được tối ưu để giữ lại các ký tự cấu trúc và loại bỏ các key-data thừa.
+     * @param filePath Đường dẫn tới file Excel.
+     * @param sheetName Tên của sheet input_data.
+     * @param dataColumnName Tên của cột chứa dữ liệu (ví dụ: "value_case1").
+     * @return Một chuỗi JSON hoàn chỉnh và hợp lệ.
+     */
+    public static String buildJsonFromVerticalData(String filePath, String sheetName, String dataColumnName) {
+        StringBuilder jsonBuilder = new StringBuilder();
+        try (FileInputStream fis = new FileInputStream(filePath);
+             XSSFWorkbook workbook = new XSSFWorkbook(fis)) {
+
+            XSSFSheet sheet = workbook.getSheet(sheetName);
+            DataFormatter formatter = new DataFormatter();
+
+            // 1. Tìm vị trí (index) của cột dữ liệu
+            XSSFRow headerRow = sheet.getRow(0);
+            int dataColumnIndex = -1;
+            if (headerRow != null) {
+                for (int i = 1; i < headerRow.getLastCellNum(); i++) {
+                    if (dataColumnName.equalsIgnoreCase(formatter.formatCellValue(headerRow.getCell(i)))) {
+                        dataColumnIndex = i;
+                        break;
+                    }
+                }
+            }
+            if (dataColumnIndex == -1) {
+                throw new RuntimeException("Không tìm thấy cột dữ liệu '" + dataColumnName + "' trong sheet '" + sheetName + "'");
+            }
+
+            // 2. Duyệt qua các hàng và ghép chuỗi một cách thông minh
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                XSSFRow currentRow = sheet.getRow(i);
+                if (currentRow == null) continue;
+
+                String keyStructure = formatter.formatCellValue(currentRow.getCell(0));
+                String value = formatter.formatCellValue(currentRow.getCell(dataColumnIndex));
+
+                // Bỏ qua các hàng hoàn toàn trống ở cuối file
+                if (keyStructure.isEmpty() && value.isEmpty()) continue;
+
+                // --- LOGIC CUỐI CÙNG ĐỂ GIẢI QUYẾT VẤN ĐỀ ---
+                // Nếu một hàng là key-data (chứa dấu ":") nhưng lại không có value
+                // -> Đây là key của một player thừa -> Bỏ qua hàng này.
+                if (keyStructure.contains(":") && value.isEmpty()) {
+                    continue;
+                }
+
+                // Với tất cả các trường hợp còn lại (dòng cấu trúc hoặc dòng data có giá trị),
+                // chúng ta sẽ ghép chúng lại.
+                jsonBuilder.append(keyStructure);
+                jsonBuilder.append(value);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return jsonBuilder.toString();
     }
 
 }
