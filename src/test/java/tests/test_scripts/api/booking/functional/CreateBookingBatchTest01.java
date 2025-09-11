@@ -32,14 +32,16 @@ import static org.testng.Assert.assertNotNull;
 
 public class CreateBookingBatchTest01 extends TestConfig {
 
+
+
     @DataProvider(name = "createBookingBatchData")
-    public Object[][] getBookingData() {
+    public Object[][] getQuoteFeeData() {
         String filePath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/booking/Create_Booking_Batch.xlsx";
         return ExcelUtils.getTestData(filePath, "testcase");
     }
 
     @Test(dataProvider = "createBookingBatchData")
-    public void testCreateBookingBatch(String tc_id, String tc_description, String expected_result, String data_column_name, String expectedValidationData, ITestContext context) throws IOException {
+    public void testCreateBookingBatch(String tc_id, String tc_description, String expected_result, String booking_list_json, String expectedValidationData, ITestContext context) throws IOException {
         // --- PHẦN NÂNG CẤP: LẤY TOKEN ĐỘNG TỪ CONTEXT ---
         String authToken = (String) context.getAttribute("AUTH_TOKEN");
         assertNotNull(authToken, "Token không được null. Hãy chắc chắn rằng LoginTest đã chạy thành công trước.");
@@ -50,16 +52,17 @@ public class CreateBookingBatchTest01 extends TestConfig {
         StringWriter requestWriter = new StringWriter();
         PrintStream requestCapture = new PrintStream(new WriterOutputStream(requestWriter), true);
 
-        // --- BƯỚC 3: DỰNG JSON TỪ EXCEL (LOGIC MỚI) ---
-        System.out.println("    -> Đang dựng request body từ cột: " + data_column_name);
-        String dataFilePath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/booking/Create_Booking_Batch.xlsx";
-        // Gọi đến phương thức mới trong ExcelUtils
-        String rawRequestBody = ExcelUtils.buildJsonFromVerticalData(dataFilePath, "input_data", data_column_name);
-
-        // Xử lý các từ khóa động như {{TODAY}}
-        String requestBody = DynamicDataHelper.resolveDynamicValue(rawRequestBody);
+        // --- Xử lý dữ liệu động (ví dụ: {{TODAY}}) ---
+        String resolvedBookingListJson = DynamicDataHelper.resolveDynamicValue(booking_list_json);
 
         // --- ĐỌC VÀ CHUẨN BỊ REQUEST BODY ---
+        String templatePath = System.getProperty("user.dir") + "/src/main/resources/input_json_file/booking/create_booking_batch_template.json";
+        String requestBodyTemplate = new String(Files.readAllBytes(Paths.get(templatePath)));
+        // Thay thế biến trong template bằng dữ liệu đã xử lý
+        String requestBody = requestBodyTemplate
+                .replace("${cms_user}",cms_user);
+                .replace("${bookingListJson}",resolvedBookingListJson);
+
         Response response = given()
                 .header("Authorization", authToken)
                 .contentType(ContentType.JSON)
