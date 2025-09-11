@@ -29,6 +29,10 @@ import static common.utilities.Constants.CREATE_BOOKING_BATCH_ENDPOINT;
 import static io.restassured.RestAssured.given;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import static common.utilities.DataTypeUtils.isNumeric;
+import static common.utilities.DataTypeUtils.isBoolean;
+
+
 
 public class CreateBookingBatchTest01 extends TestConfig {
 
@@ -37,14 +41,18 @@ public class CreateBookingBatchTest01 extends TestConfig {
     @DataProvider(name = "createBookingBatchData")
     public Object[][] getQuoteFeeData() {
         String filePath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/booking/Create_Booking_Batch.xlsx";
-        return ExcelUtils.getTestData(filePath, "testcase");
+        return ExcelUtils.getTestDataWithMap(filePath, "testcase");
     }
 
     @Test(dataProvider = "createBookingBatchData")
-    public void testCreateBookingBatch(String tc_id, String tc_description, String expected_result, String booking_list_json, String expectedValidationData, ITestContext context) throws IOException {
+    public void testCreateBookingBatch(Map<String, String> testData, ITestContext context) throws IOException {
         // --- PHẦN NÂNG CẤP: LẤY TOKEN ĐỘNG TỪ CONTEXT ---
         String authToken = (String) context.getAttribute("AUTH_TOKEN");
         assertNotNull(authToken, "Token không được null. Hãy chắc chắn rằng LoginTest đã chạy thành công trước.");
+        // Lấy các thông tin chung từ Map
+        String tc_id = testData.get("tc_id");
+        String tc_description = testData.get("tc_description");
+        String expectedValidationData = testData.get("expected_validation_data");
 
         System.out.println("Đang chạy test case: " + tc_id + " - " + tc_description);
 
@@ -52,16 +60,51 @@ public class CreateBookingBatchTest01 extends TestConfig {
         StringWriter requestWriter = new StringWriter();
         PrintStream requestCapture = new PrintStream(new WriterOutputStream(requestWriter), true);
 
-        // --- Xử lý dữ liệu động (ví dụ: {{TODAY}}) ---
-        String resolvedBookingListJson = DynamicDataHelper.resolveDynamicValue(booking_list_json);
 
         // --- ĐỌC VÀ CHUẨN BỊ REQUEST BODY ---
         String templatePath = System.getProperty("user.dir") + "/src/main/resources/input_json_file/booking/create_booking_batch_template.json";
         String requestBodyTemplate = new String(Files.readAllBytes(Paths.get(templatePath)));
+
+        // --- BƯỚC 4: LẮP RÁP REQUEST BODY ---
+        String processedPlayerJson = requestBodyTemplate;
+
+        // Dùng vòng lặp để thay thế tất cả các key có trong Map dữ liệu
+        for (Map.Entry<String, String> entry : testData.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+
+            // Chỉ xử lý và thay thế nếu ô trong Excel có giá trị
+            if (value != null && !value.isEmpty()) {
+
+                // --- DÒNG SỬA LỖI QUAN TRỌNG ---
+                // Xử lý các từ khóa động (như {{TODAY}}) TRƯỚC KHI làm bất cứ điều gì khác
+                String resolvedValue = DynamicDataHelper.resolveDynamicValue(value);
+
+                // Tạo biến để tìm trong template (ví dụ: ${cms_user})
+                String variableToReplace = "${" + key + "}";
+
+                // Thực hiện thay thế
+                // Logic isNumeric/isBoolean vẫn cần thiết để xử lý đúng các kiểu dữ liệu
+                if (isNumeric(resolvedValue) || isBoolean(resolvedValue) || resolvedValue.trim().startsWith("[")) {
+                    // Nếu là số, boolean, hoặc mảng JSON, ta cần xóa dấu "" bao quanh biến trong template
+                    processedPlayerJson = processedPlayerJson.replace("\"" + variableToReplace + "\"", resolvedValue);
+                } else {
+                    // Nếu là chuỗi, chỉ cần thay thế biến
+                    processedPlayerJson = processedPlayerJson.replace(variableToReplace, resolvedValue);
+                }
+            }
+        }
+
+        // --- BƯỚC DỌN DẸP (Giữ nguyên) ---
+        // Xóa placeholder còn sót dạng "${...}" nhưng đang nằm TRONG dấu ngoặc kép => thay thành ""
+        processedPlayerJson = processedPlayerJson.replaceAll("\\\"\\$\\{.*?\\}\\\"", "\"\"");
+
+// Xóa placeholder còn sót dạng ${...} (không có ngoặc kép) => thay thành null
+        processedPlayerJson = processedPlayerJson.replaceAll("\\$\\{.*?\\}", "null");
+
+
         // Thay thế biến trong template bằng dữ liệu đã xử lý
-        String requestBody = requestBodyTemplate
-                .replace("${cms_user}",cms_user);
-                .replace("${bookingListJson}",resolvedBookingListJson);
+        String requestBody = "{\"booking_list\": [" + processedPlayerJson + "]}";
 
         Response response = given()
                 .header("Authorization", authToken)

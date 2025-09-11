@@ -9,7 +9,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Stack;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExcelUtils {
 
@@ -101,6 +102,66 @@ public class ExcelUtils {
         // Nếu duyệt hết mà không tìm thấy, sẽ trả về một Map rỗng
         System.err.println("Cảnh báo: Không tìm thấy Test Case ID '" + testCaseId + "' trong file " + filePath);
         return testData;
+    }
+
+    /**
+     * Đọc toàn bộ dữ liệu từ một sheet và trả về một mảng các Map.
+     * Mỗi Map đại diện cho một hàng dữ liệu (key=tên cột, value=giá trị ô).
+     * Cực kỳ hữu ích cho các DataProvider cần cung cấp dữ liệu có cấu trúc.
+     * @param filePath Đường dẫn tới file Excel.
+     * @param sheetName Tên của sheet.
+     * @return Một mảng Object[][] mà mỗi phần tử là một Map<String, String>.
+     */
+    public static Object[][] getTestDataWithMap(String filePath, String sheetName) {
+        List<Map<String, String>> testDataList = new ArrayList<>();
+
+        try (FileInputStream fis = new FileInputStream(filePath);
+             XSSFWorkbook workbook = new XSSFWorkbook(fis)) {
+
+            XSSFSheet sheet = workbook.getSheet(sheetName);
+            DataFormatter formatter = new DataFormatter();
+
+            // 1. Đọc hàng tiêu đề để lấy danh sách các key (tên cột)
+            XSSFRow headerRow = sheet.getRow(0);
+            if (headerRow == null) {
+                throw new RuntimeException("Không tìm thấy hàng tiêu đề trong sheet: " + sheetName);
+            }
+            List<String> headers = new ArrayList<>();
+            for (int i = 0; i < headerRow.getLastCellNum(); i++) {
+                headers.add(formatter.formatCellValue(headerRow.getCell(i)));
+            }
+
+            // 2. Duyệt qua từng hàng dữ liệu (bắt đầu từ hàng 1)
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                XSSFRow currentRow = sheet.getRow(i);
+                if (currentRow == null) continue;
+
+                // 3. Với mỗi hàng, tạo một Map mới để chứa dữ liệu của hàng đó
+                Map<String, String> rowMap = new HashMap<>();
+
+                // 4. Đọc từng ô trong hàng và đưa vào Map
+                for (int j = 0; j < headers.size(); j++) {
+                    String key = headers.get(j);
+                    String value = formatter.formatCellValue(currentRow.getCell(j));
+                    rowMap.put(key, value);
+                }
+
+                // 5. Thêm Map của hàng hiện tại vào danh sách
+                testDataList.add(rowMap);
+            }
+
+        } catch (IOException e) {
+            System.err.println("Lỗi khi đọc file Excel: " + filePath);
+            e.printStackTrace();
+        }
+
+        // 6. Chuyển đổi List<Map> thành định dạng Object[][] mà DataProvider yêu cầu
+        Object[][] data = new Object[testDataList.size()][1];
+        for (int i = 0; i < testDataList.size(); i++) {
+            data[i][0] = testDataList.get(i);
+        }
+
+        return data;
     }
 
 }
