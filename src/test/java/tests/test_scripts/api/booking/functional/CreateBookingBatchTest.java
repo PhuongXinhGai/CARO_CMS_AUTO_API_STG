@@ -32,19 +32,21 @@ import static org.testng.Assert.assertNotNull;
 
 public class CreateBookingBatchTest extends TestConfig {
 
-
-
     @DataProvider(name = "createBookingBatchData")
-    public Object[][] getQuoteFeeData() {
+    public Object[][] getCreateBookingBatchData() {
         String filePath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/booking/Create_Booking_Batch.xlsx";
-        return ExcelUtils.getTestData(filePath, "testcase");
+        return ExcelUtils.getTestDataWithMap(filePath, "testcase");
     }
 
     @Test(dataProvider = "createBookingBatchData")
-    public void testCreateBookingBatch(String tc_id, String tc_description, String expected_result, String booking_list_json, String expectedValidationData, ITestContext context) throws IOException {
+    public void testCreateBookingBatch(Map<String, String> testData, ITestContext context) throws IOException {
         // --- PHẦN NÂNG CẤP: LẤY TOKEN ĐỘNG TỪ CONTEXT ---
         String authToken = (String) context.getAttribute("AUTH_TOKEN");
         assertNotNull(authToken, "Token không được null. Hãy chắc chắn rằng LoginTest đã chạy thành công trước.");
+        // Lấy các thông tin chung từ Map
+        String tc_id = testData.get("tc_id");
+        String tc_description = testData.get("tc_description");
+        String expectedValidationData = testData.get("expected_validation_data");
 
         System.out.println("Đang chạy test case: " + tc_id + " - " + tc_description);
 
@@ -52,15 +54,30 @@ public class CreateBookingBatchTest extends TestConfig {
         StringWriter requestWriter = new StringWriter();
         PrintStream requestCapture = new PrintStream(new WriterOutputStream(requestWriter), true);
 
-        // --- Xử lý dữ liệu động (ví dụ: {{TODAY}}) ---
-        String resolvedBookingListJson = DynamicDataHelper.resolveDynamicValue(booking_list_json);
-
         // --- ĐỌC VÀ CHUẨN BỊ REQUEST BODY ---
         String templatePath = System.getProperty("user.dir") + "/src/main/resources/input_json_file/booking/create_booking_batch_template.json";
         String requestBodyTemplate = new String(Files.readAllBytes(Paths.get(templatePath)));
-        // Thay thế biến trong template bằng dữ liệu đã xử lý
-        String requestBody = requestBodyTemplate
-                .replace("${bookingListJson}",resolvedBookingListJson);
+
+        // --- BƯỚC 4: LẮP RÁP REQUEST BODY ---
+        // --- LẮP RÁP REQUEST BODY (CỰC GỌN) ---
+        String processed = requestBodyTemplate;
+
+        // Bỏ qua các cột meta không nằm trong template (nếu có)
+        java.util.Set<String> metaCols = new java.util.HashSet<>();
+        metaCols.add("tc_id");
+        metaCols.add("tc_description");
+        metaCols.add("expected_result");
+        metaCols.add("expected_validation_data");
+
+        for (Map.Entry<String, String> e : testData.entrySet()) {
+            String key = e.getKey();
+            if (metaCols.contains(key)) continue;
+            String value = e.getValue();
+            String resolved = DynamicDataHelper.resolveDynamicValue(value);
+            processed = processed.replace("${" + key + "}", resolved);
+        }
+
+        String requestBody = processed;
 
         Response response = given()
                 .header("Authorization", authToken)
@@ -77,6 +94,7 @@ public class CreateBookingBatchTest extends TestConfig {
         currentResult.setAttribute("requestLog", requestWriter.toString());
         currentResult.setAttribute("responseLog", response.getBody().prettyPrint());
 
+//      Nghiem thu: So sánh kết quả trả về với expectedValidationData
         if (expectedValidationData != null && !expectedValidationData.isEmpty()) {
             JsonPath actualResponseJson = response.jsonPath();
             Gson gson = new Gson();

@@ -4,10 +4,10 @@
         <listener class-name="listeners.TestListener"/>
     </listeners>
 
-    <test name="Integration Flow: Login and Quote Fee">
+    <test name="Integration Flow: Login and Create Booking Batch">
         <classes>
             <class name="tests.test_scripts.api.user.functional.LoginTest"/>
-            <class name="tests.test_scripts.api.booking.functional.CreateBookingBatchTest01"/>
+            <class name="tests.test_scripts.api.booking.functional.CreateBookingBatchTest"/>
         </classes>
     </test>
 </suite>

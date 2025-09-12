@@ -5,29 +5,54 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.markuputils.CodeLanguage;
 import com.aventstack.extentreports.markuputils.MarkupHelper;
 import helpers.ExtentReportManager;
-import org.testng.ITestContext;
-import org.testng.ITestListener;
-import org.testng.ITestResult;
+import org.testng.*;
 
-public class TestListener implements ITestListener {
+import java.util.Map;
 
-    private static final ExtentReports extent = ExtentReportManager.createInstance();
+public class TestListener implements ITestListener, ISuiteListener {
+
     private static final ThreadLocal<ExtentTest> extentTest = new ThreadLocal<>();
 
-    public static ExtentTest getExtentTest() {
-        return extentTest.get();
+    public static ExtentTest getExtentTest() { return extentTest.get(); }
+
+    // Init Extent 1 lần khi suite bắt đầu
+    @Override public void onStart(ISuite suite) {
+        ExtentReportManager.getExtent();
+    }
+
+    // Flush report khi suite kết thúc
+    @Override public void onFinish(ISuite suite) {
+        ExtentReportManager.flush();
     }
 
     @Override
     public void onTestStart(ITestResult result) {
-        // Lấy tc_id + tc_description an toàn
-        Object[] params = result.getParameters();
-        String tcId = (params != null && params.length > 0 && params[0] != null) ? params[0].toString() : "";
-        String tcDescription = (params != null && params.length > 1 && params[1] != null) ? params[1].toString() : result.getMethod().getMethodName();
-        String fullTitle = (tcId.isEmpty() ? "" : tcId + " - ") + tcDescription;
-
-        ExtentTest test = extent.createTest(fullTitle);
+        String name = buildName(result);
+        ExtentTest test = ExtentReportManager.getExtent().createTest(name);
         extentTest.set(test);
+    }
+
+    private String buildName(ITestResult r){
+        // 1) Nếu class có implements ITest (nếu còn class nào), vẫn ưu tiên
+        if (r.getTestName()!=null && !r.getTestName().trim().isEmpty()) return r.getTestName();
+
+        // 2) DataProvider = Map (API booking…)
+        Object[] p = r.getParameters();
+        if (p != null && p.length > 0 && p[0] instanceof java.util.Map) {
+            @SuppressWarnings("unchecked")
+            java.util.Map<String,String> m = (java.util.Map<String,String>) p[0];
+            String id  = m.getOrDefault("tc_id", "");
+            String des = m.getOrDefault("tc_description", "");
+            return (id + " - " + des).trim();
+        }
+
+        // 3) DataProvider = String... (login…)
+        if (p != null && p.length > 1 && p[0] instanceof String && p[1] instanceof String) {
+            return ((String)p[0]) + " - " + ((String)p[1]);
+        }
+
+        // 4) Fallback
+        return r.getMethod().getMethodName();
     }
 
     @Override
@@ -72,10 +97,10 @@ public class TestListener implements ITestListener {
         extentTest.get().assignCategory("SKIPPED"); // optional, để lọc skipped
     }
 
-    @Override
-    public void onFinish(ITestContext context) {
-        if (extent != null) {
-            extent.flush();
-        }
-    }
+//    @Override
+//    public void onFinish(ITestContext context) {
+//        if (extentTest != null) {
+//            extentTest.flush();
+//        }
+//    }
 }

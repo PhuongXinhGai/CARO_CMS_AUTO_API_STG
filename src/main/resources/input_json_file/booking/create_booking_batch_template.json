@@ -25,7 +25,7 @@
     "customer_name": "${customer_name}",
     "caddie_code": "${caddie_code}",
     "caddie_booking": "${caddie_booking}",
-    "tee_type": ${tee_type},
+    "tee_type": "${tee_type}",
     "course_type": "${course_type}",
     "tee_path": "${tee_path}",
     "turn_time": "${turn_time}",

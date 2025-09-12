@@ -1,6 +1,5 @@
 package tests.test_scripts.api.user.functional;
 
-// --- BƯỚC 1: THÊM CÁC IMPORT CẦN THIẾT CHO VIỆC GHI LOG VÀ BÁO CÁO ---
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import common.utilities.ExcelUtils; // <-- Giữ nguyên import của bạn
@@ -12,9 +11,11 @@ import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.apache.commons.io.output.WriterOutputStream; // <-- Thư viện hỗ trợ tạo stream để ghi log
+import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult; // <-- Đối tượng chứa kết quả test
 import org.testng.Reporter; // <-- Cầu nối để đính kèm dữ liệu vào kết quả test
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import tests.test_config.TestConfig;
@@ -22,6 +23,7 @@ import tests.test_config.TestConfig;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.StringWriter;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -30,7 +32,8 @@ import java.util.Map;
 import static io.restassured.RestAssured.given;
 import static org.testng.Assert.*;
 
-public class LoginTest extends TestConfig {
+public class LoginTest extends TestConfig{
+
 
     @DataProvider(name = "loginData")
     public Object[][] getLoginData() {

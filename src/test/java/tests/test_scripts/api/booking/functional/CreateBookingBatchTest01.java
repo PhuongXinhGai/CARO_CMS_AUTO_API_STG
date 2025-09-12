@@ -10,9 +10,11 @@ import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.apache.commons.io.output.WriterOutputStream;
+import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.Reporter;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import tests.test_config.TestConfig;
@@ -20,6 +22,7 @@ import tests.test_config.TestConfig;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.StringWriter;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -29,17 +32,11 @@ import static common.utilities.Constants.CREATE_BOOKING_BATCH_ENDPOINT;
 import static io.restassured.RestAssured.given;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
-import static common.utilities.DataTypeUtils.isNumeric;
-import static common.utilities.DataTypeUtils.isBoolean;
-
-
 
 public class CreateBookingBatchTest01 extends TestConfig {
 
-
-
     @DataProvider(name = "createBookingBatchData")
-    public Object[][] getQuoteFeeData() {
+    public Object[][] getCreateBookingBatchData() {
         String filePath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/booking/Create_Booking_Batch.xlsx";
         return ExcelUtils.getTestDataWithMap(filePath, "testcase");
     }
@@ -60,51 +57,30 @@ public class CreateBookingBatchTest01 extends TestConfig {
         StringWriter requestWriter = new StringWriter();
         PrintStream requestCapture = new PrintStream(new WriterOutputStream(requestWriter), true);
 
-
         // --- ĐỌC VÀ CHUẨN BỊ REQUEST BODY ---
         String templatePath = System.getProperty("user.dir") + "/src/main/resources/input_json_file/booking/create_booking_batch_template.json";
         String requestBodyTemplate = new String(Files.readAllBytes(Paths.get(templatePath)));
 
         // --- BƯỚC 4: LẮP RÁP REQUEST BODY ---
-        String processedPlayerJson = requestBodyTemplate;
+        // --- LẮP RÁP REQUEST BODY (CỰC GỌN) ---
+        String processed = requestBodyTemplate;
 
-        // Dùng vòng lặp để thay thế tất cả các key có trong Map dữ liệu
-        for (Map.Entry<String, String> entry : testData.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
+        // Bỏ qua các cột meta không nằm trong template (nếu có)
+        java.util.Set<String> metaCols = new java.util.HashSet<>();
+        metaCols.add("tc_id");
+        metaCols.add("tc_description");
+        metaCols.add("expected_result");
+        metaCols.add("expected_validation_data");
 
-            // Chỉ xử lý và thay thế nếu ô trong Excel có giá trị
-            if (value != null && !value.isEmpty()) {
-
-                // --- DÒNG SỬA LỖI QUAN TRỌNG ---
-                // Xử lý các từ khóa động (như {{TODAY}}) TRƯỚC KHI làm bất cứ điều gì khác
-                String resolvedValue = DynamicDataHelper.resolveDynamicValue(value);
-
-                // Tạo biến để tìm trong template (ví dụ: ${cms_user})
-                String variableToReplace = "${" + key + "}";
-
-                // Thực hiện thay thế
-                // Logic isNumeric/isBoolean vẫn cần thiết để xử lý đúng các kiểu dữ liệu
-                if (isNumeric(resolvedValue) || isBoolean(resolvedValue) || resolvedValue.trim().startsWith("[")) {
-                    // Nếu là số, boolean, hoặc mảng JSON, ta cần xóa dấu "" bao quanh biến trong template
-                    processedPlayerJson = processedPlayerJson.replace("\"" + variableToReplace + "\"", resolvedValue);
-                } else {
-                    // Nếu là chuỗi, chỉ cần thay thế biến
-                    processedPlayerJson = processedPlayerJson.replace(variableToReplace, resolvedValue);
-                }
-            }
+        for (Map.Entry<String, String> e : testData.entrySet()) {
+            String key = e.getKey();
+            if (metaCols.contains(key)) continue;
+            String value = e.getValue();
+            String resolved = DynamicDataHelper.resolveDynamicValue(value);
+            processed = processed.replace("${" + key + "}", resolved);
         }
 
-        // --- BƯỚC DỌN DẸP (Giữ nguyên) ---
-        // Xóa placeholder còn sót dạng "${...}" nhưng đang nằm TRONG dấu ngoặc kép => thay thành ""
-        processedPlayerJson = processedPlayerJson.replaceAll("\\\"\\$\\{.*?\\}\\\"", "\"\"");
-
-// Xóa placeholder còn sót dạng ${...} (không có ngoặc kép) => thay thành null
-        processedPlayerJson = processedPlayerJson.replaceAll("\\$\\{.*?\\}", "null");
-
-
-        // Thay thế biến trong template bằng dữ liệu đã xử lý
-        String requestBody = "{\"booking_list\": [" + processedPlayerJson + "]}";
+        String requestBody = processed;
 
         Response response = given()
                 .header("Authorization", authToken)
@@ -121,6 +97,7 @@ public class CreateBookingBatchTest01 extends TestConfig {
         currentResult.setAttribute("requestLog", requestWriter.toString());
         currentResult.setAttribute("responseLog", response.getBody().prettyPrint());
 
+//      Nghiem thu: So sánh kết quả trả về với expectedValidationData
         if (expectedValidationData != null && !expectedValidationData.isEmpty()) {
             JsonPath actualResponseJson = response.jsonPath();
             Gson gson = new Gson();
