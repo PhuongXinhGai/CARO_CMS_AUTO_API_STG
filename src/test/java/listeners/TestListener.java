@@ -97,6 +97,7 @@ public class TestListener implements ITestListener, ISuiteListener {
         extentTest.get().assignCategory("SKIPPED"); // optional, để lọc skipped
     }
 
+
 //    @Override
 //    public void onFinish(ITestContext context) {
 //        if (extentTest != null) {
