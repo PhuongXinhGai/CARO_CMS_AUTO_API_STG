@@ -7,7 +7,8 @@ import com.aventstack.extentreports.markuputils.MarkupHelper;
 import helpers.ExtentReportManager;
 import org.testng.*;
 
-import java.util.Map;
+import org.testng.ITestResult;
+
 
 public class TestListener implements ITestListener, ISuiteListener {
 
