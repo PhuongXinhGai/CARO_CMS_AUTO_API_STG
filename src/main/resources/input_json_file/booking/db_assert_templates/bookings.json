@@ -1,0 +1,29 @@
+{
+  "assert": {
+              "$.uid": "$created_uid",
+              "$.status": "${exp_status}",
+              "$.bag_status": "${exp_bag_status}",
+              "$.last_booking_status": "${exp_last_booking_status}",
+
+              "$.partner_uid": "${partner_uid}",
+              "$.course_uid":  "${course_uid}",
+              "$.booking_date": "${booking_date}",
+
+              "$.row_index": ${row_index},
+              "$.tee_time": "${tee_time}",
+              "$.tee_path": "${tee_path}",
+              "$.tee_type": "${tee_type}",
+              "$.hole_booking": ${hole_booking},
+              "$.guest_style": "${guest_style}",
+
+              "$.customer_booking_name": "${customer_booking_name}",
+              "$.customer_booking_email": "${customer_booking_email}",
+
+              "$.booking_restaurant.enable": ${booking_restaurant.enable},
+              "$.booking_restaurant.number_people": ${booking_restaurant.number_people},
+
+              "$.booking_retal.enable": ${booking_retal.enable},
+              "$.booking_retal.buggy_number": ${booking_retal.buggy_number},
+              "$.booking_retal.golf_set_number": ${booking_retal.golf_set_number}
+              }
+}
