@@ -1,0 +1,18 @@
+{
+  "status_code": ${status_code},
+
+  "assertions": {
+    "token": "${assert_token}",
+    "data.user_name": "${assert_data.user_name}"
+  },
+
+  "assertions_explicit": [
+    { "path": "$.data.partner_uid", "op": "equals", "value": "${assert_data.partner_uid}" },
+    { "path": "$.data.course_uid", "op": "equals", "value": "${assert_data.course_uid}" }
+  ],
+
+  "extract": {
+    "token": "$.data.token",
+    "user_name": "$.data.user_name"
+  }
+}

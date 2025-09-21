@@ -1,7 +1,6 @@
 package tests.test_scripts.api.booking.functional;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import common.utilities.DynamicDataHelper;
 import common.utilities.ExcelUtils;
 import io.restassured.filter.log.LogDetail;
