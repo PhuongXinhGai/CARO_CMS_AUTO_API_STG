@@ -6,7 +6,7 @@
 
     <test name="LOGIN TEST">
         <classes>
-            <class name="tests.test_scripts.api.user.functional.LoginTest"/>
+            <class name="tests.test_scripts.api.user.functional.LoginTest01"/>
         </classes>
     </test>
 </suite>

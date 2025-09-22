@@ -29,7 +29,7 @@ import static io.restassured.RestAssured.given;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
-public class CreateBookingBatchTest02 extends TestConfig {
+public class CreateBookingBatchTest_DB extends TestConfig {
 
     @DataProvider(name = "createBookingBatchData")
     public Object[][] getCreateBookingBatchData() {
