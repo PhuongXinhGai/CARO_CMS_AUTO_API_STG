@@ -2,8 +2,8 @@
   "status_code": ${status_code},
 
   "assertions": {
-    "token": "${assert_token}",
-    "data.user_name": "${assert_data.user_name}"
+    "$.token": "${assert_token}",
+    "$.data.user_name": "${assert_data.user_name}"
   },
 
   "assertions_explicit": [

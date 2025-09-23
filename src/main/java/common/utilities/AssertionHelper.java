@@ -3,6 +3,7 @@ package common.utilities;
 import com.jayway.jsonpath.JsonPath;
 import org.testng.Assert;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -12,8 +13,20 @@ public class AssertionHelper {
     private static final Map<String, TriConsumer<String, Object, Object>> OPS = new HashMap<>();
 
     static {
-        OPS.put("equals", (path, actual, expected) ->
-                Assert.assertEquals(actual, expected, path + " equals check failed"));
+        OPS.put("equals", (path, actual, expectedRaw) -> {
+            Object expected = normalizeExpected(expectedRaw, actual);
+
+            // Numeric: so sánh số học để tránh lệch kiểu (Integer vs Double…)
+            if (actual instanceof Number && expected instanceof Number) {
+                BigDecimal a = new BigDecimal(actual.toString());
+                BigDecimal e = new BigDecimal(expected.toString());
+                Assert.assertEquals(a.compareTo(e), 0,
+                        path + " equals check failed. Actual=" + a + ", Expected=" + e);
+                return;
+            }
+            // Mặc định: so sánh equals
+            Assert.assertEquals(actual, expected, path + " equals check failed");
+        });
 
         OPS.put("notNull", (path, actual, expected) ->
                 Assert.assertNotNull(actual, path + " should not be null"));
@@ -33,15 +46,41 @@ public class AssertionHelper {
             Assert.assertTrue(((List<?>) expected).contains(actual),
                     path + " in check failed. Actual=" + actual + ", Expected in " + expected);
         });
+
+        OPS.put("size", (path, actual, expectedRaw) -> {
+//            int expected = Integer.parseInt(String.valueOf(expectedRaw));
+            int expected;
+            try {
+                expected = new BigDecimal(String.valueOf(expectedRaw)).intValue();
+            } catch (Exception e) {
+                throw new RuntimeException("Invalid expected size value: " + expectedRaw, e);
+            }
+
+            int actualSize = -1;
+
+            if (actual instanceof Collection) {
+                actualSize = ((Collection<?>) actual).size();
+            } else if (actual instanceof Map) {
+                actualSize = ((Map<?, ?>) actual).size();
+            } else if (actual != null && actual.getClass().isArray()) {
+                actualSize = java.lang.reflect.Array.getLength(actual);
+            } else {
+                Assert.fail(path + " size check failed. Actual type is not a Collection/Map/Array.");
+            }
+
+            Assert.assertEquals(actualSize, expected,
+                    path + " size check failed. Actual size=" + actualSize + ", Expected=" + expected);
+        });
     }
 
     // Hàm chính: đọc expect JSON, check implicit + explicit
+    @SuppressWarnings("unchecked")
     public static void assertFromJson(String responseJson, Map<String, Object> expectJson) {
         // 1) Implicit assertions (key-value)
         Map<String, Object> implicit = (Map<String, Object>) expectJson.get("assertions");
         if (implicit != null) {
             for (Map.Entry<String, Object> entry : implicit.entrySet()) {
-                String path = "$." + entry.getKey();
+                String path = entry.getKey();
                 String rule = String.valueOf(entry.getValue());
                 Object actual = JsonPath.read(responseJson, path);
 
@@ -51,6 +90,8 @@ public class AssertionHelper {
                     String pattern = rule.substring(6);
                     OPS.get("regex").accept(path, actual, pattern);
                 } else {
+                    // mềm hoá: nếu actual là boolean/number thì convert expected tương ứng
+                    Object expected = coerceByActual(rule, actual);
                     OPS.get("equals").accept(path, actual, rule);
                 }
             }
@@ -70,6 +111,39 @@ public class AssertionHelper {
                 func.accept(path, actual, expected);
             }
         }
+    }
+    // Chuyển expected về đúng kiểu của actual (nếu có thể)
+    // ----- helpers -----
+
+    private static Object coerceByActual(String expectedRaw, Object actual) {
+        if (actual instanceof Boolean) {
+            if ("TRUE".equalsIgnoreCase(expectedRaw))  return true;
+            if ("FALSE".equalsIgnoreCase(expectedRaw)) return false;
+        }
+        if (actual instanceof Number) {
+            try { return new BigDecimal(expectedRaw); } catch (Exception ignore) {}
+        }
+        // giữ nguyên cho String/null…
+        return expectedRaw;
+    }
+
+    private static Object normalizeExpected(Object expectedRaw, Object actual) {
+        if (expectedRaw == null) return null;
+
+        // Nếu actual là Boolean mà expectedRaw là "true"/"false" -> convert
+        if (actual instanceof Boolean && expectedRaw instanceof String) {
+            String s = (String) expectedRaw;
+            if ("TRUE".equalsIgnoreCase(s))  return true;
+            if ("FALSE".equalsIgnoreCase(s)) return false;
+        }
+        // Nếu actual là Number thì thử convert
+        if (actual instanceof Number) {
+            try {
+                return new BigDecimal(String.valueOf(expectedRaw).trim());
+            } catch (NumberFormatException ignore) {}
+        }
+        // Nếu cả hai là số -> đã xử lý ở equals phía trên
+        return expectedRaw;
     }
 
     // Interface nhỏ để dùng lambda 3 tham số

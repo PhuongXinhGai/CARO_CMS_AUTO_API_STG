@@ -6,15 +6,15 @@
 ],
 
 "assertions": {
-"$[0].uid": "${assert_[0]_uid}",
-"$[0].customer_booking_name": "${assert_[0]_customer_booking_name}",
-"$[0].guest_style": "${assert_[0]_guest_style}",
+"$[0].uid": "${assert_[0].uid}",
+"$[0].customer_booking_name": "${assert_[0].customer_booking_name}",
+"$[0].guest_style": "${assert_[0].guest_style}",
 "$[0].IsCheckedIn": ${assert_[0].IsCheckedIn},
-"$[0].bag_status": "${assert_[0]_bag_status}",
-"$[0].bill_code": "${assert_[0]_bill_code}",
-"$[0].booking_code": "${assert_[0]_booking_code}",
-"$[0].customer_type": "${assert_[0]_customer_type}",
-"$[0].has_book_caddie": ${assert_[0]_has_book_caddie}
+"$[0].bag_status": "${assert_[0].bag_status}",
+"$[0].bill_code": "${assert_[0].bill_code}",
+"$[0].booking_code": "${assert_[0].booking_code}",
+"$[0].customer_type": "${assert_[0].customer_type}",
+"$[0].has_book_caddie": ${assert_[0].has_book_caddie}
 },
 
 "extract": {

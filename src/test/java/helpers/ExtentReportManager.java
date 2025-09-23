@@ -1,6 +1,7 @@
 package helpers;
 
 import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import com.aventstack.extentreports.reporter.configuration.ViewName;
@@ -12,6 +13,8 @@ import java.time.format.DateTimeFormatter;
 
 public final class ExtentReportManager {
     private static ExtentReports extent;
+    // Giữ ExtentTest theo từng thread (mỗi test case một bản riêng)
+    private static final ThreadLocal<ExtentTest> CURRENT_TEST = new ThreadLocal<>();
 
     private ExtentReportManager() {}
 
@@ -41,6 +44,16 @@ public final class ExtentReportManager {
             extent.setSystemInfo("Env", "STG");
         }
         return extent;
+    }
+
+    // Gọi trong Listener khi tạo test mới
+    public static void setTest(ExtentTest test) {
+        CURRENT_TEST.set(test);
+    }
+
+    // Lấy test hiện tại (dùng trong class test để log)
+    public static ExtentTest getTest() {
+        return CURRENT_TEST.get();
     }
 
     public static synchronized void flush() {
