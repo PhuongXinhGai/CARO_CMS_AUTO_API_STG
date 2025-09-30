@@ -32,9 +32,9 @@ import static org.testng.Assert.assertNotNull;
 public class CreateBookingBatchTest_DB extends TestConfig {
 
     @DataProvider(name = "createBookingBatchData")
-    public Object[][] getCreateBookingBatchData() {
+    public Object[][] getCreateBookingBatchData() throws IOException {
         String filePath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/booking/Create_Booking_Batch.xlsx";
-        return ExcelUtils.getTestDataWithMap(filePath, "testcase");
+        return ExcelUtils.readSheetAsMaps(filePath, "testcase");
     }
 
     @Test(dataProvider = "createBookingBatchData")

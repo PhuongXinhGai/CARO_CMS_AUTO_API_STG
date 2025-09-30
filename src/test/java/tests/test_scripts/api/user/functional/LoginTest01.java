@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import common.utilities.AssertionHelper;
 import common.utilities.ContextLogger;
 import common.utilities.ExcelUtils;
+import common.utilities.StringUtils;
 import helpers.ExtentReportManager;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -21,6 +22,7 @@ import org.testng.annotations.Test;
 import tests.test_config.TestConfig;
 
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.io.StringWriter;
 import java.lang.reflect.Type;
@@ -34,13 +36,16 @@ import static io.restassured.RestAssured.given;
 public class LoginTest01 extends TestConfig {
 
     // ===== cấu hình đường dẫn (đổi theo project của bạn) =====
-    private static final String EXCEL_FILE   = "/src/main/resources/input_excel_file/user/Login.xlsx";
+    private static final String EXCEL_FILE   = System.getProperty("user.dir")
+            + "/src/main/resources/input_excel_file/user/Login.xlsx";
     private static final String SHEET_NAME   = "testcase_v2";
-    private static final String JSON_DIR     = "/src/main/resources/input_json_file/user/login/"; // chứa login_request.json, login_expect.json
+    private static final String JSON_DIR     = System.getProperty("user.dir")
+            + "/src/main/resources/input_json_file/user/login/"; // chứa login_request.json, login_expect.json
+
 
     @DataProvider(name = "loginData")
-    public Object[][] getLoginData() {
-        return ExcelUtils.getTestData(System.getProperty("user.dir") + EXCEL_FILE, SHEET_NAME);
+    public Object[][] getLoginData() throws IOException {
+        return ExcelUtils.readSheetAsMaps(EXCEL_FILE, SHEET_NAME);
     }
 
     /**
@@ -50,33 +55,20 @@ public class LoginTest01 extends TestConfig {
      * assert_data.partner_uid, assert_data.course_uid
      */
     @Test(dataProvider = "loginData")
-    public void testLogin(String tc_id,
-                          String tc_description,
-                          String expected_result,
-                          String input_placeholders,       // login_request.json
-                          String user_name,
-                          String password,
-                          String expected_validation_data, // login_expect.json
-                          String status_code,
-                          String assert_token,
-                          String assert_data_user_name,
-                          String assert_data_partner_uid,
-                          String assert_data_course_uid,
-                          ITestContext ctx) throws Exception {
+    public void testLogin(Map<String, String> row, ITestContext ctx) throws Exception {
+        final String tcId = row.getOrDefault("tc_id", "NO_ID");
+        final String desc = row.getOrDefault("tc_description", "Create booking batch");
 
-        System.out.println("Đang chạy test case: " + tc_id + " - " + tc_description);
+        System.out.println("Running: " + tcId + " - " + desc);
 
         // ===== Step 1: Chuẩn bị log =====
         StringWriter reqWriter = new StringWriter();
         PrintStream  reqCapture = new PrintStream(new WriterOutputStream(reqWriter), true);
 
         // ===== Step 2: Build request =====
-        String reqTplPath = System.getProperty("user.dir") + JSON_DIR + input_placeholders;
-        String reqTpl     = Files.readString(Paths.get(reqTplPath));
-        // thay placeholder từ Excel vào request
-        String requestBody = reqTpl
-                .replace("${user_name}", user_name)
-                .replace("${password}",  password);
+        String reqFileName = row.getOrDefault("input_placeholders", "");
+        String reqTpl = Files.readString(Paths.get(JSON_DIR + reqFileName));
+        String requestBody = StringUtils.replacePlaceholdersInString(reqTpl, row); // thay tất cả ${colName}
 
         // ===== Step 3: Call API =====
         Response resp = given()
@@ -96,55 +88,32 @@ public class LoginTest01 extends TestConfig {
         tr.setAttribute("responseLog", resp.getBody().prettyPrint());
 
         // ===== Step 5: Load expect JSON =====
-        String expectPath = System.getProperty("user.dir") + JSON_DIR + expected_validation_data;
-        String expectRaw  = Files.readString(Paths.get(expectPath)); // đọc chuỗi để có thể thay placeholder trước khi parse
+        String expectFileName = row.getOrDefault("expected_validation_data", "");
+        String expectRaw = Files.readString(Paths.get(JSON_DIR + expectFileName));
 
         // ===== Step 6: Thay placeholder trong expect =====
-        Map<String, Object> place = new HashMap<>();
-        place.put("status_code",            safeInt(status_code, 200));
-        place.put("assert_token",           assert_token);
-        place.put("assert_data.user_name",  assert_data_user_name);
-        place.put("assert_data.partner_uid",assert_data_partner_uid);
-        place.put("assert_data.course_uid", assert_data_course_uid);
-        String expectResolved = replacePlaceholdersInString(expectRaw, place);
-
-        // Parse expect sau khi đã thay xong
+        String expectResolved = StringUtils.replacePlaceholdersInString(expectRaw, row);
         Gson gson = new Gson();
-        Type mapType = new TypeToken<Map<String, Object>>(){}.getType();
+        Type mapType = new TypeToken<Map<String, Object>>() {}.getType();
         Map<String, Object> expectJson = gson.fromJson(expectResolved, mapType);
 
         // ===== Step 7: So sánh actual vs expect (AssertionHelper) =====
         AssertionHelper.assertFromJson(respJson, expectJson);
 
         // ===== Step 8: Lưu biến dùng cho step sau (nếu cần integration) =====
-        if ("success".equalsIgnoreCase(expected_result) && resp.getStatusCode() == 200) {
-            JsonPath jp = resp.jsonPath();
-            String token      = jp.getString("token");
-            String partnerUid = jp.getString("data.partner_uid");
-            String courseUid  = jp.getString("data.course_uid");
-            String userNameRp = jp.getString("data.user_name");
-            if (token != null)      ctx.setAttribute("AUTH_TOKEN", token);
-            if (partnerUid != null) ctx.setAttribute("PARTNER_UID", partnerUid);
-            if (courseUid != null)  ctx.setAttribute("COURSE_UID", courseUid);
-            if (userNameRp != null) ctx.setAttribute("USER_NAME",  userNameRp);
-        }
+        // JsonPath jp = new JsonPath(respJson);
+        // ctx.setAttribute("BOOKING_CODE_0", jp.getString("[0].booking_code"));
 
-        ExtentTest ext = ExtentReportManager.getTest();
-        ContextLogger.logContextAttributes(ctx, ext);
+        JsonPath jp = resp.jsonPath();
+        String token      = jp.getString("token");
+        String partnerUid = jp.getString("data.partner_uid");
+        String courseUid  = jp.getString("data.course_uid");
+        String userNameRp = jp.getString("data.user_name");
+        if (token != null)      ctx.setAttribute("AUTH_TOKEN", token);
+        if (partnerUid != null) ctx.setAttribute("PARTNER_UID", partnerUid);
+        if (courseUid != null)  ctx.setAttribute("COURSE_UID", courseUid);
+        if (userNameRp != null) ctx.setAttribute("USER_NAME",  userNameRp);
 
     }
 
-    // ===== helpers =====
-    private int safeInt(String s, int fallback) {
-        try { return Integer.parseInt(s.trim()); } catch (Exception e) { return fallback; }
-    }
-
-    // thay ${var} trong chuỗi expect
-    private String replacePlaceholdersInString(String raw, Map<String, Object> ctx) {
-        String out = raw;
-        for (Map.Entry<String, Object> e : ctx.entrySet()) {
-            out = out.replace("${" + e.getKey() + "}", String.valueOf(e.getValue()));
-        }
-        return out;
-    }
 }

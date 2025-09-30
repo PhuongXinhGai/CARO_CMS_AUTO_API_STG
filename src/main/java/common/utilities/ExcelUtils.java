@@ -1,16 +1,13 @@
 package common.utilities;
 
-import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class ExcelUtils {
 
@@ -105,63 +102,84 @@ public class ExcelUtils {
     }
 
     /**
-     * Đọc toàn bộ dữ liệu từ một sheet và trả về một mảng các Map.
-     * Mỗi Map đại diện cho một hàng dữ liệu (key=tên cột, value=giá trị ô).
-     * Cực kỳ hữu ích cho các DataProvider cần cung cấp dữ liệu có cấu trúc.
-     * @param filePath Đường dẫn tới file Excel.
-     * @param sheetName Tên của sheet.
-     * @return Một mảng Object[][] mà mỗi phần tử là một Map<String, String>.
+     * Đọc 1 sheet Excel thành Object[][] (mỗi phần tử là Map<String, String>) cho TestNG DataProvider.
+     * - Hỗ trợ cả .xls và .xlsx
+     * - Tự bỏ qua các dòng đầu trống cho đến khi tìm được header
+     * - Header fallback: nếu ô header trống -> dùng "col{index}"
+     * - Bỏ qua các dòng trống toàn bộ
+     * - Đọc giá trị hiển thị (DataFormatter) + evaluate công thức
      */
-    public static Object[][] getTestDataWithMap(String filePath, String sheetName) {
-        List<Map<String, String>> testDataList = new ArrayList<>();
+    public static Object[][] readSheetAsMaps(String path, String sheetName) throws IOException {
+        try (FileInputStream fis = new FileInputStream(path);
+             Workbook wb = WorkbookFactory.create(fis)) {
 
-        try (FileInputStream fis = new FileInputStream(filePath);
-             XSSFWorkbook workbook = new XSSFWorkbook(fis)) {
+            Sheet sheet = wb.getSheet(sheetName);
+            if (sheet == null) {
+                throw new IllegalArgumentException("Sheet not found: " + sheetName + " in file: " + path);
+            }
 
-            XSSFSheet sheet = workbook.getSheet(sheetName);
+            int firstRow = sheet.getFirstRowNum();
+            int lastRow  = sheet.getLastRowNum();
+
+            // 1) Xác định header row (bỏ qua các dòng đầu null)
+            Row header = sheet.getRow(firstRow);
+            while (header == null && firstRow <= lastRow) {
+                firstRow++;
+                header = sheet.getRow(firstRow);
+            }
+            if (header == null) {
+                throw new IllegalStateException("Header row is null in sheet: " + sheetName);
+            }
+
+            // 2) Lấy tiêu đề cột (giữ thứ tự), fallback "col{i}" nếu trống
+            int cols = header.getLastCellNum();
+            if (cols < 0) cols = 0;
+            List<String> headers = new ArrayList<>(cols);
+
             DataFormatter formatter = new DataFormatter();
+            FormulaEvaluator evaluator = wb.getCreationHelper().createFormulaEvaluator();
 
-            // 1. Đọc hàng tiêu đề để lấy danh sách các key (tên cột)
-            XSSFRow headerRow = sheet.getRow(0);
-            if (headerRow == null) {
-                throw new RuntimeException("Không tìm thấy hàng tiêu đề trong sheet: " + sheetName);
-            }
-            List<String> headers = new ArrayList<>();
-            for (int i = 0; i < headerRow.getLastCellNum(); i++) {
-                headers.add(formatter.formatCellValue(headerRow.getCell(i)));
-            }
-
-            // 2. Duyệt qua từng hàng dữ liệu (bắt đầu từ hàng 1)
-            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                XSSFRow currentRow = sheet.getRow(i);
-                if (currentRow == null) continue;
-
-                // 3. Với mỗi hàng, tạo một Map mới để chứa dữ liệu của hàng đó
-                Map<String, String> rowMap = new HashMap<>();
-
-                // 4. Đọc từng ô trong hàng và đưa vào Map
-                for (int j = 0; j < headers.size(); j++) {
-                    String key = headers.get(j);
-                    String value = formatter.formatCellValue(currentRow.getCell(j));
-                    rowMap.put(key, value);
+            for (int c = 0; c < cols; c++) {
+                Cell hc = header.getCell(c, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
+                String headerText = hc == null
+                        ? ("col" + c)
+                        : safeTrim(formatter.formatCellValue(hc, evaluator));
+                if (headerText == null || headerText.isEmpty()) {
+                    headerText = "col" + c;
                 }
-
-                // 5. Thêm Map của hàng hiện tại vào danh sách
-                testDataList.add(rowMap);
+                headers.add(headerText);
             }
 
-        } catch (IOException e) {
-            System.err.println("Lỗi khi đọc file Excel: " + filePath);
-            e.printStackTrace();
-        }
+            // 3) Duyệt các dòng dữ liệu
+            List<Object[]> rows = new ArrayList<>();
+            for (int r = firstRow + 1; r <= lastRow; r++) {
+                Row row = sheet.getRow(r);
+                if (row == null) continue;
 
-        // 6. Chuyển đổi List<Map> thành định dạng Object[][] mà DataProvider yêu cầu
-        Object[][] data = new Object[testDataList.size()][1];
-        for (int i = 0; i < testDataList.size(); i++) {
-            data[i][0] = testDataList.get(i);
-        }
+                boolean allBlank = true;
+                Map<String, String> map = new LinkedHashMap<>();
+                for (int c = 0; c < cols; c++) {
+                    Cell cell = row.getCell(c, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
+                    String val = (cell == null) ? "" : safeTrim(formatter.formatCellValue(cell, evaluator));
+                    if (val != null && !val.isEmpty()) allBlank = false;
+                    map.put(headers.get(c), (val == null ? "" : val));
+                }
+                if (!allBlank) {
+                    rows.add(new Object[]{ map });
+                }
+            }
 
-        return data;
+            // 4) Chuyển sang Object[][]
+            Object[][] data = new Object[rows.size()][];
+            for (int i = 0; i < rows.size(); i++) {
+                data[i] = rows.get(i);
+            }
+            return data;
+        }
+    }
+
+    private static String safeTrim(String s) {
+        return (s == null) ? null : s.trim();
     }
 
 }
