@@ -3,7 +3,10 @@ package helpers;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.markuputils.CodeLanguage;
 import com.aventstack.extentreports.markuputils.MarkupHelper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import listeners.TestListener; // Cần import TestListener
+import org.testng.ITestContext;
 import tests.models.ActionResult;
 
 public class ReportHelper {
@@ -34,4 +37,31 @@ public class ReportHelper {
             }
         }
     }
+
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+
+    public static void logContext(ITestContext ctx, String... keys) {
+        ExtentTest test = TestListener.getExtentTest();
+        for (String k : keys) {
+            Object v = ctx.getAttribute(k);
+            if (v == null) continue;
+            String s = String.valueOf(v);
+            if (looksLikeJson(s)) {
+                test.info(k + ":");
+                test.info(MarkupHelper.createCodeBlock(prettyJson(s), CodeLanguage.JSON));
+            } else {
+                test.info(k + ": " + s);
+            }
+        }
+    }
+
+    private static boolean looksLikeJson(String s) {
+        s = s.trim();
+        return (s.startsWith("{") && s.endsWith("}")) || (s.startsWith("[") && s.endsWith("]"));
+    }
+    private static String prettyJson(String s) {
+        try { return GSON.toJson(GSON.fromJson(s, Object.class)); }
+        catch (Exception ignore) { return s; }
+    }
+
 }

@@ -8,6 +8,7 @@ import common.utilities.ContextLogger;
 import common.utilities.ExcelUtils;
 import common.utilities.StringUtils;
 import helpers.ExtentReportManager;
+import helpers.ReportHelper;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.http.ContentType;
@@ -17,6 +18,7 @@ import org.apache.commons.io.output.WriterOutputStream;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.Reporter;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import tests.test_config.TestConfig;
@@ -114,6 +116,16 @@ public class LoginTest01 extends TestConfig {
         if (courseUid != null)  ctx.setAttribute("COURSE_UID", courseUid);
         if (userNameRp != null) ctx.setAttribute("USER_NAME",  userNameRp);
 
+        // hiển thị lên Extent
+//        ReportHelper.logContext(ctx, "AUTH_TOKEN", "PARTNER_UID", "COURSE_UID", "USER_NAME");
     }
+
+    @AfterMethod(alwaysRun = true)
+    public void dumpCtxToReport(ITestContext ctx) {
+        // chỉ định các key chuẩn bạn muốn show
+        ReportHelper.logContext(ctx, "AUTH_TOKEN", "PARTNER_UID", "COURSE_UID", "USER_NAME",
+                "REQUEST_LOG", "RESPONSE_LOG", "BOOKING_CODE_0");
+    }
+
 
 }
