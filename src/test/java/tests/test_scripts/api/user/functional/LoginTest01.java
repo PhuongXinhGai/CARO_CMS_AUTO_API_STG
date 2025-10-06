@@ -1,13 +1,10 @@
 package tests.test_scripts.api.user.functional;
 
-import com.aventstack.extentreports.ExtentTest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import common.utilities.AssertionHelper;
-import common.utilities.ContextLogger;
 import common.utilities.ExcelUtils;
 import common.utilities.StringUtils;
-import helpers.ExtentReportManager;
 import helpers.ReportHelper;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -23,14 +20,12 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import tests.test_config.TestConfig;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
@@ -123,8 +118,7 @@ public class LoginTest01 extends TestConfig {
     @AfterMethod(alwaysRun = true)
     public void dumpCtxToReport(ITestContext ctx) {
         // chỉ định các key chuẩn bạn muốn show
-        ReportHelper.logContext(ctx, "AUTH_TOKEN", "PARTNER_UID", "COURSE_UID", "USER_NAME",
-                "REQUEST_LOG", "RESPONSE_LOG", "BOOKING_CODE_0");
+        ReportHelper.logContext(ctx, "AUTH_TOKEN", "PARTNER_UID", "COURSE_UID", "USER_NAME");
     }
 
 

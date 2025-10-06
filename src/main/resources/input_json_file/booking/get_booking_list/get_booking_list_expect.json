@@ -1,0 +1,13 @@
+{
+  "status_code": ${status_code},
+
+"assertions": {
+"$.total": "${assert_total}"
+},
+
+"assertions_explicit": [
+],
+
+"extract": {
+}
+}
