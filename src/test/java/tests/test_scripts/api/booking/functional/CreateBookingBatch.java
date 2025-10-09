@@ -34,7 +34,7 @@ public class CreateBookingBatch extends TestConfig {
     // ==== ĐƯỜNG DẪN — chỉnh cho khớp project của bạn ====
     private static final String EXCEL_FILE = System.getProperty("user.dir")
             + "/src/main/resources/input_excel_file/booking/Create_Booking_Batch.xlsx";
-    private static final String SHEET_NAME = "testcase";
+    private static final String SHEET_NAME = "Create_Booking_1_Player";
     // Thư mục chứa JSON request/expect cho API này
     private static final String JSON_DIR = System.getProperty("user.dir")
             + "/src/main/resources/input_json_file/booking/create_booking/";

@@ -38,6 +38,9 @@
     "hole": ${hole},
     "booking_date": "${booking_date}",
     "add_ons": ${add_ons},
+    "customer_booking_uid": "${customer_booking_uid}",
+    "customer_booking_member_card_uid": "${customer_booking_member_card_uid}",
+    "customer_booking_card_id": "${customer_booking_card_id}",
     "voucher_apply": ${voucher_apply},
     "member_uid_of_guest": "${member_uid_of_guest}",
     "member_card_uid": "${member_card_uid}"
