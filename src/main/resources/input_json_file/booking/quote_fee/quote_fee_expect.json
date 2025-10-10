@@ -1,0 +1,22 @@
+{
+  "status_code": ${status_code},
+
+"assertions_explicit": [
+{ "path": "$.list_player", "op": "size", "value": ${assert_size} }
+],
+
+"assertions": {
+"$.total_amount": ${assert_total_amount},
+"$.list_player[0].total_fee": ${assert_list_player[0].total_fee},
+"$.list_player[0].golf_fee": ${assert_list_player[0].golf_fee},
+"$.list_player[0].green_fee": ${assert_list_player[0].green_fee},
+"$.list_player[0].caddie_fee": ${assert_list_player[0].caddie_fee},
+"$.list_player[0].buggy_fee": ${assert_list_player[0].buggy_fee},
+"$.list_player[0].hole": ${assert_list_player[0].hole},
+"$.list_player[0].golf_fee_res.guest_style": "${assert_list_player[0].golf_fee_res.guest_style}",
+"$.list_player[0].golf_fee_res.dow": "${assert_list_player[0].golf_fee_res.dow}"
+},
+
+"extract": {
+}
+}

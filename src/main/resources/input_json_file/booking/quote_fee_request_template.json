@@ -1,7 +1,0 @@
-  {
-  "course_uid": "${courseUid}",
-  "partner_uid": "${partnerUid}",
-  "list_player": ${listPlayerJson},
-  "agency_id": ${agencyId},
-  "booking_date": "${bookingDate}"
-}

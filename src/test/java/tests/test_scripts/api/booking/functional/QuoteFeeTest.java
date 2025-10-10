@@ -2,7 +2,10 @@ package tests.test_scripts.api.booking.functional;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import common.utilities.AssertionHelper;
 import common.utilities.ExcelUtils;
+import common.utilities.StringUtils;
+import helpers.ReportHelper;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.http.ContentType;
@@ -12,6 +15,7 @@ import org.apache.commons.io.output.WriterOutputStream;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.Reporter;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import tests.test_config.TestConfig;
@@ -32,85 +36,110 @@ import static org.testng.Assert.assertNotNull;
 
 public class QuoteFeeTest extends TestConfig {
 
+    // ==== ĐƯỜNG DẪN — chỉnh cho khớp project của bạn ====
+    private static final String EXCEL_FILE = System.getProperty("user.dir")
+            + "/src/main/resources/input_excel_file/booking/Create_Booking_Batch.xlsx";
+    private static final String SHEET_NAME = "quote_fee_1_player";
+    // Thư mục chứa JSON request/expect cho API này
+    private static final String JSON_DIR = System.getProperty("user.dir")
+            + "/src/main/resources/input_json_file/booking/quote_fee/";
 
-
+    // ======================= DataProvider =======================
     @DataProvider(name = "quoteFeeData")
-    public Object[][] getQuoteFeeData() {
-        String filePath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/booking/Booking_Quote_Fee.xlsx";
-        return ExcelUtils.getTestData(filePath, "testcase");
+    public Object[][] quoteFeeData() throws IOException {
+        return ExcelUtils.readSheetAsMaps(EXCEL_FILE, SHEET_NAME);
     }
 
+    /**
+     * 8 STEP:
+     * 1) Chuẩn bị log
+     * 2) Build request (đọc template + replace placeholder)
+     * 3) Call API
+     * 4) Gắn log request/response vào report
+     * 5) Load expect JSON (raw string)
+     * 6) Replace placeholder trong expect
+     * 7) So sánh actual vs expect (AssertionHelper)
+     * 8) Extract và lưu biến cho step sau (nếu cần)
+     */
     @Test(dataProvider = "quoteFeeData")
-    public void testQuoteFee(String tc_id, String tc_description, String expected_result, String partner_uid, String course_uid, String booking_date, String agency_id, String list_player_json, String expectedValidationData, ITestContext context) throws IOException {
-        // --- PHẦN NÂNG CẤP: LẤY TOKEN ĐỘNG TỪ CONTEXT ---
-        String authToken = (String) context.getAttribute("AUTH_TOKEN");
-        assertNotNull(authToken, "Token không được null. Hãy chắc chắn rằng LoginTest đã chạy thành công trước.");
+    public void testQuoteFee(Map<String, String> row, ITestContext ctx) throws IOException {
+        final String tcId = row.getOrDefault("tc_id", "NO_ID");
+        final String desc = row.getOrDefault("tc_description", "Create booking batch");
 
-        System.out.println("Đang chạy test case: " + tc_id + " - " + tc_description);
-        // Tạo một StringWriter để hoạt động như một bộ đệm, lưu lại log dưới dạng chuỗi.
-        StringWriter requestWriter = new StringWriter();
-        // Tạo một PrintStream để RestAssured có thể ghi log vào đó.
-        PrintStream requestCapture = new PrintStream(new WriterOutputStream(requestWriter), true);
+        System.out.println("Running: " + tcId + " - " + desc);
 
-        // --- Xử lý dữ liệu động (ví dụ: {{TODAY}}) ---
-        String resolvedBookingDate = DynamicDataHelper.resolveDynamicValue(booking_date);
-        String resolvedListPlayerJson = DynamicDataHelper.resolveDynamicValue(list_player_json);
+        // ===== Step 1: Chuẩn bị log =====
+        StringWriter reqWriter = new StringWriter();
+        PrintStream reqCapture = new PrintStream(new WriterOutputStream(reqWriter), true);
 
-        // --- ĐỌC VÀ CHUẨN BỊ REQUEST BODY ---
-        String templatePath = System.getProperty("user.dir") + "/src/main/resources/input_json_file/booking/quote_fee_request_template.json";
-        String requestBodyTemplate = new String(Files.readAllBytes(Paths.get(templatePath)));
-        String requestBody = requestBodyTemplate
-                .replace("${partnerUid}", partner_uid)
-                .replace("${courseUid}", course_uid)
-                .replace("${bookingDate}", resolvedBookingDate)
-                .replace("${agencyId}", agency_id)
-                .replace("${listPlayerJson}",resolvedListPlayerJson);
+        // ===== Step 2: Build request =====
+        // Excel cột 'input_placeholders' trỏ tới file request (vd: create_booking_batch_request.json)
+        String reqFileName = row.getOrDefault("input_placeholders", "quote_fee_request.json");
+        String reqTpl = Files.readString(Paths.get(JSON_DIR + reqFileName));
+        String requestBody = StringUtils.replacePlaceholdersInString(reqTpl, row); // thay tất cả ${colName}
 
-        Response response = given()
-                .header("Authorization", authToken)
+        // ===== Step 3: Call API =====
+        String tokenFromCtx = (String) ctx.getAttribute("AUTH_TOKEN");
+        String tokenFromExcel = row.get("auth_token"); // optional in Excel
+        String bearer = tokenFromCtx != null ? tokenFromCtx : tokenFromExcel;
+
+        Response resp = given()
                 .contentType(ContentType.JSON)
+                .header("Accept", "application/json")
+                .header("Authorization", bearer != null ? bearer : "")
                 .body(requestBody)
-                .filter(new RequestLoggingFilter(LogDetail.ALL, true, requestCapture))
+                .filter(new RequestLoggingFilter(LogDetail.ALL, true, reqCapture))
                 .when()
-                .post(BASE_URL + QUOTE_FEE_ENDPOINT)
+                .post(BASE_URL + "/golf-cms/api/booking/quote-fee")
                 .then()
-//                .log().all()
                 .extract().response();
 
-        ITestResult currentResult = Reporter.getCurrentTestResult();
-        currentResult.setAttribute("requestLog", requestWriter.toString());
-        currentResult.setAttribute("responseLog", response.getBody().prettyPrint());
+        String respJson = resp.asString();
 
-        if (expectedValidationData != null && !expectedValidationData.isEmpty()) {
-            JsonPath actualResponseJson = response.jsonPath();
-            Gson gson = new Gson();
-            Type type = new TypeToken<Map<String, Object>>() {}.getType();
-            Map<String, Object> expectedDataMap = gson.fromJson(expectedValidationData, type);
+        // ===== Step 4: Gắn log request/response vào report =====
+        ITestResult tr = Reporter.getCurrentTestResult();
+        tr.setAttribute("requestLog", reqWriter.toString());
+        tr.setAttribute("responseLog", resp.getBody().prettyPrint());
 
-            for (Map.Entry<String, Object> entry : expectedDataMap.entrySet()) {
-                String keyPath = entry.getKey();
-                Object expectedValue = entry.getValue();
+        // ===== Step 5: Load expect JSON =====
+        // Excel cột 'expected_validation_data' trỏ tới file expect (vd: create_booking_batch_expect.json)
+        String expectFileName = row.getOrDefault("expected_validation_data", "quote_fee_expect.json");
+        String expectRaw = Files.readString(Paths.get(JSON_DIR + expectFileName));
 
-                if (keyPath.equalsIgnoreCase("status_code")) {
-                    int expectedStatusCode = ((Double) expectedValue).intValue();
-                    assertEquals(response.getStatusCode(), expectedStatusCode, "TC_ID: " + tc_id + " - Status code mismatch.");
-                    continue;
-                }
+        // ===== Step 6: Replace placeholder trong expect =====
+        // Lưu ý: với boolean (true/false) hãy KHÔNG đặt dấu nháy quanh placeholder trong file expect.
+        String expectResolved = StringUtils.replacePlaceholdersInString(expectRaw, row);
+        Gson gson = new Gson();
+        Type mapType = new TypeToken<Map<String, Object>>() {}.getType();
+        Map<String, Object> expectJson = gson.fromJson(expectResolved, mapType);
 
-                Object actualValue = actualResponseJson.get(keyPath);
+        // ===== Step 7: So sánh actual vs expect =====
+        AssertionHelper.assertFromJson(respJson, expectJson);
 
-                if (expectedValue instanceof Number && actualValue instanceof Number) {
-                    java.math.BigDecimal ev = new java.math.BigDecimal(expectedValue.toString());
-                    java.math.BigDecimal av = new java.math.BigDecimal(actualValue.toString());
-                    org.testng.Assert.assertEquals(av.compareTo(ev), 0,
-                            "TC_ID: " + tc_id + " - Mismatch for numeric key '" + keyPath + "'");
-                } else if ("NOT_NULL".equalsIgnoreCase(String.valueOf(expectedValue))) {
-                    assertNotNull(actualValue, "TC_ID: " + tc_id + " - Key '" + keyPath + "' should not be null.");
-                } else {
-                    assertEquals(String.valueOf(actualValue), String.valueOf(expectedValue),
-                            "TC_ID: " + tc_id + " - Mismatch for key '" + keyPath + "'");
-                }
-            }
-        }
+        // ===== Step 8: Extract lưu biến cho bước sau (nếu cần) =====
+        // tuỳ nhu cầu: VD lưu booking_code_0, booking_uid_0 (đã định nghĩa trong "extract" của expect)
+        // nếu bạn muốn parse nhanh ở đây, có thể dùng JsonPath đọc lại:
+//         JsonPath jp = new JsonPath(respJson);
+        // ctx.setAttribute("BOOKING_CODE_0", jp.getString("[0].booking_code"));
+//        JsonPath jp = resp.jsonPath();
+//        String uid      = jp.getString("[0].uid");
+//        String guestStyle = jp.getString("[0].guest_style");
+//        String guestStyleName  = jp.getString("[0].guest_style_name");
+//        String greenFee = jp.getString("[0].list_golf_fee[0].green_fee");
+//        String caddieFee = jp.getString("[0].list_golf_fee[0].caddie_fee");
+//        String totalGolfFee = jp.getString("[0].mush_pay_info.total_golf_fee");
+//        if (uid != null)      ctx.setAttribute("BOOKING_UID", uid);
+//        if (guestStyle != null) ctx.setAttribute("GUEST_STYLE", guestStyle);
+//        if (guestStyleName != null)  ctx.setAttribute("GUEST_TYPE_NAME", guestStyleName);
+//        if (greenFee != null)  ctx.setAttribute("GREEN_FEE", greenFee);
+//        if (caddieFee != null) ctx.setAttribute("CADDIE_FEE",  caddieFee);
+//        if (totalGolfFee != null) ctx.setAttribute("TOTAL_GOLF_FEE",  totalGolfFee);
     }
+
+//    @AfterMethod(alwaysRun = true)
+//    public void dumpCtxToReport(ITestContext ctx) {
+//        // chỉ định các key chuẩn bạn muốn show
+//        ReportHelper.logContext(ctx, "BOOKING_UID", "GUEST_STYLE", "GREEN_FEE", "CADDIE_FEE", "TOTAL_GOLF_FEE");
+//    }
+
 }

@@ -1,0 +1,17 @@
+{
+  "course_uid": "${course_uid}",
+  "partner_uid": "${partner_uid}",
+  "list_player": [
+    {
+      "booking_date": "${list_player[0].booking_date}",
+      "guest_style": "${list_player[0].guest_style}",
+      "caddie_code": "${list_player[0].caddie_code}",
+      "tee_type": "${list_player[0].tee_type}",
+      "tee_time": "${list_player[0].tee_time}",
+      "hole": ${list_player[0].hole},
+      "add_ons": ${list_player[0].add_ons},
+      "player_idx": "${list_player[0].player_idx}",
+      "voucher_apply": ${list_player[0].voucher_apply}
+    }
+  ]
+}
