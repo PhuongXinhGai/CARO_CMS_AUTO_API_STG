@@ -9,7 +9,6 @@ import common.utilities.StringUtils;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.http.ContentType;
-import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.apache.commons.io.output.WriterOutputStream;
 import org.testng.ITestContext;
@@ -24,20 +23,18 @@ import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static common.utilities.Constants.BOOKING_LIST_SELECT_ENDPOINT;
 import static io.restassured.RestAssured.given;
 
 import tests.test_config.TestConfig;
 
-public class GetBookingList extends TestConfig {
+public class GetBookingListSelect extends TestConfig {
     // ==== ĐƯỜNG DẪN — chỉnh cho khớp project của bạn ====
     private static final String EXCEL_FILE = System.getProperty("user.dir")
-            + "/src/main/resources/input_excel_file/booking/Get_Booking_List_Select.xlsx";
-    private static final String SHEET_NAME = "testcase_v2";
+            + "/src/main/resources/input_excel_file/booking/Create_Booking_Batch.xlsx";
+    private static final String SHEET_NAME = "Get_List_Booking_Select";
     // Thư mục chứa JSON request/expect cho API này
     private static final String JSON_DIR = System.getProperty("user.dir")
             + "/src/main/resources/input_json_file/booking/get_booking_list/";

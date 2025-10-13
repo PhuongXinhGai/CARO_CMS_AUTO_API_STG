@@ -1,0 +1,13 @@
+{
+  "status_code": ${status_code},
+
+"assertions": {
+"$.status_code": ${status_code}
+},
+
+"assertions_explicit": [
+{ "path": "$.message", "op": "notNull", "value": null }
+],
+
+"extract": { }
+}

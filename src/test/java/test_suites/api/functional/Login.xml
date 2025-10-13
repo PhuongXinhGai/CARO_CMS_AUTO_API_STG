@@ -7,6 +7,10 @@
     <test name="LOGIN TEST">
         <classes>
             <class name="tests.test_scripts.api.user.functional.LoginTest"/>
+            <class name="tests.test_scripts.api.booking.functional.QuoteFeeTest"/>
+            <class name="tests.test_scripts.api.booking.functional.CreateBookingBatch"/>
+            <class name="tests.test_scripts.api.booking.functional.GetBookingListSelect"/>
+            <class name="tests.test_scripts.api.booking.functional.GetBookingPriceTest"/>
         </classes>
     </test>
 </suite>
