@@ -1,20 +1,15 @@
 package tests.test_scripts.api.booking.functional;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import common.utilities.DynamicDataHelper;
 import common.utilities.ExcelUtils;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.http.ContentType;
-import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.apache.commons.io.output.WriterOutputStream;
-import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.Reporter;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import tests.test_config.TestConfig;
@@ -32,7 +27,7 @@ import static io.restassured.RestAssured.given;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
-public class CreateBookingBatchTest01 extends TestConfig {
+public class CreateBookingBatchTest_Old01 extends TestConfig {
 
     @DataProvider(name = "createBookingBatchData")
     public Object[][] getCreateBookingBatchData() throws IOException {

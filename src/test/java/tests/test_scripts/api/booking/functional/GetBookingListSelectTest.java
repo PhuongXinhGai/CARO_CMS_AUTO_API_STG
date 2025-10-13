@@ -30,7 +30,7 @@ import static io.restassured.RestAssured.given;
 
 import tests.test_config.TestConfig;
 
-public class GetBookingListSelect extends TestConfig {
+public class GetBookingListSelectTest extends TestConfig {
     // ==== ĐƯỜNG DẪN — chỉnh cho khớp project của bạn ====
     private static final String EXCEL_FILE = System.getProperty("user.dir")
             + "/src/main/resources/input_excel_file/booking/Create_Booking_Batch.xlsx";
@@ -124,6 +124,7 @@ public class GetBookingListSelect extends TestConfig {
         Map<String, Object> expectJson = gson.fromJson(expectResolved, mapType);
 
         // ===== Step 7: So sánh actual vs expect =====
+        AssertionHelper.verifyStatusCode(resp, expectJson);
         AssertionHelper.assertFromJson(respJson, expectJson);
 
         // ===== Step 8: Extract lưu biến cho bước sau (nếu cần) =====

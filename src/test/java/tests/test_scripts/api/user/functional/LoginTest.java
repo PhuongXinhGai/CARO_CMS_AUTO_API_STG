@@ -95,6 +95,7 @@ public class LoginTest extends TestConfig {
         Map<String, Object> expectJson = gson.fromJson(expectResolved, mapType);
 
         // ===== Step 7: So sánh actual vs expect (AssertionHelper) =====
+        AssertionHelper.verifyStatusCode(resp, expectJson);
         AssertionHelper.assertFromJson(respJson, expectJson);
 
         // ===== Step 8: Lưu biến dùng cho step sau (nếu cần integration) =====
@@ -110,9 +111,6 @@ public class LoginTest extends TestConfig {
         if (partnerUid != null) ctx.setAttribute("PARTNER_UID", partnerUid);
         if (courseUid != null)  ctx.setAttribute("COURSE_UID", courseUid);
         if (userNameRp != null) ctx.setAttribute("USER_NAME",  userNameRp);
-
-        // hiển thị lên Extent
-//        ReportHelper.logContext(ctx, "AUTH_TOKEN", "PARTNER_UID", "COURSE_UID", "USER_NAME");
     }
 
     @AfterMethod(alwaysRun = true)

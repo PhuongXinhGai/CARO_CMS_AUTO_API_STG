@@ -1,6 +1,9 @@
 package common.utilities;
 
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
 import com.jayway.jsonpath.JsonPath;
+import io.restassured.response.Response;
 import org.testng.Assert;
 
 import java.math.BigDecimal;
@@ -33,6 +36,7 @@ public class AssertionHelper {
 
         OPS.put("regex", (path, actual, expected) -> {
             Assert.assertTrue(Pattern.matches((String) expected, String.valueOf(actual)),
+
                     path + " regex check failed. Actual=" + actual);
         });
 
@@ -73,9 +77,33 @@ public class AssertionHelper {
         });
     }
 
+//    Hàm nghiệm thu status code riêng biệt
+    public static void verifyStatusCode(Response response, Map<String, Object> expectJson) {
+        Object expectedStatusObj = expectJson.get("status_code");
+
+        if (expectedStatusObj == null) {
+            System.out.println("⚠️ Missing 'status_code' in expected JSON → Skip status check");
+            return;
+        }
+
+        int actualStatus = response.statusCode();
+        int expectedStatus;
+
+        try {
+            // Dùng BigDecimal để chuyển an toàn các kiểu số
+            expectedStatus = new java.math.BigDecimal(String.valueOf(expectedStatusObj)).intValue();
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid status_code format in expect JSON: " + expectedStatusObj, e);
+        }
+
+        Assert.assertEquals(actualStatus, expectedStatus,
+                "❌ HTTP status code mismatch");
+    }
+
     // Hàm chính: đọc expect JSON, check implicit + explicit
     @SuppressWarnings("unchecked")
     public static void assertFromJson(String responseJson, Map<String, Object> expectJson) {
+
         // 1) Implicit assertions (key-value)
         Map<String, Object> implicit = (Map<String, Object>) expectJson.get("assertions");
         if (implicit != null) {
@@ -114,7 +142,6 @@ public class AssertionHelper {
     }
     // Chuyển expected về đúng kiểu của actual (nếu có thể)
     // ----- helpers -----
-
     private static Object coerceByActual(String expectedRaw, Object actual) {
         if (actual instanceof Boolean) {
             if ("TRUE".equalsIgnoreCase(expectedRaw))  return true;

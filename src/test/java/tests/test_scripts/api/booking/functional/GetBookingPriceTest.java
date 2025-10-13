@@ -128,6 +128,7 @@ public class GetBookingPriceTest extends TestConfig {
         Map<String, Object> expectJson = gson.fromJson(expectResolved, mapType);
 
         // ===== Step 7: So sánh actual vs expect =====
+        AssertionHelper.verifyStatusCode(resp, expectJson);
         AssertionHelper.assertFromJson(respJson, expectJson);
 
         // ===== Step 8: Extract lưu biến cho bước sau (nếu cần) =====
