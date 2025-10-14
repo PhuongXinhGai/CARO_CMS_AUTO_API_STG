@@ -8,7 +8,6 @@
     "customer_booking_name": "${customer_booking_name}",
     "customer_booking_phone": "${customer_booking_phone}",
     "customer_booking_email": "${customer_booking_email}",
-    "agency_id": ${agency_id},
     "booking_restaurant": {
       "enable": ${booking_restaurant.enable},
     "number_people": ${booking_restaurant.number_people}
@@ -44,6 +43,6 @@
     "member_uid_of_guest": "${member_uid_of_guest}",
     "member_card_uid": "${member_card_uid}",
     "voucher_apply": ${voucher_apply}
-    }
+  }
   ]
 }

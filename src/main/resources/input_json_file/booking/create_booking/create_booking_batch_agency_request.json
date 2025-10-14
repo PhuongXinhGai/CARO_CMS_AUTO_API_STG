@@ -9,8 +9,8 @@
     "customer_booking_phone": "${customer_booking_phone}",
     "customer_booking_email": "${customer_booking_email}",
     "agency_id": ${agency_id},
-    "agency_player_pay": false,
-    "agency_paid_all": false,
+    "agency_player_pay": ${agency_player_pay},
+    "agency_paid_all": ${agency_paid_all},
     "fee_info": {
       "golf_fee": ${fee_info.golf_fee},
       "buggy_fee": ${fee_info.buggy_fee},
