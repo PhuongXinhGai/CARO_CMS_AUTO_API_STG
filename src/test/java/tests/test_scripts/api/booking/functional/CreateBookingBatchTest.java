@@ -118,24 +118,27 @@ public class CreateBookingBatchTest extends TestConfig {
 //         JsonPath jp = new JsonPath(respJson);
         // ctx.setAttribute("BOOKING_CODE_0", jp.getString("[0].booking_code"));
         JsonPath jp = resp.jsonPath();
-        String uid      = jp.getString("[0].uid");
-        String guestStyle = jp.getString("[0].guest_style");
-        String guestStyleName  = jp.getString("[0].guest_style_name");
-        String greenFee = jp.getString("[0].list_golf_fee[0].green_fee");
-        String caddieFee = jp.getString("[0].list_golf_fee[0].caddie_fee");
-        String totalGolfFee = jp.getString("[0].mush_pay_info.total_golf_fee");
-        if (uid != null)      ctx.setAttribute("BOOKING_UID", uid);
-        if (guestStyle != null) ctx.setAttribute("GUEST_STYLE", guestStyle);
-        if (guestStyleName != null)  ctx.setAttribute("GUEST_TYPE_NAME", guestStyleName);
-        if (greenFee != null)  ctx.setAttribute("GREEN_FEE", greenFee);
-        if (caddieFee != null) ctx.setAttribute("CADDIE_FEE",  caddieFee);
-        if (totalGolfFee != null) ctx.setAttribute("TOTAL_GOLF_FEE",  totalGolfFee);
+
+        for (int i = 0; i < 4; i++) {
+            String uid            = jp.getString("[" + i + "].uid");
+            String guestStyle     = jp.getString("[" + i + "].guest_style");
+            String guestStyleName = jp.getString("[" + i + "].guest_style_name");
+            String greenFee       = jp.getString("[" + i + "].list_golf_fee[0].green_fee");
+            String caddieFee      = jp.getString("[" + i + "].list_golf_fee[0].caddie_fee");
+            String totalGolfFee   = jp.getString("[" + i + "].mush_pay_info.total_golf_fee");
+
+            if (uid != null)            ctx.setAttribute("BOOKING_UID_" + i, uid);
+            if (guestStyle != null)     ctx.setAttribute("GUEST_STYLE_" + i, guestStyle);
+            if (guestStyleName != null) ctx.setAttribute("GUEST_STYLE_NAME_" + i, guestStyleName);
+            if (greenFee != null)       ctx.setAttribute("GREEN_FEE_" + i, greenFee);
+            if (caddieFee != null)      ctx.setAttribute("CADDIE_FEE_" + i, caddieFee);
+            if (totalGolfFee != null)   ctx.setAttribute("TOTAL_GOLF_FEE_" + i, totalGolfFee);
+        }
     }
 
     @AfterMethod(alwaysRun = true)
     public void dumpCtxToReport(ITestContext ctx) {
-        // chỉ định các key chuẩn bạn muốn show
-        ReportHelper.logContext(ctx, "BOOKING_UID", "GUEST_STYLE", "GREEN_FEE", "CADDIE_FEE", "TOTAL_GOLF_FEE");
+        ReportHelper.logAllContext(ctx);
     }
 
 }

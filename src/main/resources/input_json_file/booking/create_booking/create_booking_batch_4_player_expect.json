@@ -1,0 +1,60 @@
+{
+  "status_code": ${status_code},
+
+"assertions_explicit": [
+{ "path": "$", "op": "size", "value": ${assert_size} }
+],
+
+"assertions": {
+"$[0].uid": "${assert_[0].uid}",
+"$[0].customer_booking_name": "${assert_[0].customer_booking_name}",
+"$[0].guest_style": "${assert_[0].guest_style}",
+"$[0].IsCheckedIn": ${assert_[0].IsCheckedIn},
+"$[0].bag_status": "${assert_[0].bag_status}",
+"$[0].bill_code": "${assert_[0].bill_code}",
+"$[0].booking_code": "${assert_[0].booking_code}",
+"$[0].customer_type": "${assert_[0].customer_type}",
+"$[0].has_book_caddie": ${assert_[0].has_book_caddie},
+
+"$[1].uid": "${assert_[1].uid}",
+"$[1].customer_booking_name": "${assert_[1].customer_booking_name}",
+"$[1].guest_style": "${assert_[1].guest_style}",
+"$[1].IsCheckedIn": ${assert_[1].IsCheckedIn},
+"$[1].bag_status": "${assert_[1].bag_status}",
+"$[1].bill_code": "${assert_[1].bill_code}",
+"$[1].booking_code": "${assert_[1].booking_code}",
+"$[1].customer_type": "${assert_[1].customer_type}",
+"$[1].has_book_caddie": ${assert_[1].has_book_caddie},
+
+"$[2].uid": "${assert_[2].uid}",
+"$[2].customer_booking_name": "${assert_[2].customer_booking_name}",
+"$[2].guest_style": "${assert_[2].guest_style}",
+"$[2].IsCheckedIn": ${assert_[2].IsCheckedIn},
+"$[2].bag_status": "${assert_[2].bag_status}",
+"$[2].bill_code": "${assert_[2].bill_code}",
+"$[2].booking_code": "${assert_[2].booking_code}",
+"$[2].customer_type": "${assert_[2].customer_type}",
+"$[2].has_book_caddie": ${assert_[2].has_book_caddie},
+
+"$[3].uid": "${assert_[3].uid}",
+"$[3].customer_booking_name": "${assert_[3].customer_booking_name}",
+"$[3].guest_style": "${assert_[3].guest_style}",
+"$[3].IsCheckedIn": ${assert_[3].IsCheckedIn},
+"$[3].bag_status": "${assert_[3].bag_status}",
+"$[3].bill_code": "${assert_[3].bill_code}",
+"$[3].booking_code": "${assert_[3].booking_code}",
+"$[3].customer_type": "${assert_[3].customer_type}",
+"$[3].has_book_caddie": ${assert_[3].has_book_caddie}
+},
+
+"extract": {
+"booking_uid_0": "$[0].uid",
+"booking_code_0": "$[0].booking_code",
+"booking_uid_1": "$[1].uid",
+"booking_code_1": "$[1].booking_code",
+"booking_uid_2": "$[2].uid",
+"booking_code_2": "$[2].booking_code",
+"booking_uid_3": "$[3].uid",
+"booking_code_3": "$[3].booking_code"
+}
+}

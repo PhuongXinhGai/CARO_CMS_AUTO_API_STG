@@ -6,6 +6,7 @@ import common.utilities.AssertionHelper;
 import common.utilities.DynamicDataHelper;
 import common.utilities.ExcelUtils;
 import common.utilities.StringUtils;
+import helpers.ReportHelper;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.http.ContentType;
@@ -15,6 +16,7 @@ import org.apache.commons.io.output.WriterOutputStream;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.Reporter;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import tests.test_config.TestConfig;
@@ -149,5 +151,9 @@ public class GetBookingPriceTest extends TestConfig {
 //        if (greenFee != null)  ctx.setAttribute("GREEN_FEE", greenFee);
 //        if (caddieFee != null) ctx.setAttribute("CADDIE_FEE",  caddieFee);
 //        if (totalGolfFee != null) ctx.setAttribute("TOTAL_GOLF_FEE",  totalGolfFee);
+    }
+    @AfterMethod(alwaysRun = true)
+    public void dumpCtxToReport(ITestContext ctx) {
+        ReportHelper.logAllContext(ctx);
     }
 }

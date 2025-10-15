@@ -9,6 +9,8 @@ import listeners.TestListener; // Cần import TestListener
 import org.testng.ITestContext;
 import tests.models.ActionResult;
 
+import java.util.Set;
+
 public class ReportHelper {
 
     /**
@@ -40,6 +42,7 @@ public class ReportHelper {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
+    // Log dữ liệu context lên ExtentReports
     public static void logContext(ITestContext ctx, String... keys) {
         ExtentTest test = TestListener.getExtentTest();
         for (String k : keys) {
@@ -54,6 +57,30 @@ public class ReportHelper {
             }
         }
     }
+
+    // Log tất cả dữ liệu context lên ExtentReports
+    public static void logAllContext(ITestContext ctx) {
+        ExtentTest testLogger = TestListener.getExtentTest();
+        if (ctx == null || testLogger == null) return;
+
+        testLogger.info("===== 🧩 DỮ LIỆU TRONG CONTEXT =====");
+
+        Set<String> keys = ctx.getAttributeNames();
+        int count = 0;
+
+        for (String key : keys) {
+            Object val = ctx.getAttribute(key);
+            testLogger.info("🔹 " + key + " = " + (val != null ? val.toString() : "null"));
+            count++;
+        }
+
+        if (count == 0) {
+            testLogger.info("⚠️ Không có dữ liệu nào trong context.");
+        } else {
+            testLogger.info("===== ✅ Tổng số key trong context: " + count + " =====");
+        }
+    }
+
 
     private static boolean looksLikeJson(String s) {
         s = s.trim();
