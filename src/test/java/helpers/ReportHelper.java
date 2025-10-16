@@ -1,5 +1,6 @@
 package helpers;
 
+import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.markuputils.CodeLanguage;
 import com.aventstack.extentreports.markuputils.MarkupHelper;
@@ -12,6 +13,59 @@ import tests.models.ActionResult;
 import java.util.Set;
 
 public class ReportHelper {
+    /**
+     * Tạo node cha cho mỗi flow trong ExtentReports
+     * @param flowId    Mã flow (VD: FLOW_001)
+     * @param flowDesc  Mô tả flow
+     * @return ExtentTest node tương ứng để ghi log step con
+     */
+//    public static ExtentTest startFlow(String flowId, String flowDesc) {
+//        ExtentTest parent = TestListener.getExtentTest();
+//        ExtentTest flowNode;
+//
+//        try {
+//            if (parent != null) {
+//                // test đang nằm trong context listener (run từ suite XML)
+//                flowNode = parent.createNode("🌊 " + flowId + " – " + flowDesc);
+//            } else {
+//                // nếu listener chưa tạo ExtentTest (run trực tiếp IntegrationFlowTest)
+//                System.out.println("⚠️ Không thấy ExtentTest trong TestListener → tạo node gốc tạm thời.");
+//                flowNode = TestListener.getExtentReports()
+//                        .createTest(flowId, flowDesc);
+//            }
+//
+//            flowNode.info("🚀 Bắt đầu Flow: " + flowId + " - " + flowDesc);
+//            return flowNode;
+//        } catch (Exception e) {
+//            System.out.println("💥 Lỗi khi tạo node ExtentReports: " + e.getMessage());
+//            return null;
+//        }
+//    }
+    /**
+     * Tạo node cha cho mỗi Flow trong ExtentReports (chạy Integration)
+     * @param flowId   Mã flow (vd: FLOW_001)
+     * @param flowDesc Mô tả flow
+     * @return ExtentTest node để log step con
+     */
+    public static ExtentTest startFlow(String flowId, String flowDesc) {
+        try {
+            ExtentReports extent = TestListener.getExtentReports();
+
+            // ✅ 1 dòng duy nhất: title + desc hiển thị cùng
+            ExtentTest flowNode = extent.createTest("🌊 " + flowId + " – " + flowDesc);
+            flowNode.assignCategory(flowId); // thêm category để mô tả hiển thị rõ hơn
+            flowNode.info("🚀 Bắt đầu Flow: " + flowId);
+
+            return flowNode;
+
+        } catch (Exception e) {
+            System.out.println("💥 Lỗi khi tạo node ExtentReports: " + e.getMessage());
+            return null;
+        }
+    }
+
+
+
 
     /**
      * Ghi lại chi tiết một bước thực thi API vào báo cáo Extent Reports.

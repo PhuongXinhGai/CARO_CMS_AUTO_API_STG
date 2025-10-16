@@ -1,0 +1,12 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="API Test Suite">
+    <listeners>
+        <listener class-name="listeners.TestListener"/>
+    </listeners>
+
+    <test name="FLOW TEST">
+        <classes>
+            <class name="tests.test_scripts.api.integration.IntegrationFlowTest"/>
+        </classes>
+    </test>
+</suite>

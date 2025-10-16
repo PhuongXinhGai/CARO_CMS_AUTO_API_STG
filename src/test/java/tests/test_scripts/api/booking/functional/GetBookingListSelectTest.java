@@ -1,11 +1,13 @@
 package tests.test_scripts.api.booking.functional;
 
+import com.aventstack.extentreports.ExtentTest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import common.utilities.AssertionHelper;
 import common.utilities.DynamicDataHelper;
 import common.utilities.ExcelUtils;
 import common.utilities.StringUtils;
+import framework.core.FlowRunnable;
 import helpers.ReportHelper;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -32,7 +34,7 @@ import static io.restassured.RestAssured.given;
 
 import tests.test_config.TestConfig;
 
-public class GetBookingListSelectTest extends TestConfig {
+public class GetBookingListSelectTest extends TestConfig implements FlowRunnable {
     // ==== ĐƯỜNG DẪN — chỉnh cho khớp project của bạn ====
     private static final String EXCEL_FILE = System.getProperty("user.dir")
             + "/src/main/resources/input_excel_file/booking/Create_Booking_Batch.xlsx";
@@ -148,6 +150,14 @@ public class GetBookingListSelectTest extends TestConfig {
 //        if (caddieFee != null) ctx.setAttribute("CADDIE_FEE",  caddieFee);
 //        if (totalGolfFee != null) ctx.setAttribute("TOTAL_GOLF_FEE",  totalGolfFee);
     }
+    //    Flow chạy tích hợp
+    @Override
+    public void runCase(String caseId, ITestContext ctx, ExtentTest logger) throws Exception {
+        Map<String, String> row = findRowByCaseId(EXCEL_FILE, SHEET_NAME, caseId);
+        logger.info("▶️ Running Login case: " + caseId);
+        testGetBookingList(row, ctx);   // chỉ gọi lại hàm test cũ
+    }
+
     @AfterMethod(alwaysRun = true)
     public void dumpCtxToReport(ITestContext ctx) {
         ReportHelper.logAllContext(ctx);

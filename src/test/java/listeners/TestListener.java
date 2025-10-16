@@ -29,9 +29,15 @@ public class TestListener implements ITestListener, ISuiteListener {
     @Override
     public void onTestStart(ITestResult result) {
         String name = buildName(result);
-        ExtentTest test = ExtentReportManager.getExtent().createTest(name);
+//        ExtentTest test = ExtentReportManager.getExtent().createTest(name);
+        ExtentTest test = ExtentReportManager.getExtent().createTest(
+                name,
+                result.getMethod().getDescription() != null ? result.getMethod().getDescription() : ""
+        );
+
         extentTest.set(test);
     }
+
 
     private String buildName(ITestResult r){
         // 1) Nếu class có implements ITest (nếu còn class nào), vẫn ưu tiên
@@ -97,6 +103,11 @@ public class TestListener implements ITestListener, ISuiteListener {
         extentTest.get().skip("Test Skipped");
         extentTest.get().assignCategory("SKIPPED"); // optional, để lọc skipped
     }
+    // Getter cho ExtentReports – dùng cho ReportHelper.startFlow()
+    public static ExtentReports getExtentReports() {
+        return ExtentReportManager.getExtent();
+    }
+
 
 
 //    @Override

@@ -1,5 +1,6 @@
 package tests.test_scripts.api.user.functional;
 
+import com.aventstack.extentreports.ExtentTest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import common.utilities.AssertionHelper;
@@ -19,6 +20,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import tests.test_config.TestConfig;
+import framework.core.FlowRunnable;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -30,7 +32,7 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
-public class LoginTest extends TestConfig {
+public class LoginTest extends TestConfig implements FlowRunnable {
 
     // ===== cấu hình đường dẫn (đổi theo project của bạn) =====
     private static final String EXCEL_FILE   = System.getProperty("user.dir")
@@ -83,6 +85,9 @@ public class LoginTest extends TestConfig {
         ITestResult tr = Reporter.getCurrentTestResult();
         tr.setAttribute("requestLog",  reqWriter.toString());
         tr.setAttribute("responseLog", resp.getBody().prettyPrint());
+        ctx.setAttribute("LAST_REQUEST_LOG", reqWriter.toString());
+        ctx.setAttribute("LAST_RESPONSE_LOG", resp.getBody().prettyPrint());
+
 
         // ===== Step 5: Load expect JSON =====
         String expectFileName = row.getOrDefault("expected_validation_data", "");
@@ -113,11 +118,17 @@ public class LoginTest extends TestConfig {
         if (userNameRp != null) ctx.setAttribute("USER_NAME",  userNameRp);
     }
 
-    @AfterMethod(alwaysRun = true)
-    public void dumpCtxToReport(ITestContext ctx) {
-        // chỉ định các key chuẩn bạn muốn show
-        ReportHelper.logContext(ctx, "AUTH_TOKEN", "PARTNER_UID", "COURSE_UID", "USER_NAME");
+//    Flow chạy tích hợp
+    @Override
+    public void runCase(String caseId, ITestContext ctx, ExtentTest logger) throws Exception {
+        Map<String, String> row = findRowByCaseId(EXCEL_FILE, SHEET_NAME, caseId);
+        logger.info("▶️ Running Login case: " + caseId);
+        testLogin(row, ctx);   // chỉ gọi lại hàm test cũ
     }
 
-
+//    Hiển thị tất cả các trường lưu trong context
+    @AfterMethod(alwaysRun = true)
+    public void dumpCtxToReport(ITestContext ctx) {
+        ReportHelper.logAllContext(ctx);
+    }
 }

@@ -1,10 +1,12 @@
 package tests.test_scripts.api.booking.functional;
 
+import com.aventstack.extentreports.ExtentTest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import common.utilities.AssertionHelper;
 import common.utilities.ExcelUtils;
 import common.utilities.StringUtils;
+import framework.core.FlowRunnable;
 import helpers.ReportHelper;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -19,6 +21,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import tests.test_config.TestConfig;
+import framework.core.FlowRunnable;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -34,7 +37,7 @@ import static io.restassured.RestAssured.given;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
-public class QuoteFeeTest extends TestConfig {
+public class QuoteFeeTest extends TestConfig implements FlowRunnable {
 
     // ==== ĐƯỜNG DẪN — chỉnh cho khớp project của bạn ====
     private static final String EXCEL_FILE = System.getProperty("user.dir")
@@ -100,6 +103,9 @@ public class QuoteFeeTest extends TestConfig {
         ITestResult tr = Reporter.getCurrentTestResult();
         tr.setAttribute("requestLog", reqWriter.toString());
         tr.setAttribute("responseLog", resp.getBody().prettyPrint());
+        ctx.setAttribute("LAST_REQUEST_LOG", reqWriter.toString());
+        ctx.setAttribute("LAST_RESPONSE_LOG", resp.getBody().prettyPrint());
+
 
         // ===== Step 5: Load expect JSON =====
         // Excel cột 'expected_validation_data' trỏ tới file expect (vd: create_booking_batch_expect.json)
@@ -136,7 +142,15 @@ public class QuoteFeeTest extends TestConfig {
 //        if (caddieFee != null) ctx.setAttribute("CADDIE_FEE",  caddieFee);
 //        if (totalGolfFee != null) ctx.setAttribute("TOTAL_GOLF_FEE",  totalGolfFee);
     }
+    //    Flow chạy tích hợp
+    @Override
+    public void runCase(String caseId, ITestContext ctx, ExtentTest logger) throws Exception {
+        Map<String, String> row = findRowByCaseId(EXCEL_FILE, SHEET_NAME, caseId);
+        logger.info("▶️ Running Login case: " + caseId);
+        testQuoteFee(row, ctx);   // chỉ gọi lại hàm test cũ
+    }
 
+//    Hiển thị tất cả các trường lưu trong context
     @AfterMethod(alwaysRun = true)
     public void dumpCtxToReport(ITestContext ctx) {
         ReportHelper.logAllContext(ctx);

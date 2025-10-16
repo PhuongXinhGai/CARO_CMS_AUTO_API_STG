@@ -1,10 +1,12 @@
 package tests.test_scripts.api.booking.functional;
 
+import com.aventstack.extentreports.ExtentTest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import common.utilities.AssertionHelper;
 import common.utilities.ExcelUtils;
 import common.utilities.StringUtils;
+import framework.core.FlowRunnable;
 import helpers.ReportHelper;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -29,7 +31,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import static io.restassured.RestAssured.given;
 
-public class CreateBookingBatchTest extends TestConfig {
+public class CreateBookingBatchTest extends TestConfig implements FlowRunnable {
 
     // ==== ĐƯỜNG DẪN — chỉnh cho khớp project của bạn ====
     private static final String EXCEL_FILE = System.getProperty("user.dir")
@@ -134,6 +136,13 @@ public class CreateBookingBatchTest extends TestConfig {
             if (caddieFee != null)      ctx.setAttribute("CADDIE_FEE_" + i, caddieFee);
             if (totalGolfFee != null)   ctx.setAttribute("TOTAL_GOLF_FEE_" + i, totalGolfFee);
         }
+    }
+    //    Flow chạy tích hợp
+    @Override
+    public void runCase(String caseId, ITestContext ctx, ExtentTest logger) throws Exception {
+        Map<String, String> row = findRowByCaseId(EXCEL_FILE, SHEET_NAME, caseId);
+        logger.info("▶️ Running Login case: " + caseId);
+        testCreateBookingBatch(row, ctx);   // chỉ gọi lại hàm test cũ
     }
 
     @AfterMethod(alwaysRun = true)
