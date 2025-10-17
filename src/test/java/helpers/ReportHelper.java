@@ -14,34 +14,6 @@ import java.util.Set;
 
 public class ReportHelper {
     /**
-     * Tạo node cha cho mỗi flow trong ExtentReports
-     * @param flowId    Mã flow (VD: FLOW_001)
-     * @param flowDesc  Mô tả flow
-     * @return ExtentTest node tương ứng để ghi log step con
-     */
-//    public static ExtentTest startFlow(String flowId, String flowDesc) {
-//        ExtentTest parent = TestListener.getExtentTest();
-//        ExtentTest flowNode;
-//
-//        try {
-//            if (parent != null) {
-//                // test đang nằm trong context listener (run từ suite XML)
-//                flowNode = parent.createNode("🌊 " + flowId + " – " + flowDesc);
-//            } else {
-//                // nếu listener chưa tạo ExtentTest (run trực tiếp IntegrationFlowTest)
-//                System.out.println("⚠️ Không thấy ExtentTest trong TestListener → tạo node gốc tạm thời.");
-//                flowNode = TestListener.getExtentReports()
-//                        .createTest(flowId, flowDesc);
-//            }
-//
-//            flowNode.info("🚀 Bắt đầu Flow: " + flowId + " - " + flowDesc);
-//            return flowNode;
-//        } catch (Exception e) {
-//            System.out.println("💥 Lỗi khi tạo node ExtentReports: " + e.getMessage());
-//            return null;
-//        }
-//    }
-    /**
      * Tạo node cha cho mỗi Flow trong ExtentReports (chạy Integration)
      * @param flowId   Mã flow (vd: FLOW_001)
      * @param flowDesc Mô tả flow
@@ -63,9 +35,6 @@ public class ReportHelper {
             return null;
         }
     }
-
-
-
 
     /**
      * Ghi lại chi tiết một bước thực thi API vào báo cáo Extent Reports.
@@ -96,7 +65,7 @@ public class ReportHelper {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    // Log dữ liệu context lên ExtentReports
+    // Log dữ liệu từng key context lên ExtentReports
     public static void logContext(ITestContext ctx, String... keys) {
         ExtentTest test = TestListener.getExtentTest();
         for (String k : keys) {

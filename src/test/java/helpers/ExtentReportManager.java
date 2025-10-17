@@ -29,7 +29,13 @@ public final class ExtentReportManager {
             ExtentSparkReporter spark = new ExtentSparkReporter(path);
             // Tuỳ chọn giao diện
             spark.viewConfigurer().viewOrder()
-                    .as(new ViewName[]{ViewName.DASHBOARD, ViewName.TEST, ViewName.CATEGORY, ViewName.EXCEPTION})
+//                    .as(new ViewName[]{ViewName.DASHBOARD, ViewName.TEST, ViewName.CATEGORY, ViewName.EXCEPTION})
+                    .as(new ViewName[]{
+                            ViewName.TEST,
+                            ViewName.CATEGORY,
+                            ViewName.DASHBOARD,
+                            ViewName.EXCEPTION
+                    })
                     .apply();
             spark.config().setDocumentTitle("Automation Test Report");
             spark.config().setReportName("API Test Report");
