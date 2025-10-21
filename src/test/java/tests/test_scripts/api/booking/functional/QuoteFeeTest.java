@@ -100,6 +100,7 @@ public class QuoteFeeTest extends TestConfig implements FlowRunnable {
         String respJson = resp.asString();
 
         // ===== Step 4: Gắn log request/response vào report =====
+        reqCapture.flush();
         ITestResult tr = Reporter.getCurrentTestResult();
         tr.setAttribute("requestLog", reqWriter.toString());
         tr.setAttribute("responseLog", resp.getBody().prettyPrint());

@@ -9,10 +9,21 @@ import org.testng.*;
 
 import org.testng.ITestResult;
 
+import java.util.Map;
+
 
 public class TestListener implements ITestListener, ISuiteListener {
 
     private static final ThreadLocal<ExtentTest> extentTest = new ThreadLocal<>();
+
+    // ========================================================
+//// 🔹 Map lưu node cha của từng flow để tránh tạo duplicate
+//// ========================================================
+//    private static final Map<String, ExtentTest> flowTestMap = new java.util.concurrent.ConcurrentHashMap<>();
+//
+//    public static Map<String, ExtentTest> getExtentTestMap() {
+//        return flowTestMap;
+//    }
 
     public static ExtentTest getExtentTest() { return extentTest.get(); }
 

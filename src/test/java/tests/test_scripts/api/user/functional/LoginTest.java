@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import common.utilities.AssertionHelper;
 import common.utilities.ExcelUtils;
+import common.utilities.RequestLogger;
 import common.utilities.StringUtils;
 import helpers.ReportHelper;
 import io.restassured.filter.log.LogDetail;
@@ -73,7 +74,8 @@ public class LoginTest extends TestConfig implements FlowRunnable {
         Response resp = given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
-                .filter(new RequestLoggingFilter(LogDetail.ALL, true, reqCapture))
+//                .filter(new RequestLoggingFilter(LogDetail.ALL, true, reqCapture))
+                .filter(new RequestLogger(reqCapture))
                 .when()
                 .post(BASE_URL + "/golf-cms/api/user/login-plain")
                 .then()
@@ -82,11 +84,15 @@ public class LoginTest extends TestConfig implements FlowRunnable {
         String respJson = resp.asString();
 
         // ===== Step 4: Gắn log request/response vào báo cáo =====
+        reqCapture.flush();
         ITestResult tr = Reporter.getCurrentTestResult();
         tr.setAttribute("requestLog",  reqWriter.toString());
         tr.setAttribute("responseLog", resp.getBody().prettyPrint());
         ctx.setAttribute("LAST_REQUEST_LOG", reqWriter.toString());
         ctx.setAttribute("LAST_RESPONSE_LOG", resp.getBody().prettyPrint());
+        System.out.println("🧾 LAST_REQUEST_LOG: " + ctx.getAttribute("LAST_REQUEST_LOG"));
+        System.out.println("🧾 LAST_RESPONSE_LOG: " + ctx.getAttribute("LAST_RESPONSE_LOG"));
+
 
 
         // ===== Step 5: Load expect JSON =====

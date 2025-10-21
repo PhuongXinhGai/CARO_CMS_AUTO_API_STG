@@ -71,10 +71,25 @@ public class IntegrationFlowTest {
 
                 // Chạy API
                 apiTest.runCase(caseId, ctx, stepLogger);
-
-                // === Ghi log request / response nếu có ===
+                // === Ghi log request / response ===
                 Object req = ctx.getAttribute("LAST_REQUEST_LOG");
                 Object resp = ctx.getAttribute("LAST_RESPONSE_LOG");
+
+                if (stepLogger != null) {
+                    if (req != null) {
+                        stepLogger.info("📤 **REQUEST:**");
+                        stepLogger.info(MarkupHelper.createCodeBlock(req.toString(), CodeLanguage.JSON));
+                    }
+                    if (resp != null) {
+                        stepLogger.info("📥 **RESPONSE:**");
+                        stepLogger.info(MarkupHelper.createCodeBlock(resp.toString(), CodeLanguage.JSON));
+                    }
+                }
+
+
+                // === Ghi log request / response nếu có ===
+//                Object req = ctx.getAttribute("LAST_REQUEST_LOG");
+//                Object resp = ctx.getAttribute("LAST_RESPONSE_LOG");
 //                if (stepLogger != null) {
 //                    if (req != null) stepLogger.info("📤 REQUEST:\n" + req);
 //                    if (resp != null) stepLogger.info("📥 RESPONSE:\n" + resp);
@@ -104,5 +119,8 @@ public class IntegrationFlowTest {
 
         if (flowLogger != null)
             flowLogger.pass("🎯 Flow " + flowId + " completed successfully!");
+
+        // Sau khi chạy hết các API trong flow
+        ReportHelper.logContext(flowLogger, ctx);
     }
 }

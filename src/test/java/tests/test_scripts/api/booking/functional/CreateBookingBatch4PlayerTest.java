@@ -96,6 +96,9 @@ public class CreateBookingBatch4PlayerTest extends TestConfig {
         ITestResult tr = Reporter.getCurrentTestResult();
         tr.setAttribute("requestLog", reqWriter.toString());
         tr.setAttribute("responseLog", resp.getBody().prettyPrint());
+        ctx.setAttribute("LAST_REQUEST_LOG", requestBody);
+        ctx.setAttribute("LAST_RESPONSE_LOG", resp.asString());
+
 
         // ===== Step 5: Load expect JSON =====
         // Excel cột 'expected_validation_data' trỏ tới file expect (vd: create_booking_batch_expect.json)

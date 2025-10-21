@@ -7,26 +7,34 @@ import com.aventstack.extentreports.markuputils.MarkupHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import listeners.TestListener; // Cần import TestListener
+import listeners.FlowTestListener;
 import org.testng.ITestContext;
 import tests.models.ActionResult;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class ReportHelper {
+
     /**
-     * Tạo node cha cho mỗi Flow trong ExtentReports (chạy Integration)
-     * @param flowId   Mã flow (vd: FLOW_001)
-     * @param flowDesc Mô tả flow
-     * @return ExtentTest node để log step con
+     * ✅ Tạo node cha cho mỗi Flow trong ExtentReports (chạy Integration)
      */
     public static ExtentTest startFlow(String flowId, String flowDesc) {
         try {
-            ExtentReports extent = TestListener.getExtentReports();
+            ExtentReports extent = FlowTestListener.getExtentReports();
 
-            // ✅ 1 dòng duy nhất: title + desc hiển thị cùng
+            // 🔹 Kiểm tra flow đã tồn tại chưa (tránh duplicate)
+            ExtentTest existing = FlowTestListener.getExtentTestMap().get(flowId);
+            if (existing != null) return existing;
+
+            // 🔹 1 dòng duy nhất: title + desc
             ExtentTest flowNode = extent.createTest("🌊 " + flowId + " – " + flowDesc);
-            flowNode.assignCategory(flowId); // thêm category để mô tả hiển thị rõ hơn
+            flowNode.assignCategory(flowId);
             flowNode.info("🚀 Bắt đầu Flow: " + flowId);
+
+            // Lưu lại để các class khác có thể lấy lại
+            FlowTestListener.getExtentTestMap().put(flowId, flowNode);
 
             return flowNode;
 
@@ -36,6 +44,28 @@ public class ReportHelper {
         }
     }
 
+    /**
+     * ✅ Log toàn bộ context ra báo cáo (dạng JSON)
+     */
+    public static void logContext(ExtentTest flowNode, ITestContext ctx) {
+        try {
+            Map<String, Object> map = new LinkedHashMap<>();
+            for (String key : ctx.getAttributeNames()) {
+                Object val = ctx.getAttribute(key);
+                map.put(key, val);
+            }
+
+            if (!map.isEmpty()) {
+                String json = new Gson().toJson(map);
+                flowNode.info("🧾 **Context summary:**");
+                flowNode.info(MarkupHelper.createCodeBlock(json, CodeLanguage.JSON));
+            } else {
+                flowNode.info("ℹ️ No context data found.");
+            }
+        } catch (Exception e) {
+            flowNode.warning("⚠️ Lỗi khi log context: " + e.getMessage());
+        }
+    }
     /**
      * Ghi lại chi tiết một bước thực thi API vào báo cáo Extent Reports.
      * @param stepName Tên của bước (ví dụ: "Bước 1: Login").
@@ -65,21 +95,6 @@ public class ReportHelper {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    // Log dữ liệu từng key context lên ExtentReports
-    public static void logContext(ITestContext ctx, String... keys) {
-        ExtentTest test = TestListener.getExtentTest();
-        for (String k : keys) {
-            Object v = ctx.getAttribute(k);
-            if (v == null) continue;
-            String s = String.valueOf(v);
-            if (looksLikeJson(s)) {
-                test.info(k + ":");
-                test.info(MarkupHelper.createCodeBlock(prettyJson(s), CodeLanguage.JSON));
-            } else {
-                test.info(k + ": " + s);
-            }
-        }
-    }
 
     // Log tất cả dữ liệu context lên ExtentReports
     public static void logAllContext(ITestContext ctx) {
