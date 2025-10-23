@@ -90,7 +90,7 @@ public class EditBookingAtTeeTimeTest extends TestConfig implements FlowRunnable
                 .body(requestBody)
                 .filter(new RequestLoggingFilter(LogDetail.ALL, true, reqCapture))
                 .when()
-                .post(BASE_URL + "/golf-cms/api/booking/" + booking_uid)
+                .put(BASE_URL + "/golf-cms/api/booking/" + booking_uid)
                 .then()
                 .extract().response();
 
