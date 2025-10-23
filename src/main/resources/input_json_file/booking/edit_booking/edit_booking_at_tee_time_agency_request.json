@@ -1,0 +1,14 @@
+{
+  "uid": "${uid}",
+  "cms_user": "${cms_user}",
+  "partner_uid": "${partner_uid}",
+  "course_uid": "${course_uid}",
+  "customer_booking_name": "${customer_booking_name}",
+  "customer_name": "${customer_name}",
+  "caddie_code": "${caddie_code}",
+  "note_of_booking": "${note_of_booking}",
+  "guest_style": "${guest_style}",
+  "bag": "${bag}",
+  "locker_no": "${locker_no}",
+  "gender": "${gender}"
+}

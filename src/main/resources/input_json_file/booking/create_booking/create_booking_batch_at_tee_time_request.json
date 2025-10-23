@@ -1,0 +1,19 @@
+{
+  "row_index": ${row_index},
+"tee_time": "${tee_time}",
+"turn_time": "${turn_time}",
+"tee_path": "${tee_path}",
+"tee_type": "${tee_type}",
+"course_type": "${course_type}",
+"cms_user": "${cms_user}",
+"partner_uid": "${partner_uid}",
+"course_uid": "${course_uid}",
+"customer_booking_name": "${customer_booking_name}",
+"customer_name": "${customer_name}",
+"caddie_code": "${caddie_code}",
+"note_of_booking": "${note_of_booking}",
+"hole_booking": ${hole_booking},
+"bag": "${bag}",
+"locker_no": "${locker_no}",
+"booking_date": "${booking_date}"
+}

@@ -125,23 +125,7 @@ public class QuoteFeeTest extends TestConfig implements FlowRunnable {
         AssertionHelper.assertFromJson(respJson, expectJson);
 
         // ===== Step 8: Extract lưu biến cho bước sau (nếu cần) =====
-        // tuỳ nhu cầu: VD lưu booking_code_0, booking_uid_0 (đã định nghĩa trong "extract" của expect)
-        // nếu bạn muốn parse nhanh ở đây, có thể dùng JsonPath đọc lại:
-//         JsonPath jp = new JsonPath(respJson);
-        // ctx.setAttribute("BOOKING_CODE_0", jp.getString("[0].booking_code"));
-//        JsonPath jp = resp.jsonPath();
-//        String uid      = jp.getString("[0].uid");
-//        String guestStyle = jp.getString("[0].guest_style");
-//        String guestStyleName  = jp.getString("[0].guest_style_name");
-//        String greenFee = jp.getString("[0].list_golf_fee[0].green_fee");
-//        String caddieFee = jp.getString("[0].list_golf_fee[0].caddie_fee");
-//        String totalGolfFee = jp.getString("[0].mush_pay_info.total_golf_fee");
-//        if (uid != null)      ctx.setAttribute("BOOKING_UID", uid);
-//        if (guestStyle != null) ctx.setAttribute("GUEST_STYLE", guestStyle);
-//        if (guestStyleName != null)  ctx.setAttribute("GUEST_TYPE_NAME", guestStyleName);
-//        if (greenFee != null)  ctx.setAttribute("GREEN_FEE", greenFee);
-//        if (caddieFee != null) ctx.setAttribute("CADDIE_FEE",  caddieFee);
-//        if (totalGolfFee != null) ctx.setAttribute("TOTAL_GOLF_FEE",  totalGolfFee);
+
     }
     //    Flow chạy tích hợp
     @Override

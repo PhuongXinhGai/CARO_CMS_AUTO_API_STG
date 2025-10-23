@@ -1,0 +1,22 @@
+{
+  "status_code": ${status_code},
+
+"assertions_explicit": [
+],
+
+"assertions": {
+"$.uid": "${assert_uid}",
+"$.bag": "${assert_bag}",
+"$.customer_booking_name": "${assert_customer_booking_name}",
+"$.guest_style": "${assert_guest_style}",
+"$.IsCheckedIn": ${assert_IsCheckedIn},
+"$.bag_status": "${assert_bag_status}",
+"$.bill_code": "${assert_bill_code}",
+"$.booking_code": "${assert_booking_code}",
+"$.customer_type": "${assert_customer_type}",
+"$.has_book_caddie": ${assert_has_book_caddie}
+},
+
+"extract": {
+}
+}

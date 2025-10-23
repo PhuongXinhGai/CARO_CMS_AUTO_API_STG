@@ -8,7 +8,13 @@ public class ApiRegistry {
     private static final Map<String, String> MAP = Map.of(
             "login_case_id", "tests.test_scripts.api.user.functional.LoginTest",
             "quote_fee_case_id", "tests.test_scripts.api.booking.functional.QuoteFeeTest",
+
             "create_booking_case_id", "tests.test_scripts.api.booking.functional.CreateBookingBatchTest",
+            "create_booking_Voucher_case_id", "tests.test_scripts.api.booking.functional.CreateBookingBatchVoucherTest",
+            "create_booking_4_player_case_id", "tests.test_scripts.api.booking.functional.CreateBookingBatch4PlayerTest",
+
+            "edit_booking_at_tee_time_id", "tests.test_scripts.api.booking.functional.EditBookingAtTeeTimeTest",
+
             "get_list_case_id", "tests.test_scripts.api.booking.functional.GetBookingListSelectTest",
             "get_booking_price_case_id", "tests.test_scripts.api.booking.functional.GetBookingPriceTest"
     );
@@ -23,7 +29,13 @@ public class ApiRegistry {
         return List.of(
                 "login_case_id",
                 "quote_fee_case_id",
+
                 "create_booking_case_id",
+                "create_booking_Voucher_case_id",
+                "create_booking_4_player_case_id",
+
+                "edit_booking_at_tee_time_id",
+
                 "get_list_case_id",
                 "get_booking_price_case_id"
         );

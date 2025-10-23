@@ -19,7 +19,7 @@ public class IntegrationFlowTest {
     @DataProvider(name = "flowData")
     public Object[][] flowData() throws Exception {
         String excelPath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/flow_definition.xlsx";
-        String sheetName = "flow"; // tạm thời fix cứng
+        String sheetName = "flow_1_player"; // tạm thời fix cứng
 
         List<Map<String, String>> list = FlowDataLoader.readFlows(excelPath, sheetName);
 
@@ -40,6 +40,9 @@ public class IntegrationFlowTest {
         String flowDesc = flow.get("flow_description");
 
         ExtentTest flowLogger = ReportHelper.startFlow(flowId, flowDesc);
+        // Sau khi chạy hết các API trong flow
+        ReportHelper.logContext(flowLogger, ctx);
+
         if (flowLogger != null)
             flowLogger.info("🚀 Start Flow: " + flowId + " - " + flowDesc);
 
@@ -121,6 +124,6 @@ public class IntegrationFlowTest {
             flowLogger.pass("🎯 Flow " + flowId + " completed successfully!");
 
         // Sau khi chạy hết các API trong flow
-        ReportHelper.logContext(flowLogger, ctx);
+//        ReportHelper.logContext(flowLogger, ctx);
     }
 }

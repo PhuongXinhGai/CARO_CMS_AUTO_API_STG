@@ -69,7 +69,7 @@ public class AssertionHelper {
             } else if (actual != null && actual.getClass().isArray()) {
                 actualSize = java.lang.reflect.Array.getLength(actual);
             } else {
-                Assert.fail(path + " size check failed. Actual type is not a Collection/Map/Array.");
+                Assert.fail(path + " size check failed. Actual type is not edit_booking_at_tee_time_request.json Collection/Map/Array.");
             }
 
             Assert.assertEquals(actualSize, expected,
