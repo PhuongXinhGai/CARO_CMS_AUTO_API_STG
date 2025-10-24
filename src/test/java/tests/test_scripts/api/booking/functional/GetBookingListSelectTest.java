@@ -95,6 +95,8 @@ public class GetBookingListSelectTest extends TestConfig implements FlowRunnable
         q.put("is_single_book", row.get("is_single_book"));
         q.put("is_ignore_tournament_booking", row.get("is_ignore_tournament_booking"));
 
+        System.out.println("🧩 Request body sau replace:\n" + q);
+
 // ===== Step 3: Call API =====
         Response resp = given()
                 .contentType(ContentType.JSON)

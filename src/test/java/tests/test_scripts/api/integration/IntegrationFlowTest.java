@@ -40,8 +40,6 @@ public class IntegrationFlowTest {
         String flowDesc = flow.get("flow_description");
 
         ExtentTest flowLogger = ReportHelper.startFlow(flowId, flowDesc);
-        // Sau khi chạy hết các API trong flow
-        ReportHelper.logContext(flowLogger, ctx);
 
         if (flowLogger != null)
             flowLogger.info("🚀 Start Flow: " + flowId + " - " + flowDesc);
@@ -89,7 +87,6 @@ public class IntegrationFlowTest {
                     }
                 }
 
-
                 // === Ghi log request / response nếu có ===
 //                Object req = ctx.getAttribute("LAST_REQUEST_LOG");
 //                Object resp = ctx.getAttribute("LAST_RESPONSE_LOG");
@@ -124,6 +121,7 @@ public class IntegrationFlowTest {
             flowLogger.pass("🎯 Flow " + flowId + " completed successfully!");
 
         // Sau khi chạy hết các API trong flow
-//        ReportHelper.logContext(flowLogger, ctx);
+        ReportHelper.logContext(flowLogger, ctx);
+
     }
 }

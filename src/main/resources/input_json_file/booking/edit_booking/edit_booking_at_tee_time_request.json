@@ -1,5 +1,6 @@
 {
   "uid": "${uid}",
+  "agency_id": ${agency_id},
   "cms_user": "${cms_user}",
   "partner_uid": "${partner_uid}",
   "course_uid": "${course_uid}",

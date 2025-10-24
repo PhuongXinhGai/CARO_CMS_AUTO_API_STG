@@ -81,6 +81,8 @@ public class QuoteFeeTest extends TestConfig implements FlowRunnable {
         String reqTpl = Files.readString(Paths.get(JSON_DIR + reqFileName));
         String requestBody = StringUtils.replacePlaceholdersInString(reqTpl, row); // thay tất cả ${colName}
 
+        System.out.println("🧩 Request body sau replace:\n" + requestBody);
+
         // ===== Step 3: Call API =====
         String tokenFromCtx = (String) ctx.getAttribute("AUTH_TOKEN");
         String tokenFromExcel = row.get("auth_token"); // optional in Excel

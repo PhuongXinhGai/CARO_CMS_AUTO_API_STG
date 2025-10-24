@@ -75,6 +75,7 @@ public class CreateBookingBatchAtTeeTimeTest extends TestConfig implements FlowR
         String reqFileName = row.getOrDefault("input_placeholders", "create_booking_batch_request.json");
         String reqTpl = Files.readString(Paths.get(JSON_DIR + reqFileName));
         String requestBody = StringUtils.replacePlaceholdersInString(reqTpl, row); // thay tất cả ${colName}
+        System.out.println("🧩 Request body sau replace:\n" + requestBody);
 
         // ===== Step 3: Call API =====
         String tokenFromCtx = (String) ctx.getAttribute("AUTH_TOKEN");
@@ -129,16 +130,65 @@ public class CreateBookingBatchAtTeeTimeTest extends TestConfig implements FlowR
             String uid            = jp.getString("[" + i + "].uid");
             String guestStyle     = jp.getString("[" + i + "].guest_style");
             String guestStyleName = jp.getString("[" + i + "].guest_style_name");
+
             String greenFee       = jp.getString("[" + i + "].list_golf_fee[0].green_fee");
             String caddieFee      = jp.getString("[" + i + "].list_golf_fee[0].caddie_fee");
             String totalGolfFee   = jp.getString("[" + i + "].mush_pay_info.total_golf_fee");
 
+            String courseType   = jp.getString("[" + i + "].course_type");
+            String teeType   = jp.getString("[" + i + "].tee_type");
+            String teeTime   = jp.getString("[" + i + "].tee_time");
+            String turnTime   = jp.getString("[" + i + "].turn_time");
+            String tee_time_after   = jp.getString("[" + i + "].tee_time_after");
+            String teePath   = jp.getString("[" + i + "].tee_path");
+            String teeOffTime   = jp.getString("[" + i + "].tee_off_time");
+            String rowIndex   = jp.getString("[" + i + "].row_index");
+
+            String hole   = jp.getString("[" + i + "].hole");
+            String holeBooking   = jp.getString("[" + i + "].hole_booking");
+            String caddie_booking   = jp.getString("[" + i + "].caddie_booking");
+
+            String customer_name   = jp.getString("[" + i + "].customer_name");
+            String customer_booking_name   = jp.getString("[" + i + "].customer_booking_name");
+            String customer_booking_phone   = jp.getString("[" + i + "].customer_booking_phone");
+            String customer_booking_email   = jp.getString("[" + i + "].customer_booking_email");
+            String member_name_of_guest   = jp.getString("[" + i + "].member_name_of_guest");
+            String member_uid_of_guest   = jp.getString("[" + i + "].member_uid_of_guest");
+            String member_card_uid   = jp.getString("[" + i + "].member_card_uid");
+
+            String bagStatus   = jp.getString("[" + i + "].bag_status");
+
+
             if (uid != null)            ctx.setAttribute("BOOKING_UID_" + i, uid);
             if (guestStyle != null)     ctx.setAttribute("GUEST_STYLE_" + i, guestStyle);
             if (guestStyleName != null) ctx.setAttribute("GUEST_STYLE_NAME_" + i, guestStyleName);
+
             if (greenFee != null)       ctx.setAttribute("GREEN_FEE_" + i, greenFee);
             if (caddieFee != null)      ctx.setAttribute("CADDIE_FEE_" + i, caddieFee);
             if (totalGolfFee != null)   ctx.setAttribute("TOTAL_GOLF_FEE_" + i, totalGolfFee);
+
+            if (courseType != null)   ctx.setAttribute("COURSE_TYPE_" + i, courseType);
+            if (teeType != null)   ctx.setAttribute("TEE_TYPE_" + i, teeType);
+            if (teeTime != null)   ctx.setAttribute("TEE_TIME_" + i, teeTime);
+            if (turnTime != null)   ctx.setAttribute("TURN_TIME_" + i, turnTime);
+            if (tee_time_after != null)   ctx.setAttribute("TEE_TIME_AFTER_" + i, tee_time_after);
+            if (teePath != null)   ctx.setAttribute("TEE_PATH_" + i, teePath);
+            if (teeOffTime != null)   ctx.setAttribute("TEE_OFF_TIME_" + i, teeOffTime);
+            if (rowIndex != null)   ctx.setAttribute("ROW_INDEX_" + i, rowIndex);
+
+            if (hole != null)   ctx.setAttribute("HOLE_" + i, hole);
+            if (holeBooking != null)   ctx.setAttribute("HOLE_BOOKING_" + i, holeBooking);
+            if (caddie_booking != null)   ctx.setAttribute("CADDIE_BOOKING_" + i, caddie_booking);
+
+            if (customer_name != null)   ctx.setAttribute("CUSTOMER_NAME_" + i, customer_name);
+            if (customer_booking_name != null)   ctx.setAttribute("CUSTOMER_BOOKING_NAME_" + i, customer_booking_name);
+            if (customer_booking_phone != null)   ctx.setAttribute("CUSTOMER_BOOKING_PHONE_" + i, customer_booking_phone);
+            if (customer_booking_email != null)   ctx.setAttribute("CUSTOMER_BOOKING_EMAIL_" + i, customer_booking_email);
+            if (member_name_of_guest != null)   ctx.setAttribute("MEMBER_NAME_OF_GUEST_" + i, member_name_of_guest);
+            if (member_uid_of_guest != null)   ctx.setAttribute("MEMBER_UID_OF_GUEST_" + i, member_uid_of_guest);
+            if (member_card_uid != null)   ctx.setAttribute("MEMBER_CARD_UID_" + i, member_card_uid);
+
+            if (bagStatus != null)   ctx.setAttribute("BAG_STATUS_" + i, bagStatus);
         }
     }
     //    Flow chạy tích hợp

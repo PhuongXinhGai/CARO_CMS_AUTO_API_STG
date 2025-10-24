@@ -70,6 +70,8 @@ public class LoginTest extends TestConfig implements FlowRunnable {
         String reqTpl = Files.readString(Paths.get(JSON_DIR + reqFileName));
         String requestBody = StringUtils.replacePlaceholdersInString(reqTpl, row); // thay tất cả ${colName}
 
+        System.out.println("🧩 Request body sau replace:\n" + requestBody);
+
         // ===== Step 3: Call API =====
         Response resp = given()
                 .contentType(ContentType.JSON)
@@ -90,10 +92,6 @@ public class LoginTest extends TestConfig implements FlowRunnable {
         tr.setAttribute("responseLog", resp.getBody().prettyPrint());
         ctx.setAttribute("LAST_REQUEST_LOG", reqWriter.toString());
         ctx.setAttribute("LAST_RESPONSE_LOG", resp.getBody().prettyPrint());
-        System.out.println("🧾 LAST_REQUEST_LOG: " + ctx.getAttribute("LAST_REQUEST_LOG"));
-        System.out.println("🧾 LAST_RESPONSE_LOG: " + ctx.getAttribute("LAST_RESPONSE_LOG"));
-
-
 
         // ===== Step 5: Load expect JSON =====
         String expectFileName = row.getOrDefault("expected_validation_data", "");
@@ -118,10 +116,13 @@ public class LoginTest extends TestConfig implements FlowRunnable {
         String partnerUid = jp.getString("data.partner_uid");
         String courseUid  = jp.getString("data.course_uid");
         String userNameRp = jp.getString("data.user_name");
+        String full_name = jp.getString("data.full_name");
+
         if (token != null)      ctx.setAttribute("AUTH_TOKEN", token);
         if (partnerUid != null) ctx.setAttribute("PARTNER_UID", partnerUid);
         if (courseUid != null)  ctx.setAttribute("COURSE_UID", courseUid);
         if (userNameRp != null) ctx.setAttribute("USER_NAME",  userNameRp);
+        if (full_name != null)  ctx.setAttribute("FULL_NAME",  full_name);
     }
 
 //    Flow chạy tích hợp
