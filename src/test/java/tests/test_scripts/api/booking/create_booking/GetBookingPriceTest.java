@@ -1,4 +1,4 @@
-package tests.test_scripts.api.booking.functional;
+package tests.test_scripts.api.booking.create_booking;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.google.gson.Gson;
@@ -20,6 +20,7 @@ import org.testng.Reporter;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import tests.test_config.TestConfig;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -31,21 +32,21 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
-import tests.test_config.TestConfig;
-
-public class GetBookingListSelectTest extends TestConfig implements FlowRunnable {
+public class GetBookingPriceTest extends TestConfig implements FlowRunnable {
     // ==== ĐƯỜNG DẪN — chỉnh cho khớp project của bạn ====
     private static final String EXCEL_FILE = System.getProperty("user.dir")
             + "/src/main/resources/input_excel_file/booking/Create_Booking_Batch.xlsx";
-    private static final String SHEET_NAME = "Get_List_Booking_Select";
+    private static final String SHEET_NAME = "Get_Booking_Price";
     // Thư mục chứa JSON request/expect cho API này
     private static final String JSON_DIR = System.getProperty("user.dir")
-            + "/src/main/resources/input_json_file/booking/get_booking_list/";
+            + "/src/main/resources/input_json_file/booking/get_booking_price/";
 
     // ======================= DataProvider =======================
-    @DataProvider(name = "getBookingListData")
-    public Object[][] getBookingListData() throws IOException {
+    @DataProvider(name = "getBookingPriceData")
+    public Object[][] getBookingPriceData() throws IOException {
         return ExcelUtils.readSheetAsMaps(EXCEL_FILE, SHEET_NAME);
     }
 
@@ -60,10 +61,10 @@ public class GetBookingListSelectTest extends TestConfig implements FlowRunnable
      * 7) So sánh actual vs expect (AssertionHelper)
      * 8) Extract và lưu biến cho step sau (nếu cần)
      */
-    @Test(dataProvider = "getBookingListData")
+    @Test(dataProvider = "getBookingPriceData")
     public void testGetBookingList(Map<String, String> row, ITestContext ctx) throws IOException {
         final String tcId = row.getOrDefault("tc_id", "NO_ID");
-        final String desc = row.getOrDefault("tc_description", "Create booking batch");
+        final String desc = row.getOrDefault("tc_description", "Get Booking Price");
 
         System.out.println("Running: " + tcId + " - " + desc);
 
@@ -88,12 +89,11 @@ public class GetBookingListSelectTest extends TestConfig implements FlowRunnable
         Map<String, Object> q = new LinkedHashMap<>();
         q.put("partner_uid", partnerCtx);
         q.put("course_uid",  courseCtx);
-        q.put("sort_by",     row.get("sort_by"));
-        q.put("sort_dir",    row.get("sort_dir"));
+//        q.put("sort_by",     row.get("sort_by"));
+//        q.put("sort_dir",    row.get("sort_dir"));
         q.put("booking_date", resolvedBookingDate);
-//        q.put("has_caddie",   row.get("has_caddie"));
-        q.put("is_single_book", row.get("is_single_book"));
-        q.put("is_ignore_tournament_booking", row.get("is_ignore_tournament_booking"));
+//        q.put("is_single_book", row.get("is_single_book"));
+//        q.put("is_ignore_tournament_booking", row.get("is_ignore_tournament_booking"));
 
         System.out.println("🧩 Request body sau replace:\n" + q);
 
@@ -104,7 +104,7 @@ public class GetBookingListSelectTest extends TestConfig implements FlowRunnable
                 .queryParams(q)
                 .filter(new RequestLoggingFilter(LogDetail.ALL, true, reqCapture))
                 .when()
-                .get(BASE_URL + "/golf-cms/api/booking/list/select")
+                .get(BASE_URL + "/golf-cms/api/booking/booking-price")
                 .then()
                 .extract()
                 .response();
@@ -123,7 +123,7 @@ public class GetBookingListSelectTest extends TestConfig implements FlowRunnable
 
         // ===== Step 5: Load expect JSON =====
         // Excel cột 'expected_validation_data' trỏ tới file expect (vd: create_booking_batch_expect.json)
-        String expectFileName = row.getOrDefault("expected_validation_data", "get_booking_list_expect.json");
+        String expectFileName = row.getOrDefault("expected_validation_data", "get_booking_price_expect.json");
         String expectRaw = Files.readString(Paths.get(JSON_DIR + expectFileName));
 
         // ===== Step 6: Replace placeholder trong expect =====

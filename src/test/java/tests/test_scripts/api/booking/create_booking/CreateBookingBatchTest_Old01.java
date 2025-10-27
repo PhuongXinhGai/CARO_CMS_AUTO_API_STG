@@ -1,4 +1,4 @@
-package tests.test_scripts.api.booking.functional;
+package tests.test_scripts.api.booking.create_booking;
 
 import common.utilities.DynamicDataHelper;
 import common.utilities.ExcelUtils;

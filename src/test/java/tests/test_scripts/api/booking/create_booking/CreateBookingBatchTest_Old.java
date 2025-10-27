@@ -1,4 +1,4 @@
-package tests.test_scripts.api.booking.functional;
+package tests.test_scripts.api.booking.create_booking;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

@@ -1,4 +1,4 @@
-package tests.test_scripts.api.booking.functional;
+package tests.test_scripts.api.booking.create_booking;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.google.gson.Gson;
@@ -28,15 +28,16 @@ import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Map;
+
 import static io.restassured.RestAssured.given;
 
-public class CreateBookingBatchTest extends TestConfig implements FlowRunnable {
+public class CreateBookingBatchAtTeeTimeTest extends TestConfig implements FlowRunnable {
 
     // ==== ĐƯỜNG DẪN — chỉnh cho khớp project của bạn ====
     private static final String EXCEL_FILE = System.getProperty("user.dir")
             + "/src/main/resources/input_excel_file/booking/Create_Booking_Batch.xlsx";
-    private static final String SHEET_NAME = "Create_Booking_1_Player";
+    private static final String SHEET_NAME = "Create_Booking_At_TeeTime";
     // Thư mục chứa JSON request/expect cho API này
     private static final String JSON_DIR = System.getProperty("user.dir")
             + "/src/main/resources/input_json_file/booking/create_booking/";
@@ -70,10 +71,10 @@ public class CreateBookingBatchTest extends TestConfig implements FlowRunnable {
         PrintStream reqCapture = new PrintStream(new WriterOutputStream(reqWriter), true);
 
         // ===== Step 2: Build request =====
+        // Excel cột 'input_placeholders' trỏ tới file request (vd: create_booking_batch_request.json)
         String reqFileName = row.getOrDefault("input_placeholders", "create_booking_batch_request.json");
         String reqTpl = Files.readString(Paths.get(JSON_DIR + reqFileName));
         String requestBody = StringUtils.replacePlaceholdersInString(reqTpl, row); // thay tất cả ${colName}
-
         System.out.println("🧩 Request body sau replace:\n" + requestBody);
 
         // ===== Step 3: Call API =====
@@ -88,7 +89,7 @@ public class CreateBookingBatchTest extends TestConfig implements FlowRunnable {
                 .body(requestBody)
                 .filter(new RequestLoggingFilter(LogDetail.ALL, true, reqCapture))
                 .when()
-                .post(BASE_URL + "/golf-cms/api/booking/batch")
+                .post(BASE_URL + "/golf-cms/api/booking")
                 .then()
                 .extract().response();
 
@@ -142,6 +143,7 @@ public class CreateBookingBatchTest extends TestConfig implements FlowRunnable {
             String teePath   = jp.getString("[" + i + "].tee_path");
             String teeOffTime   = jp.getString("[" + i + "].tee_off_time");
             String rowIndex   = jp.getString("[" + i + "].row_index");
+            String booking_date   = jp.getString("[" + i + "].booking_date");
 
             String hole   = jp.getString("[" + i + "].hole");
             String holeBooking   = jp.getString("[" + i + "].hole_booking");
@@ -174,6 +176,7 @@ public class CreateBookingBatchTest extends TestConfig implements FlowRunnable {
             if (teePath != null)   ctx.setAttribute("TEE_PATH_" + i, teePath);
             if (teeOffTime != null)   ctx.setAttribute("TEE_OFF_TIME_" + i, teeOffTime);
             if (rowIndex != null)   ctx.setAttribute("ROW_INDEX_" + i, rowIndex);
+            if (booking_date != null)   ctx.setAttribute("BOOKING_DATE" + i, teeOffTime);
 
             if (hole != null)   ctx.setAttribute("HOLE_" + i, hole);
             if (holeBooking != null)   ctx.setAttribute("HOLE_BOOKING_" + i, holeBooking);

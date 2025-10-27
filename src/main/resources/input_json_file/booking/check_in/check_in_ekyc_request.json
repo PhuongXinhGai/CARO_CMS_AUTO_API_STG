@@ -1,0 +1,7 @@
+{
+  "check_sum": "${check_sum}",
+  "partner_uid": "${partner_uid}",
+  "course_uid": "${course_uid}",
+  "booking_uid": "${booking_uid}",
+  "booking_date": "${booking_date}"
+}

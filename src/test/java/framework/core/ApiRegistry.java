@@ -5,21 +5,41 @@ import java.util.*;
 public class ApiRegistry {
 
 //    Map cột Excel → class test tương ứng
-    private static final Map<String, String> MAP = Map.of(
-            "login_case_id", "tests.test_scripts.api.user.functional.LoginTest",
-            "quote_fee_case_id", "tests.test_scripts.api.booking.functional.QuoteFeeTest",
+//    private static final Map<String, String> MAP = Map.of(
+//            "login_case_id", "tests.test_scripts.api.user.account.LoginTest",
+//
+//            "quote_fee_case_id", "tests.test_scripts.api.booking.create_booking.QuoteFeeTest",
+//
+//            "create_booking_case_id", "tests.test_scripts.api.booking.create_booking.CreateBookingBatchTest",
+//            "create_booking_Voucher_case_id", "tests.test_scripts.api.booking.create_booking.CreateBookingBatchVoucherTest",
+//            "create_booking_4_player_case_id", "tests.test_scripts.api.booking.create_booking.CreateBookingBatch4PlayerTest",
+//
+//            "edit_booking_at_tee_time_id", "tests.test_scripts.api.booking.edit_booking.EditBookingAtTeeTimeTest",
+//            "edit_booking_1_player_id", "tests.test_scripts.api.booking.edit_booking.EditBooking1PlayerTest",
+//
+//            "get_list_case_id", "tests.test_scripts.api.booking.create_booking.GetBookingListSelectTest",
+//            "get_booking_price_case_id", "tests.test_scripts.api.booking.create_booking.GetBookingPriceTest",
+//
+//            "check_in_bag_id", "tests.test_scripts.api.booking.checkin.CheckInBagTest"
+//    );
+    private static final Map<String, String> MAP = new HashMap<>() {{
+        put("login_case_id", "tests.test_scripts.api.user.account.LoginTest");
 
-            "create_booking_case_id", "tests.test_scripts.api.booking.functional.CreateBookingBatchTest",
-            "create_booking_Voucher_case_id", "tests.test_scripts.api.booking.functional.CreateBookingBatchVoucherTest",
-            "create_booking_4_player_case_id", "tests.test_scripts.api.booking.functional.CreateBookingBatch4PlayerTest",
+        put("quote_fee_case_id", "tests.test_scripts.api.booking.create_booking.QuoteFeeTest");
 
-            "edit_booking_at_tee_time_id", "tests.test_scripts.api.booking.functional.EditBookingAtTeeTimeTest",
-            "edit_booking_1_player_id", "tests.test_scripts.api.booking.functional.EditBooking1PlayerTest",
+        put("create_booking_case_id", "tests.test_scripts.api.booking.create_booking.CreateBookingBatchTest");
+        put("create_booking_Voucher_case_id", "tests.test_scripts.api.booking.create_booking.CreateBookingBatchVoucherTest");
+        put("create_booking_4_player_case_id", "tests.test_scripts.api.booking.create_booking.CreateBookingBatch4PlayerTest");
 
+        put("edit_booking_at_tee_time_id", "tests.test_scripts.api.booking.edit_booking.EditBookingAtTeeTimeTest");
+        put("edit_booking_1_player_id", "tests.test_scripts.api.booking.edit_booking.EditBooking1PlayerTest");
 
-            "get_list_case_id", "tests.test_scripts.api.booking.functional.GetBookingListSelectTest",
-            "get_booking_price_case_id", "tests.test_scripts.api.booking.functional.GetBookingPriceTest"
-    );
+        put("get_list_case_id", "tests.test_scripts.api.booking.create_booking.GetBookingListSelectTest");
+        put("get_booking_price_case_id", "tests.test_scripts.api.booking.create_booking.GetBookingPriceTest");
+
+        put("check_in_bag_id", "tests.test_scripts.api.booking.checkin.CheckInBagTest");
+        put("undo_check_in_bag_id", "tests.test_scripts.api.booking.checkin.UndoCheckInBagTest");
+    }};
 
     /** Lấy class tương ứng với tên cột (VD: login_case_id -> tests.api.login.LoginTest) */
     public static String get(String colName) {
@@ -40,7 +60,10 @@ public class ApiRegistry {
                 "edit_booking_1_player_id",
 
                 "get_list_case_id",
-                "get_booking_price_case_id"
+                "get_booking_price_case_id",
+
+                "check_in_bag_id",
+                "undo_check_in_bag_id"
         );
     }
 }

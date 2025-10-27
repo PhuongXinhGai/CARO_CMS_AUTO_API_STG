@@ -18,7 +18,5 @@
 },
 
 "extract": {
-"booking_uid_0": "$[0].uid",
-"booking_code_0": "$[0].booking_code"
 }
 }

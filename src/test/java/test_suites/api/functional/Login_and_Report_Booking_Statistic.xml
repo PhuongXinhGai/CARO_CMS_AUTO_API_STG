@@ -6,8 +6,8 @@
 
     <test name="Integration Flow: Login and Quote Fee">
         <classes>
-            <class name="tests.test_scripts.api.user.functional.LoginTest"/>
-            <class name="tests.test_scripts.api.booking.functional.ReportBookingStatistic"/>
+            <class name="tests.test_scripts.api.user.account.LoginTest"/>
+            <class name="tests.test_scripts.api.booking.create_booking.ReportBookingStatistic"/>
         </classes>
     </test>
 </suite>

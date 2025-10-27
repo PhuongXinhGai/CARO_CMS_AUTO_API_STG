@@ -1,0 +1,15 @@
+{
+  "status_code": ${status_code},
+
+"assertions_explicit": [
+],
+
+"assertions": {
+"$.check_in_time": "${assert_check_in_time}",
+"$.bag_status": "${assert_bag_status}",
+"$.bag": "${assert_bag}"
+},
+
+"extract": {
+}
+}

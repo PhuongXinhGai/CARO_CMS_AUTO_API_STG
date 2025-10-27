@@ -1,0 +1,22 @@
+{
+  "cms_user": "${cms_user}",
+  "booking_uid": "${booking_uid}",
+  "bag": "${bag}",
+  "hole": ${hole},
+"guest_style": "${guest_style}",
+"guest_style_name": "${guest_style_name}",
+"booking_date": "${booking_date}",
+"course_type": "${course_type}",
+"tee_type": "${tee_type}",
+"customer_name": "${customer_name}",
+"agency_id": ${agency_id},
+"customer_nationality_id": ${customer_nationality_id},
+"platform": "${platform}",
+"gender": "${gender}",
+"sale_name": "${sale_name}",
+"sale_account": "${sale_account}",
+"member_uid_of_guest": "${member_uid_of_guest}",
+"member_card_uid": "${member_card_uid}",
+"voucher_apply": ${voucher_apply},
+"is_change_voucher": ${is_change_voucher}
+}

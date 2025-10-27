@@ -1,12 +1,12 @@
-package tests.test_scripts.api.user.functional;
+package tests.test_scripts.api.booking.checkin;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import common.utilities.AssertionHelper;
 import common.utilities.ExcelUtils;
-import common.utilities.RequestLogger;
 import common.utilities.StringUtils;
+import framework.core.FlowRunnable;
 import helpers.ReportHelper;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -21,7 +21,6 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import tests.test_config.TestConfig;
-import framework.core.FlowRunnable;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -33,29 +32,35 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
-public class LoginTest extends TestConfig implements FlowRunnable {
+public class CheckInBagTest extends TestConfig implements FlowRunnable {
 
-    // ===== cấu hình đường dẫn (đổi theo project của bạn) =====
-    private static final String EXCEL_FILE   = System.getProperty("user.dir")
-            + "/src/main/resources/input_excel_file/user/Login.xlsx";
-    private static final String SHEET_NAME   = "testcase";
-    private static final String JSON_DIR     = System.getProperty("user.dir")
-            + "/src/main/resources/input_json_file/user/login/"; // chứa login_request.json, login_expect.json
+    // ==== ĐƯỜNG DẪN — chỉnh cho khớp project của bạn ====
+    private static final String EXCEL_FILE = System.getProperty("user.dir")
+            + "/src/main/resources/input_excel_file/booking/CheckIn.xlsx";
+    private static final String SHEET_NAME = "Check_In_Bag";
+    // Thư mục chứa JSON request/expect cho API này
+    private static final String JSON_DIR = System.getProperty("user.dir")
+            + "/src/main/resources/input_json_file/booking/check_in/";
 
-
-    @DataProvider(name = "loginData")
-    public Object[][] getLoginData() throws IOException {
+    // ======================= DataProvider =======================
+    @DataProvider(name = "checkInData")
+    public Object[][] checkInData() throws IOException {
         return ExcelUtils.readSheetAsMaps(EXCEL_FILE, SHEET_NAME);
     }
 
     /**
-     * Cột Excel (gợi ý):
-     * tc_id, tc_description, expected_result, input_placeholders, user_name, password,
-     * expected_validation_data, status_code, assert_token, assert_data.user_name,
-     * assert_data.partner_uid, assert_data.course_uid
+     * 8 STEP:
+     * 1) Chuẩn bị log
+     * 2) Build request (đọc template + replace placeholder)
+     * 3) Call API
+     * 4) Gắn log request/response vào report
+     * 5) Load expect JSON (raw string)
+     * 6) Replace placeholder trong expect
+     * 7) So sánh actual vs expect (AssertionHelper)
+     * 8) Extract và lưu biến cho step sau (nếu cần)
      */
-    @Test(dataProvider = "loginData")
-    public void testLogin(Map<String, String> row, ITestContext ctx) throws Exception {
+    @Test(dataProvider = "checkInData")
+    public void testCheckInBag(Map<String, String> row, ITestContext ctx) throws IOException {
         final String tcId = row.getOrDefault("tc_id", "NO_ID");
         final String desc = row.getOrDefault("tc_description", "Create booking batch");
 
@@ -63,79 +68,78 @@ public class LoginTest extends TestConfig implements FlowRunnable {
 
         // ===== Step 1: Chuẩn bị log =====
         StringWriter reqWriter = new StringWriter();
-        PrintStream  reqCapture = new PrintStream(new WriterOutputStream(reqWriter), true);
+        PrintStream reqCapture = new PrintStream(new WriterOutputStream(reqWriter), true);
 
         // ===== Step 2: Build request =====
         String reqFileName = row.getOrDefault("input_placeholders", "");
         String reqTpl = Files.readString(Paths.get(JSON_DIR + reqFileName));
-        String requestBody = StringUtils.replacePlaceholdersInString(reqTpl, row); // thay tất cả ${colName}
+        String requestBody = StringUtils.replacePlaceholdersAdvanced(reqTpl, row, ctx); // thay tất cả ${colName}
 
         System.out.println("🧩 Request body sau replace:\n" + requestBody);
 
         // ===== Step 3: Call API =====
+        String tokenFromCtx = (String) ctx.getAttribute("AUTH_TOKEN");
+        String tokenFromExcel = row.get("auth_token"); // optional in Excel
+        String bearer = tokenFromCtx != null ? tokenFromCtx : tokenFromExcel;
+
         Response resp = given()
                 .contentType(ContentType.JSON)
+                .header("Accept", "application/json")
+                .header("Authorization", bearer != null ? bearer : "")
                 .body(requestBody)
                 .filter(new RequestLoggingFilter(LogDetail.ALL, true, reqCapture))
-//                .filter(new RequestLogger(reqCapture))
                 .when()
-                .post(BASE_URL + "/golf-cms/api/user/login-plain")
+                .post(BASE_URL + "/golf-cms/api/booking/check-in")
                 .then()
                 .extract().response();
 
         String respJson = resp.asString();
 
-        // ===== Step 4: Gắn log request/response vào báo cáo =====
+        // ===== Step 4: Gắn log request/response vào report =====
         reqCapture.flush();
         ITestResult tr = Reporter.getCurrentTestResult();
-        tr.setAttribute("requestLog",  reqWriter.toString());
+        tr.setAttribute("requestLog", reqWriter.toString());
         tr.setAttribute("responseLog", resp.getBody().prettyPrint());
-        ctx.setAttribute("LAST_REQUEST_LOG", reqWriter.toString());
-        ctx.setAttribute("LAST_RESPONSE_LOG", resp.getBody().prettyPrint());
+        ctx.setAttribute("LAST_REQUEST_LOG", requestBody);
+        ctx.setAttribute("LAST_RESPONSE_LOG", resp.asString());
 
         // ===== Step 5: Load expect JSON =====
-        String expectFileName = row.getOrDefault("expected_validation_data", "");
+        // Excel cột 'expected_validation_data' trỏ tới file expect (vd: create_booking_batch_expect.json)
+        String expectFileName = row.getOrDefault("expected_validation_data", "create_booking_batch_expect.json");
         String expectRaw = Files.readString(Paths.get(JSON_DIR + expectFileName));
 
-        // ===== Step 6: Thay placeholder trong expect =====
+        // ===== Step 6: Replace placeholder trong expect =====
+        // Lưu ý: với boolean (true/false) hãy KHÔNG đặt dấu nháy quanh placeholder trong file expect.
         String expectResolved = StringUtils.replacePlaceholdersInString(expectRaw, row);
         Gson gson = new Gson();
         Type mapType = new TypeToken<Map<String, Object>>() {}.getType();
         Map<String, Object> expectJson = gson.fromJson(expectResolved, mapType);
 
-        // ===== Step 7: So sánh actual vs expect (AssertionHelper) =====
+        // ===== Step 7: So sánh actual vs expect =====
         AssertionHelper.verifyStatusCode(resp, expectJson);
         AssertionHelper.assertFromJson(respJson, expectJson);
 
-        // ===== Step 8: Lưu biến dùng cho step sau (nếu cần integration) =====
-        // JsonPath jp = new JsonPath(respJson);
+        // ===== Step 8: Extract lưu biến cho bước sau (nếu cần) =====
+        // tuỳ nhu cầu: VD lưu booking_code_0, booking_uid_0 (đã định nghĩa trong "extract" của expect)
+        // nếu bạn muốn parse nhanh ở đây, có thể dùng JsonPath đọc lại:
+//         JsonPath jp = new JsonPath(respJson);
         // ctx.setAttribute("BOOKING_CODE_0", jp.getString("[0].booking_code"));
-
         JsonPath jp = resp.jsonPath();
-        String token      = jp.getString("token");
-        String partnerUid = jp.getString("data.partner_uid");
-        String courseUid  = jp.getString("data.course_uid");
-        String userNameRp = jp.getString("data.user_name");
-        String full_name = jp.getString("data.full_name");
+        String bag      = jp.getString("bag");
 
-        if (token != null)      ctx.setAttribute("AUTH_TOKEN", token);
-        if (partnerUid != null) ctx.setAttribute("PARTNER_UID", partnerUid);
-        if (courseUid != null)  ctx.setAttribute("COURSE_UID", courseUid);
-        if (userNameRp != null) ctx.setAttribute("USER_NAME",  userNameRp);
-        if (full_name != null)  ctx.setAttribute("FULL_NAME",  full_name);
+        if (bag != null)      ctx.setAttribute("BAG", bag);
     }
-
-//    Flow chạy tích hợp
+    //    Flow chạy tích hợp
     @Override
     public void runCase(String caseId, ITestContext ctx, ExtentTest logger) throws Exception {
         Map<String, String> row = findRowByCaseId(EXCEL_FILE, SHEET_NAME, caseId);
         logger.info("▶️ Running Login case: " + caseId);
-        testLogin(row, ctx);   // chỉ gọi lại hàm test cũ
+        testCheckInBag(row, ctx);   // chỉ gọi lại hàm test cũ
     }
 
-//    Hiển thị tất cả các trường lưu trong context
     @AfterMethod(alwaysRun = true)
     public void dumpCtxToReport(ITestContext ctx) {
         ReportHelper.logAllContext(ctx);
     }
+
 }

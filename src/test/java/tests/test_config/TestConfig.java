@@ -11,6 +11,8 @@ public class TestConfig {
 
     // BASE_URL được đọc một lần và dùng chung
     protected static String BASE_URL = ConfigReader.getProperty("base_url");
+    protected static String API_KEY = ConfigReader.getProperty("api_Key");
+
 
     // Khai báo các đối tượng dùng chung với 'protected'
     // để các class con (như IntegrationTest, LoginTest...) có thể kế thừa và sử dụng

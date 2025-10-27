@@ -1,4 +1,4 @@
-package tests.test_scripts.api.booking.functional;
+package tests.test_scripts.api.booking.edit_booking;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.google.gson.Gson;
@@ -11,7 +11,6 @@ import helpers.ReportHelper;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.http.ContentType;
-import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.apache.commons.io.output.WriterOutputStream;
 import org.testng.ITestContext;

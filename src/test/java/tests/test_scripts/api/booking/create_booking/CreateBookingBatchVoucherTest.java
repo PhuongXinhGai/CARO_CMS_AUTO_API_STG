@@ -1,4 +1,4 @@
-package tests.test_scripts.api.booking.functional;
+package tests.test_scripts.api.booking.create_booking;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.google.gson.Gson;
@@ -32,12 +32,12 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
-public class CreateBookingBatchAtTeeTimeTest extends TestConfig implements FlowRunnable {
+public class CreateBookingBatchVoucherTest extends TestConfig implements FlowRunnable {
 
     // ==== ĐƯỜNG DẪN — chỉnh cho khớp project của bạn ====
     private static final String EXCEL_FILE = System.getProperty("user.dir")
             + "/src/main/resources/input_excel_file/booking/Create_Booking_Batch.xlsx";
-    private static final String SHEET_NAME = "Create_Booking_At_TeeTime";
+    private static final String SHEET_NAME = "Create_Booking_1_Player_VC";
     // Thư mục chứa JSON request/expect cho API này
     private static final String JSON_DIR = System.getProperty("user.dir")
             + "/src/main/resources/input_json_file/booking/create_booking/";
@@ -89,7 +89,7 @@ public class CreateBookingBatchAtTeeTimeTest extends TestConfig implements FlowR
                 .body(requestBody)
                 .filter(new RequestLoggingFilter(LogDetail.ALL, true, reqCapture))
                 .when()
-                .post(BASE_URL + "/golf-cms/api/booking")
+                .post(BASE_URL + "/golf-cms/api/booking/batch")
                 .then()
                 .extract().response();
 
@@ -143,6 +143,7 @@ public class CreateBookingBatchAtTeeTimeTest extends TestConfig implements FlowR
             String teePath   = jp.getString("[" + i + "].tee_path");
             String teeOffTime   = jp.getString("[" + i + "].tee_off_time");
             String rowIndex   = jp.getString("[" + i + "].row_index");
+            String booking_date   = jp.getString("[" + i + "].booking_date");
 
             String hole   = jp.getString("[" + i + "].hole");
             String holeBooking   = jp.getString("[" + i + "].hole_booking");
@@ -175,6 +176,7 @@ public class CreateBookingBatchAtTeeTimeTest extends TestConfig implements FlowR
             if (teePath != null)   ctx.setAttribute("TEE_PATH_" + i, teePath);
             if (teeOffTime != null)   ctx.setAttribute("TEE_OFF_TIME_" + i, teeOffTime);
             if (rowIndex != null)   ctx.setAttribute("ROW_INDEX_" + i, rowIndex);
+            if (booking_date != null)   ctx.setAttribute("BOOKING_DATE" + i, teeOffTime);
 
             if (hole != null)   ctx.setAttribute("HOLE_" + i, hole);
             if (holeBooking != null)   ctx.setAttribute("HOLE_BOOKING_" + i, holeBooking);
