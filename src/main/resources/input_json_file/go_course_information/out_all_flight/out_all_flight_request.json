@@ -1,0 +1,7 @@
+{
+  "flight_id": ${flight_id},
+"caddie_holes": ${caddie_holes},
+"guest_holes": ${guest_holes},
+"buggy_holes": ${buggy_holes},
+"out_flight_type": "${out_flight_type}"
+}

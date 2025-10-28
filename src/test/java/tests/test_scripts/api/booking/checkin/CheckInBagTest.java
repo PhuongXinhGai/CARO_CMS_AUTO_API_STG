@@ -127,7 +127,7 @@ public class CheckInBagTest extends TestConfig implements FlowRunnable {
         JsonPath jp = resp.jsonPath();
         String bag      = jp.getString("bag");
 
-        if (bag != null)      ctx.setAttribute("BAG", bag);
+        if (bag != null)      ctx.setAttribute("BAG_0", bag);
     }
     //    Flow chạy tích hợp
     @Override

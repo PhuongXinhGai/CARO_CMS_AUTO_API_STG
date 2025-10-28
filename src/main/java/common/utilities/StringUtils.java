@@ -55,7 +55,7 @@ public class StringUtils {
             String val = e.getValue() == null ? "" : e.getValue();
 
             // Xử lý dynamic {{TODAY}}, {{TODAY+N}}, ...
-            val = DynamicDataHelper.resolveDynamicValue(val);
+//            val = DynamicDataHelper.resolveDynamicValue(val);
 
             // Nếu giá trị trong Excel là {{CTX:...}} → lấy từ context
             if (val.matches("\\{\\{CTX:[^}]+}}")) {
@@ -63,6 +63,9 @@ public class StringUtils {
                 Object ctxVal = testCtx != null ? testCtx.getAttribute(ctxKey) : null;
                 val = ctxVal != null ? ctxVal.toString() : "";
             }
+
+            // ✅ Gọi bản dynamic mới: xử lý {{TODAY}}, {{TODAY±N}}, {{CHECKSUM}}, ...
+            val = DynamicDataHelper.resolveDynamicValue(val, testCtx);
 
             // Nếu giá trị là {{ENV:...}} → lấy từ config.properties
 //            else if (val.matches("\\{\\{ENV:[^}]+}}")) {

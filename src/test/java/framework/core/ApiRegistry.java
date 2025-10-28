@@ -3,25 +3,7 @@ package framework.core;
 import java.util.*;
 
 public class ApiRegistry {
-
-//    Map cột Excel → class test tương ứng
-//    private static final Map<String, String> MAP = Map.of(
-//            "login_case_id", "tests.test_scripts.api.user.account.LoginTest",
-//
-//            "quote_fee_case_id", "tests.test_scripts.api.booking.create_booking.QuoteFeeTest",
-//
-//            "create_booking_case_id", "tests.test_scripts.api.booking.create_booking.CreateBookingBatchTest",
-//            "create_booking_Voucher_case_id", "tests.test_scripts.api.booking.create_booking.CreateBookingBatchVoucherTest",
-//            "create_booking_4_player_case_id", "tests.test_scripts.api.booking.create_booking.CreateBookingBatch4PlayerTest",
-//
-//            "edit_booking_at_tee_time_id", "tests.test_scripts.api.booking.edit_booking.EditBookingAtTeeTimeTest",
-//            "edit_booking_1_player_id", "tests.test_scripts.api.booking.edit_booking.EditBooking1PlayerTest",
-//
-//            "get_list_case_id", "tests.test_scripts.api.booking.create_booking.GetBookingListSelectTest",
-//            "get_booking_price_case_id", "tests.test_scripts.api.booking.create_booking.GetBookingPriceTest",
-//
-//            "check_in_bag_id", "tests.test_scripts.api.booking.checkin.CheckInBagTest"
-//    );
+    /** Bản đồ ánh xạ giữa tên cột trong Excel và class thực thi test */
     private static final Map<String, String> MAP = new HashMap<>() {{
         put("login_case_id", "tests.test_scripts.api.user.account.LoginTest");
 
@@ -38,7 +20,12 @@ public class ApiRegistry {
         put("get_booking_price_case_id", "tests.test_scripts.api.booking.create_booking.GetBookingPriceTest");
 
         put("check_in_bag_id", "tests.test_scripts.api.booking.checkin.CheckInBagTest");
+        put("check_in_ekyc_id", "tests.test_scripts.api.booking.checkin.CheckInEkycTest");
         put("undo_check_in_bag_id", "tests.test_scripts.api.booking.checkin.UndoCheckInBagTest");
+
+        put("create_flight_1_player_id", "tests.test_scripts.api.go_course_information.CreateFlight1PlayerTest");
+        put("out_all_flight_id", "tests.test_scripts.api.go_course_information.OutAllFlightTest");
+
     }};
 
     /** Lấy class tương ứng với tên cột (VD: login_case_id -> tests.api.login.LoginTest) */
@@ -63,7 +50,11 @@ public class ApiRegistry {
                 "get_booking_price_case_id",
 
                 "check_in_bag_id",
-                "undo_check_in_bag_id"
+                "check_in_ekyc_id",
+
+                "create_flight_1_player_id",
+                "out_all_flight_id"
+
         );
     }
 }

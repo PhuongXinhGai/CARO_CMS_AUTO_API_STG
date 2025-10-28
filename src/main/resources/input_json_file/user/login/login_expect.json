@@ -12,7 +12,5 @@
   ],
 
   "extract": {
-    "token": "$.data.token",
-    "user_name": "$.data.user_name"
   }
 }

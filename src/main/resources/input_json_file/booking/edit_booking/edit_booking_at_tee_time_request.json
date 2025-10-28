@@ -11,5 +11,7 @@
   "guest_style": "${guest_style}",
   "bag": "${bag}",
   "locker_no": "${locker_no}",
-  "gender": "${gender}"
+  "gender": "${gender}",
+  "member_card_uid": "${member_card_uid}",
+  "member_uid_of_guest": "${member_uid_of_guest}"
 }

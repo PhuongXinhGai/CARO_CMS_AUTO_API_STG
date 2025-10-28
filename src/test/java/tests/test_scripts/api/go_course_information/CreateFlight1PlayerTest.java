@@ -1,4 +1,4 @@
-package tests.test_scripts.api.booking.checkin;
+package tests.test_scripts.api.go_course_information;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.google.gson.Gson;
@@ -32,19 +32,19 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
-public class CheckInEkycTest extends TestConfig implements FlowRunnable {
+public class CreateFlight1PlayerTest extends TestConfig implements FlowRunnable {
 
     // ==== ĐƯỜNG DẪN — chỉnh cho khớp project của bạn ====
     private static final String EXCEL_FILE = System.getProperty("user.dir")
-            + "/src/main/resources/input_excel_file/booking/CheckIn.xlsx";
-    private static final String SHEET_NAME = "Check_In_Ekyc";
+            + "/src/main/resources/input_excel_file/booking/GO_Course_Information.xlsx";
+    private static final String SHEET_NAME = "Create_Flight_1Player";
     // Thư mục chứa JSON request/expect cho API này
     private static final String JSON_DIR = System.getProperty("user.dir")
-            + "/src/main/resources/input_json_file/booking/check_in/";
+            + "/src/main/resources/input_json_file/go_course_information/create_flight/";
 
     // ======================= DataProvider =======================
-    @DataProvider(name = "checkInData")
-    public Object[][] checkInData() throws IOException {
+    @DataProvider(name = "createFlightData")
+    public Object[][] createFlightData() throws IOException {
         return ExcelUtils.readSheetAsMaps(EXCEL_FILE, SHEET_NAME);
     }
 
@@ -59,8 +59,8 @@ public class CheckInEkycTest extends TestConfig implements FlowRunnable {
      * 7) So sánh actual vs expect (AssertionHelper)
      * 8) Extract và lưu biến cho step sau (nếu cần)
      */
-    @Test(dataProvider = "checkInData")
-    public void testCheckInEkyc(Map<String, String> row, ITestContext ctx) throws IOException {
+    @Test(dataProvider = "createFlightData")
+    public void testCreateFlight(Map<String, String> row, ITestContext ctx) throws IOException {
         final String tcId = row.getOrDefault("tc_id", "NO_ID");
         final String desc = row.getOrDefault("tc_description", "Create booking batch");
 
@@ -78,15 +78,18 @@ public class CheckInEkycTest extends TestConfig implements FlowRunnable {
         System.out.println("🧩 Request body sau replace:\n" + requestBody);
 
         // ===== Step 3: Call API =====
+        String tokenFromCtx = (String) ctx.getAttribute("AUTH_TOKEN");
+        String tokenFromExcel = row.get("auth_token"); // optional in Excel
+        String bearer = tokenFromCtx != null ? tokenFromCtx : tokenFromExcel;
 
         Response resp = given()
                 .contentType(ContentType.JSON)
                 .header("Accept", "application/json")
-//                .header("Authorization", bearer != null ? bearer : "")
+                .header("Authorization", bearer != null ? bearer : "")
                 .body(requestBody)
                 .filter(new RequestLoggingFilter(LogDetail.ALL, true, reqCapture))
                 .when()
-                .post(BASE_URL + "/golf-cms/ekyc/v1/member-card/check-in")
+                .post(BASE_URL + "/golf-cms/api/course-operating/flight/create")
                 .then()
                 .extract().response();
 
@@ -106,6 +109,7 @@ public class CheckInEkycTest extends TestConfig implements FlowRunnable {
         String expectRaw = Files.readString(Paths.get(JSON_DIR + expectFileName));
 
         // ===== Step 6: Replace placeholder trong expect =====
+        // Lưu ý: với boolean (true/false) hãy KHÔNG đặt dấu nháy quanh placeholder trong file expect.
         String expectResolved = StringUtils.replacePlaceholdersInString(expectRaw, row);
         Gson gson = new Gson();
         Type mapType = new TypeToken<Map<String, Object>>() {}.getType();
@@ -121,16 +125,16 @@ public class CheckInEkycTest extends TestConfig implements FlowRunnable {
 //         JsonPath jp = new JsonPath(respJson);
         // ctx.setAttribute("BOOKING_CODE_0", jp.getString("[0].booking_code"));
         JsonPath jp = resp.jsonPath();
-        String bag      = jp.getString("data.bag");
+        String flight_id      = jp.getString("id");
 
-        if (bag != null)      ctx.setAttribute("BAG_0", bag);
+        if (flight_id != null)      ctx.setAttribute("FLIGHT_ID_0", flight_id);
     }
     //    Flow chạy tích hợp
     @Override
     public void runCase(String caseId, ITestContext ctx, ExtentTest logger) throws Exception {
         Map<String, String> row = findRowByCaseId(EXCEL_FILE, SHEET_NAME, caseId);
         logger.info("▶️ Running Login case: " + caseId);
-        testCheckInEkyc(row, ctx);   // chỉ gọi lại hàm test cũ
+        testCreateFlight(row, ctx);   // chỉ gọi lại hàm test cũ
     }
 
     @AfterMethod(alwaysRun = true)
