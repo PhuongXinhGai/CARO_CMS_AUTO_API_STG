@@ -19,12 +19,28 @@ public class ApiRegistry {
         put("get_list_case_id", "tests.test_scripts.api.booking.create_booking.GetBookingListSelectTest");
         put("get_booking_price_case_id", "tests.test_scripts.api.booking.create_booking.GetBookingPriceTest");
 
-        put("check_in_bag_id", "tests.test_scripts.api.booking.checkin.CheckInBagTest");
+        put("check_in_bag_player1_id", "tests.test_scripts.api.booking.checkin.CheckInBagPlayer1Test");
+        put("check_in_bag_player2_id", "tests.test_scripts.api.booking.checkin.CheckInBagPlayer2Test");
+        put("check_in_bag_player3_id", "tests.test_scripts.api.booking.checkin.CheckInBagPlayer3Test");
+        put("check_in_bag_player4_id", "tests.test_scripts.api.booking.checkin.CheckInBagPlayer4Test");
         put("check_in_ekyc_id", "tests.test_scripts.api.booking.checkin.CheckInEkycTest");
         put("undo_check_in_bag_id", "tests.test_scripts.api.booking.checkin.UndoCheckInBagTest");
 
-        put("create_flight_1_player_id", "tests.test_scripts.api.go_course_information.CreateFlight1PlayerTest");
+        put("create_flight_id", "tests.test_scripts.api.go_course_information.CreateFlightTest");
+        put("add_bag_to_flight_id", "tests.test_scripts.api.go_course_information.AddBagToFlightTest");
         put("out_all_flight_id", "tests.test_scripts.api.go_course_information.OutAllFlightTest");
+        put("simple_out_flight_player1_id", "tests.test_scripts.api.go_course_information.SimpleOutFlightPlayer1Test");
+        put("simple_out_flight_player2_id", "tests.test_scripts.api.go_course_information.SimpleOutFlightPlayer2Test");
+        put("simple_out_flight_player3_id", "tests.test_scripts.api.go_course_information.SimpleOutFlightPlayer3Test");
+        put("simple_out_flight_player4_id", "tests.test_scripts.api.go_course_information.SimpleOutFlightPlayer4Test");
+        put("undo_out_flight_player1_id", "tests.test_scripts.api.go_course_information.UndoOutFlightPlayer1Test");
+        put("undo_out_flight_player2_id", "tests.test_scripts.api.go_course_information.UndoOutFlightPlayer2Test");
+        put("undo_out_flight_player3_id", "tests.test_scripts.api.go_course_information.UndoOutFlightPlayer3Test");
+        put("undo_out_flight_player4_id", "tests.test_scripts.api.go_course_information.UndoOutFlightPlayer4Test");
+        put("delete_attach_flight_player1_id", "tests.test_scripts.api.go_course_information.DeleteAttachFlightPlayer1Test");
+        put("delete_attach_flight_player2_id", "tests.test_scripts.api.go_course_information.DeleteAttachFlightPlayer2Test");
+        put("delete_attach_flight_player3_id", "tests.test_scripts.api.go_course_information.DeleteAttachFlightPlayer3Test");
+        put("delete_attach_flight_player4_id", "tests.test_scripts.api.go_course_information.DeleteAttachFlightPlayer4Test");
 
     }};
 
@@ -49,12 +65,27 @@ public class ApiRegistry {
                 "get_list_case_id",
                 "get_booking_price_case_id",
 
-                "check_in_bag_id",
+                "check_in_bag_player1_id",
+                "check_in_bag_player2_id",
+                "check_in_bag_player3_id",
+                "check_in_bag_player4_id",
                 "check_in_ekyc_id",
 
-                "create_flight_1_player_id",
-                "out_all_flight_id"
-
+                "create_flight_id",
+                "add_bag_to_flight_id",
+                "out_all_flight_id",
+                "simple_out_flight_player1_id",
+                "simple_out_flight_player2_id",
+                "simple_out_flight_player3_id",
+                "simple_out_flight_player4_id",
+                "undo_out_flight_player1_id",
+                "undo_out_flight_player2_id",
+                "undo_out_flight_player3_id",
+                "undo_out_flight_player4_id",
+                "delete_attach_flight_player1_id",
+                "delete_attach_flight_player2_id",
+                "delete_attach_flight_player3_id",
+                "delete_attach_flight_player4_id"
         );
     }
 }

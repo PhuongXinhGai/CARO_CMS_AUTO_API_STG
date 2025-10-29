@@ -1,4 +1,4 @@
-package tests.test_scripts.api.go_course_information;
+package tests.test_scripts.api.booking.checkin;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.google.gson.Gson;
@@ -6,12 +6,12 @@ import com.google.gson.reflect.TypeToken;
 import common.utilities.AssertionHelper;
 import common.utilities.ExcelUtils;
 import common.utilities.StringUtils;
-import common.utilities.WaitHelper;
 import framework.core.FlowRunnable;
 import helpers.ReportHelper;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.http.ContentType;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.apache.commons.io.output.WriterOutputStream;
 import org.testng.ITestContext;
@@ -32,19 +32,19 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
-public class OutAllFlightTest extends TestConfig implements FlowRunnable {
+public class CheckInBagPlayer1Test extends TestConfig implements FlowRunnable {
 
     // ==== ĐƯỜNG DẪN — chỉnh cho khớp project của bạn ====
     private static final String EXCEL_FILE = System.getProperty("user.dir")
-            + "/src/main/resources/input_excel_file/booking/GO_Course_Information.xlsx";
-    private static final String SHEET_NAME = "Out_All_Flight";
+            + "/src/main/resources/input_excel_file/booking/CheckIn.xlsx";
+    private static final String SHEET_NAME = "Check_In_Bag_Player1";
     // Thư mục chứa JSON request/expect cho API này
     private static final String JSON_DIR = System.getProperty("user.dir")
-            + "/src/main/resources/input_json_file/go_course_information/out_all_flight/";
+            + "/src/main/resources/input_json_file/booking/check_in/";
 
     // ======================= DataProvider =======================
-    @DataProvider(name = "outAllFlightData")
-    public Object[][] outAllFlightData() throws IOException {
+    @DataProvider(name = "checkInData")
+    public Object[][] checkInData() throws IOException {
         return ExcelUtils.readSheetAsMaps(EXCEL_FILE, SHEET_NAME);
     }
 
@@ -59,8 +59,8 @@ public class OutAllFlightTest extends TestConfig implements FlowRunnable {
      * 7) So sánh actual vs expect (AssertionHelper)
      * 8) Extract và lưu biến cho step sau (nếu cần)
      */
-    @Test(dataProvider = "outAllFlightData")
-    public void testOutAllFlight(Map<String, String> row, ITestContext ctx) throws IOException {
+    @Test(dataProvider = "checkInData")
+    public void testCheckInBag(Map<String, String> row, ITestContext ctx) throws IOException {
         final String tcId = row.getOrDefault("tc_id", "NO_ID");
         final String desc = row.getOrDefault("tc_description", "Create booking batch");
 
@@ -69,7 +69,6 @@ public class OutAllFlightTest extends TestConfig implements FlowRunnable {
         // ===== Step 1: Chuẩn bị log =====
         StringWriter reqWriter = new StringWriter();
         PrintStream reqCapture = new PrintStream(new WriterOutputStream(reqWriter), true);
-        WaitHelper.waitSeconds(2);
 
         // ===== Step 2: Build request =====
         String reqFileName = row.getOrDefault("input_placeholders", "");
@@ -90,7 +89,7 @@ public class OutAllFlightTest extends TestConfig implements FlowRunnable {
                 .body(requestBody)
                 .filter(new RequestLoggingFilter(LogDetail.ALL, true, reqCapture))
                 .when()
-                .post(BASE_URL + "/golf-cms/api/course-operating/caddie/out-all-in-flight")
+                .post(BASE_URL + "/golf-cms/api/booking/check-in")
                 .then()
                 .extract().response();
 
@@ -106,7 +105,7 @@ public class OutAllFlightTest extends TestConfig implements FlowRunnable {
 
         // ===== Step 5: Load expect JSON =====
         // Excel cột 'expected_validation_data' trỏ tới file expect (vd: create_booking_batch_expect.json)
-        String expectFileName = row.getOrDefault("expected_validation_data", "");
+        String expectFileName = row.getOrDefault("expected_validation_data", "create_booking_batch_expect.json");
         String expectRaw = Files.readString(Paths.get(JSON_DIR + expectFileName));
 
         // ===== Step 6: Replace placeholder trong expect =====
@@ -121,14 +120,21 @@ public class OutAllFlightTest extends TestConfig implements FlowRunnable {
         AssertionHelper.assertFromJson(respJson, expectJson);
 
         // ===== Step 8: Extract lưu biến cho bước sau (nếu cần) =====
+        // tuỳ nhu cầu: VD lưu booking_code_0, booking_uid_0 (đã định nghĩa trong "extract" của expect)
+        // nếu bạn muốn parse nhanh ở đây, có thể dùng JsonPath đọc lại:
+//         JsonPath jp = new JsonPath(respJson);
+        // ctx.setAttribute("BOOKING_CODE_0", jp.getString("[0].booking_code"));
+        JsonPath jp = resp.jsonPath();
+        String bag      = jp.getString("bag");
 
+        if (bag != null)      ctx.setAttribute("BAG_0", bag);
     }
     //    Flow chạy tích hợp
     @Override
     public void runCase(String caseId, ITestContext ctx, ExtentTest logger) throws Exception {
         Map<String, String> row = findRowByCaseId(EXCEL_FILE, SHEET_NAME, caseId);
         logger.info("▶️ Running Login case: " + caseId);
-        testOutAllFlight(row, ctx);   // chỉ gọi lại hàm test cũ
+        testCheckInBag(row, ctx);   // chỉ gọi lại hàm test cũ
     }
 
     @AfterMethod(alwaysRun = true)

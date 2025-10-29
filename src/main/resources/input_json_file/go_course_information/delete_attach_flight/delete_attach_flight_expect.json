@@ -1,0 +1,15 @@
+{
+  "status_code": ${status_code},
+
+"assertions": {
+"$.added_flight": "${assert_added_flight}",
+"$.bag_status": "${assert_bag_status}",
+"$.flight_id": "${assert_flight_id}"
+},
+
+"assertions_explicit": [
+],
+
+"extract": {
+}
+}

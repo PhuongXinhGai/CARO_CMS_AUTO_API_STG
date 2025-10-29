@@ -1,0 +1,13 @@
+{
+  "status_code": ${status_code},
+
+"assertions": {
+"$.message": "${assert_message}"
+},
+
+"assertions_explicit": [
+],
+
+"extract": {
+}
+}

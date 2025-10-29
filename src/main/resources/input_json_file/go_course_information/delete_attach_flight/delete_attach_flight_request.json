@@ -1,0 +1,6 @@
+{
+  "booking_uid": "${booking_uid}",
+  "note": "${note}",
+  "is_out_caddie": ${is_out_caddie},
+  "is_out_buggy": ${is_out_buggy}
+}

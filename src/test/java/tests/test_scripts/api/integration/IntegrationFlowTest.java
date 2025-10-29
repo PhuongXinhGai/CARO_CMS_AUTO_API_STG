@@ -87,13 +87,6 @@ public class IntegrationFlowTest {
                     }
                 }
 
-                // === Ghi log request / response nếu có ===
-//                Object req = ctx.getAttribute("LAST_REQUEST_LOG");
-//                Object resp = ctx.getAttribute("LAST_RESPONSE_LOG");
-//                if (stepLogger != null) {
-//                    if (req != null) stepLogger.info("📤 REQUEST:\n" + req);
-//                    if (resp != null) stepLogger.info("📥 RESPONSE:\n" + resp);
-//                }
                 if (stepLogger != null) {
                     if (req != null)
                         stepLogger.info(MarkupHelper.createCodeBlock(req.toString(), CodeLanguage.JSON));

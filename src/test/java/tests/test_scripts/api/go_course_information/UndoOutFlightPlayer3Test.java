@@ -32,19 +32,19 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
-public class OutAllFlightTest extends TestConfig implements FlowRunnable {
+public class UndoOutFlightPlayer3Test extends TestConfig implements FlowRunnable {
 
     // ==== ĐƯỜNG DẪN — chỉnh cho khớp project của bạn ====
     private static final String EXCEL_FILE = System.getProperty("user.dir")
             + "/src/main/resources/input_excel_file/booking/GO_Course_Information.xlsx";
-    private static final String SHEET_NAME = "Out_All_Flight";
+    private static final String SHEET_NAME = "Undo_Out_Flight_Player3";
     // Thư mục chứa JSON request/expect cho API này
     private static final String JSON_DIR = System.getProperty("user.dir")
-            + "/src/main/resources/input_json_file/go_course_information/out_all_flight/";
+            + "/src/main/resources/input_json_file/go_course_information/undo_out_flight/";
 
     // ======================= DataProvider =======================
-    @DataProvider(name = "outAllFlightData")
-    public Object[][] outAllFlightData() throws IOException {
+    @DataProvider(name = "undoOutFlightData")
+    public Object[][] undoOutFlightData() throws IOException {
         return ExcelUtils.readSheetAsMaps(EXCEL_FILE, SHEET_NAME);
     }
 
@@ -59,8 +59,8 @@ public class OutAllFlightTest extends TestConfig implements FlowRunnable {
      * 7) So sánh actual vs expect (AssertionHelper)
      * 8) Extract và lưu biến cho step sau (nếu cần)
      */
-    @Test(dataProvider = "outAllFlightData")
-    public void testOutAllFlight(Map<String, String> row, ITestContext ctx) throws IOException {
+    @Test(dataProvider = "undoOutFlightData")
+    public void testUndoOutFlight(Map<String, String> row, ITestContext ctx) throws IOException {
         final String tcId = row.getOrDefault("tc_id", "NO_ID");
         final String desc = row.getOrDefault("tc_description", "Create booking batch");
 
@@ -90,7 +90,7 @@ public class OutAllFlightTest extends TestConfig implements FlowRunnable {
                 .body(requestBody)
                 .filter(new RequestLoggingFilter(LogDetail.ALL, true, reqCapture))
                 .when()
-                .post(BASE_URL + "/golf-cms/api/course-operating/caddie/out-all-in-flight")
+                .post(BASE_URL + "/golf-cms/api/course-operating/undo-timeout")
                 .then()
                 .extract().response();
 
@@ -128,7 +128,7 @@ public class OutAllFlightTest extends TestConfig implements FlowRunnable {
     public void runCase(String caseId, ITestContext ctx, ExtentTest logger) throws Exception {
         Map<String, String> row = findRowByCaseId(EXCEL_FILE, SHEET_NAME, caseId);
         logger.info("▶️ Running Login case: " + caseId);
-        testOutAllFlight(row, ctx);   // chỉ gọi lại hàm test cũ
+        testUndoOutFlight(row, ctx);   // chỉ gọi lại hàm test cũ
     }
 
     @AfterMethod(alwaysRun = true)

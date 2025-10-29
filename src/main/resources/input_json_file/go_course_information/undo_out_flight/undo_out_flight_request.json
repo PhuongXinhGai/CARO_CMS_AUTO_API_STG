@@ -1,0 +1,4 @@
+{
+  "flight_id": ${flight_id},
+  "bag": "${bag}"
+}
