@@ -1,0 +1,15 @@
+{
+  "status_code": ${status_code},
+
+"assertions_explicit": [
+{ "path": "$.rounds", "op": "size", "value": ${assert_size_rounds} }
+],
+
+"assertions": {
+"$.init_type": "${assert_init_type}",
+"$.bag_status": "${assert_bag_status}"
+},
+
+"extract": {
+}
+}

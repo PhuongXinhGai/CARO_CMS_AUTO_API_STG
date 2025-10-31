@@ -1,0 +1,8 @@
+{
+  "booking_uid_list": [
+    "${booking_uid_list[]}"
+  ],
+  "hole": ${hole},
+  "course_type": "${course_type}",
+  "location": "${location}"
+}

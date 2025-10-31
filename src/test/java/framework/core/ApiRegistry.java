@@ -28,6 +28,7 @@ public class ApiRegistry {
 
         put("create_flight_id", "tests.test_scripts.api.go_course_information.CreateFlightTest");
         put("add_bag_to_flight_id", "tests.test_scripts.api.go_course_information.AddBagToFlightTest");
+
         put("out_all_flight_id", "tests.test_scripts.api.go_course_information.OutAllFlightTest");
         put("simple_out_flight_player1_id", "tests.test_scripts.api.go_course_information.SimpleOutFlightPlayer1Test");
         put("simple_out_flight_player2_id", "tests.test_scripts.api.go_course_information.SimpleOutFlightPlayer2Test");
@@ -37,10 +38,16 @@ public class ApiRegistry {
         put("undo_out_flight_player2_id", "tests.test_scripts.api.go_course_information.UndoOutFlightPlayer2Test");
         put("undo_out_flight_player3_id", "tests.test_scripts.api.go_course_information.UndoOutFlightPlayer3Test");
         put("undo_out_flight_player4_id", "tests.test_scripts.api.go_course_information.UndoOutFlightPlayer4Test");
+
         put("delete_attach_flight_player1_id", "tests.test_scripts.api.go_course_information.DeleteAttachFlightPlayer1Test");
         put("delete_attach_flight_player2_id", "tests.test_scripts.api.go_course_information.DeleteAttachFlightPlayer2Test");
         put("delete_attach_flight_player3_id", "tests.test_scripts.api.go_course_information.DeleteAttachFlightPlayer3Test");
         put("delete_attach_flight_player4_id", "tests.test_scripts.api.go_course_information.DeleteAttachFlightPlayer4Test");
+
+        put("add_round_player1_id", "tests.test_scripts.api.go_course_information.AddRoundPlayer1Test");
+
+        put("restaurant_create_bill_player1_id", "tests.test_scripts.api.pos.restaurant.RestaurantCreateBillPlayer1Test");
+        put("restaurant_get_list_menu_id", "tests.test_scripts.api.pos.restaurant.RestaurantGetListMenuTest");
 
     }};
 
@@ -85,7 +92,11 @@ public class ApiRegistry {
                 "delete_attach_flight_player1_id",
                 "delete_attach_flight_player2_id",
                 "delete_attach_flight_player3_id",
-                "delete_attach_flight_player4_id"
+                "delete_attach_flight_player4_id",
+                "add_round_player1_id",
+
+                "restaurant_create_bill_player1_id",
+                "restaurant_get_list_menu_id"
         );
     }
 }

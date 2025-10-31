@@ -1,0 +1,13 @@
+{
+  "status_code": ${status_code},
+
+"assertions_explicit": [
+{ "path": "$.data", "op": "size", "value": ${assert_size_data} }
+],
+
+"assertions": {
+},
+
+"extract": {
+}
+}
