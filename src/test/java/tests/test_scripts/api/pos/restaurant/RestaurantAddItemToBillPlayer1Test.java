@@ -33,19 +33,19 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
-public class RestaurantCreateBillPlayer1Test extends TestConfig implements FlowRunnable {
+public class RestaurantAddItemToBillPlayer1Test extends TestConfig implements FlowRunnable {
 
     // ==== ĐƯỜNG DẪN — chỉnh cho khớp project của bạn ====
     private static final String EXCEL_FILE = System.getProperty("user.dir")
             + "/src/main/resources/input_excel_file/booking/POS.xlsx";
-    private static final String SHEET_NAME = "Restaurant_Create_Bill_Player1";
+    private static final String SHEET_NAME = "Restaurant_Add_Item_Player1";
     // Thư mục chứa JSON request/expect cho API này
     private static final String JSON_DIR = System.getProperty("user.dir")
-            + "/src/main/resources/input_json_file/POS/restaurant/create_bill/";
+            + "/src/main/resources/input_json_file/POS/restaurant/add_item_to_bill/";
 
     // ======================= DataProvider =======================
-    @DataProvider(name = "craeteBillData")
-    public Object[][] craeteBillData() throws IOException {
+    @DataProvider(name = "addItemToBillData")
+    public Object[][] addItemToBillData() throws IOException {
         return ExcelUtils.readSheetAsMaps(EXCEL_FILE, SHEET_NAME);
     }
 
@@ -60,8 +60,8 @@ public class RestaurantCreateBillPlayer1Test extends TestConfig implements FlowR
      * 7) So sánh actual vs expect (AssertionHelper)
      * 8) Extract và lưu biến cho step sau (nếu cần)
      */
-    @Test(dataProvider = "craeteBillData")
-    public void testCreateBill(Map<String, String> row, ITestContext ctx) throws IOException {
+    @Test(dataProvider = "addItemToBillData")
+    public void testAddItemToBill(Map<String, String> row, ITestContext ctx) throws IOException {
         final String tcId = row.getOrDefault("tc_id", "NO_ID");
         final String desc = row.getOrDefault("tc_description", "Create booking batch");
 
@@ -122,10 +122,10 @@ public class RestaurantCreateBillPlayer1Test extends TestConfig implements FlowR
         AssertionHelper.assertFromJson(respJson, expectJson);
 
         // ===== Step 8: Extract lưu biến cho bước sau (nếu cần) =====
-        JsonPath jp = resp.jsonPath();
-        String bill_id      = jp.getString("id");
-
-        if (bill_id != null)      ctx.setAttribute("BILL_ID_0", bill_id);
+//        JsonPath jp = resp.jsonPath();
+//        String bill_id      = jp.getString("id");
+//
+//        if (bill_id != null)      ctx.setAttribute("BILL_ID_0", bill_id);
 
     }
     //    Flow chạy tích hợp
@@ -133,7 +133,7 @@ public class RestaurantCreateBillPlayer1Test extends TestConfig implements FlowR
     public void runCase(String caseId, ITestContext ctx, ExtentTest logger) throws Exception {
         Map<String, String> row = findRowByCaseId(EXCEL_FILE, SHEET_NAME, caseId);
         logger.info("▶️ Running Login case: " + caseId);
-        testCreateBill(row, ctx);   // chỉ gọi lại hàm test cũ
+        testAddItemToBill(row, ctx);   // chỉ gọi lại hàm test cũ
     }
 
     @AfterMethod(alwaysRun = true)

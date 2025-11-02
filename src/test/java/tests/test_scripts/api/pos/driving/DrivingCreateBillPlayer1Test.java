@@ -1,4 +1,4 @@
-package tests.test_scripts.api.pos.restaurant;
+package tests.test_scripts.api.pos.driving;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.google.gson.Gson;
@@ -33,15 +33,15 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
-public class RestaurantCreateBillPlayer1Test extends TestConfig implements FlowRunnable {
+public class DrivingCreateBillPlayer1Test extends TestConfig implements FlowRunnable {
 
     // ==== ĐƯỜNG DẪN — chỉnh cho khớp project của bạn ====
     private static final String EXCEL_FILE = System.getProperty("user.dir")
             + "/src/main/resources/input_excel_file/booking/POS.xlsx";
-    private static final String SHEET_NAME = "Restaurant_Create_Bill_Player1";
+    private static final String SHEET_NAME = "Driving_Create_Bill_Player1";
     // Thư mục chứa JSON request/expect cho API này
     private static final String JSON_DIR = System.getProperty("user.dir")
-            + "/src/main/resources/input_json_file/POS/restaurant/create_bill/";
+            + "/src/main/resources/input_json_file/POS/driving/create_bill/";
 
     // ======================= DataProvider =======================
     @DataProvider(name = "craeteBillData")
@@ -70,7 +70,6 @@ public class RestaurantCreateBillPlayer1Test extends TestConfig implements FlowR
         // ===== Step 1: Chuẩn bị log =====
         StringWriter reqWriter = new StringWriter();
         PrintStream reqCapture = new PrintStream(new WriterOutputStream(reqWriter), true);
-        WaitHelper.waitSeconds(2);
 
         // ===== Step 2: Build request =====
         String reqFileName = row.getOrDefault("input_placeholders", "");

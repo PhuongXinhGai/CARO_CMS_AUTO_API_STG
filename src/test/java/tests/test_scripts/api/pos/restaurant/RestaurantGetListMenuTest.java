@@ -12,6 +12,7 @@ import helpers.ReportHelper;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.http.ContentType;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.apache.commons.io.output.WriterOutputStream;
 import org.testng.ITestContext;
@@ -138,6 +139,19 @@ public class RestaurantGetListMenuTest extends TestConfig implements FlowRunnabl
         AssertionHelper.assertFromJson(respJson, expectJson);
 
         // ===== Step 8: Extract lưu biến cho bước sau (nếu cần) =====
+        JsonPath jp = resp.jsonPath();
+
+        for (int i = 0; i < 4; i++) {
+            String id            = jp.getString("data[" + i + "].id");
+            String code     = jp.getString("data[" + i + "].code");
+            String price = jp.getString("data[" + i + "].item_info.price");
+
+
+            if (id != null)            ctx.setAttribute("ITEM_ID_" + i, id);
+            if (code != null)     ctx.setAttribute("ITEM_CODE_" + i, code);
+            if (price != null) ctx.setAttribute("UNIT_PRICE_" + i, price);
+
+        }
 
     }
     //    Flow chạy tích hợp

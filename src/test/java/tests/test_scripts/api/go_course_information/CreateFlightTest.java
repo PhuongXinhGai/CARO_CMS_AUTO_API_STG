@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import common.utilities.AssertionHelper;
 import common.utilities.ExcelUtils;
 import common.utilities.StringUtils;
+import common.utilities.WaitHelper;
 import framework.core.FlowRunnable;
 import helpers.ReportHelper;
 import io.restassured.filter.log.LogDetail;
@@ -69,6 +70,7 @@ public class CreateFlightTest extends TestConfig implements FlowRunnable {
         // ===== Step 1: Chuẩn bị log =====
         StringWriter reqWriter = new StringWriter();
         PrintStream reqCapture = new PrintStream(new WriterOutputStream(reqWriter), true);
+        WaitHelper.waitSeconds(2);
 
         // ===== Step 2: Build request =====
         String reqFileName = row.getOrDefault("input_placeholders", "");

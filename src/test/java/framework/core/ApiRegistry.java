@@ -48,6 +48,20 @@ public class ApiRegistry {
 
         put("restaurant_create_bill_player1_id", "tests.test_scripts.api.pos.restaurant.RestaurantCreateBillPlayer1Test");
         put("restaurant_get_list_menu_id", "tests.test_scripts.api.pos.restaurant.RestaurantGetListMenuTest");
+        put("restaurant_add_item_to_bill_id", "tests.test_scripts.api.pos.restaurant.RestaurantAddItemToBillPlayer1Test");
+
+        put("kiosk_create_bill_player1_id", "tests.test_scripts.api.pos.kiosk.KioskCreateBillPlayer1Test");
+        put("kiosk_get_list_menu_id", "tests.test_scripts.api.pos.kiosk.KioskGetListMenuTest");
+        put("kiosk_add_item_to_bill_id", "tests.test_scripts.api.pos.kiosk.KioskAddItemToBillPlayer1Test");
+
+        put("mini_bar_create_bill_player1_id", "tests.test_scripts.api.pos.mini_bar.MiniBarCreateBillPlayer1Test");
+        put("mini_bar_get_list_menu_id", "tests.test_scripts.api.pos.mini_bar.MiniBarGetListMenuTest");
+        put("mini_bar_add_item_to_bill_id", "tests.test_scripts.api.pos.mini_bar.MiniBarAddItemToBillPlayer1Test");
+
+        put("driving_create_bill_player1_id", "tests.test_scripts.api.pos.driving.DrivingCreateBillPlayer1Test");
+        put("driving_get_list_menu_id", "tests.test_scripts.api.pos.driving.DrivingGetListMenuTest");
+        put("driving_add_item_to_bill_id", "tests.test_scripts.api.pos.driving.DrivingAddItemToBillPlayer1Test");
+
 
     }};
 
@@ -96,7 +110,20 @@ public class ApiRegistry {
                 "add_round_player1_id",
 
                 "restaurant_create_bill_player1_id",
-                "restaurant_get_list_menu_id"
+                "restaurant_get_list_menu_id",
+                "restaurant_add_item_to_bill_id",
+
+                "kiosk_create_bill_player1_id",
+                "kiosk_get_list_menu_id",
+                "kiosk_add_item_to_bill_id",
+
+                "mini_bar_create_bill_player1_id",
+                "mini_bar_get_list_menu_id",
+                "mini_bar_add_item_to_bill_id",
+
+                "driving_create_bill_player1_id",
+                "driving_get_list_menu_id",
+                "driving_add_item_to_bill_id"
         );
     }
 }

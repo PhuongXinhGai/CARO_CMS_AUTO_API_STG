@@ -176,7 +176,7 @@ public class CreateBookingBatchVoucherTest extends TestConfig implements FlowRun
             if (teePath != null)   ctx.setAttribute("TEE_PATH_" + i, teePath);
             if (teeOffTime != null)   ctx.setAttribute("TEE_OFF_TIME_" + i, teeOffTime);
             if (rowIndex != null)   ctx.setAttribute("ROW_INDEX_" + i, rowIndex);
-            if (booking_date != null)   ctx.setAttribute("BOOKING_DATE" + i, teeOffTime);
+            if (booking_date != null)   ctx.setAttribute("BOOKING_DATE_" + i, booking_date);
 
             if (hole != null)   ctx.setAttribute("HOLE_" + i, hole);
             if (holeBooking != null)   ctx.setAttribute("HOLE_BOOKING_" + i, holeBooking);

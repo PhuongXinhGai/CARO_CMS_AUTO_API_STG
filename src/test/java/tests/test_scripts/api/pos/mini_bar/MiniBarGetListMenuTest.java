@@ -1,4 +1,4 @@
-package tests.test_scripts.api.pos.restaurant;
+package tests.test_scripts.api.pos.mini_bar;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.google.gson.Gson;
@@ -6,7 +6,6 @@ import com.google.gson.reflect.TypeToken;
 import common.utilities.AssertionHelper;
 import common.utilities.ExcelUtils;
 import common.utilities.StringUtils;
-import common.utilities.WaitHelper;
 import framework.core.FlowRunnable;
 import helpers.ReportHelper;
 import io.restassured.filter.log.LogDetail;
@@ -29,23 +28,23 @@ import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
-public class RestaurantCreateBillPlayer1Test extends TestConfig implements FlowRunnable {
-
+public class MiniBarGetListMenuTest extends TestConfig implements FlowRunnable {
     // ==== ĐƯỜNG DẪN — chỉnh cho khớp project của bạn ====
     private static final String EXCEL_FILE = System.getProperty("user.dir")
             + "/src/main/resources/input_excel_file/booking/POS.xlsx";
-    private static final String SHEET_NAME = "Restaurant_Create_Bill_Player1";
+    private static final String SHEET_NAME = "MiniBar_List_Menu";
     // Thư mục chứa JSON request/expect cho API này
     private static final String JSON_DIR = System.getProperty("user.dir")
-            + "/src/main/resources/input_json_file/POS/restaurant/create_bill/";
+            + "/src/main/resources/input_json_file/POS/mini_bar/list_menu/";
 
     // ======================= DataProvider =======================
-    @DataProvider(name = "craeteBillData")
-    public Object[][] craeteBillData() throws IOException {
+    @DataProvider(name = "getListMenuData")
+    public Object[][] getListMenuData() throws IOException {
         return ExcelUtils.readSheetAsMaps(EXCEL_FILE, SHEET_NAME);
     }
 
@@ -60,8 +59,8 @@ public class RestaurantCreateBillPlayer1Test extends TestConfig implements FlowR
      * 7) So sánh actual vs expect (AssertionHelper)
      * 8) Extract và lưu biến cho step sau (nếu cần)
      */
-    @Test(dataProvider = "craeteBillData")
-    public void testCreateBill(Map<String, String> row, ITestContext ctx) throws IOException {
+    @Test(dataProvider = "getListMenuData")
+    public void testGetListMenu(Map<String, String> row, ITestContext ctx) throws IOException {
         final String tcId = row.getOrDefault("tc_id", "NO_ID");
         final String desc = row.getOrDefault("tc_description", "Create booking batch");
 
@@ -70,40 +69,57 @@ public class RestaurantCreateBillPlayer1Test extends TestConfig implements FlowR
         // ===== Step 1: Chuẩn bị log =====
         StringWriter reqWriter = new StringWriter();
         PrintStream reqCapture = new PrintStream(new WriterOutputStream(reqWriter), true);
-        WaitHelper.waitSeconds(2);
 
-        // ===== Step 2: Build request =====
-        String reqFileName = row.getOrDefault("input_placeholders", "");
-        String reqTpl = Files.readString(Paths.get(JSON_DIR + reqFileName));
-        String requestBody = StringUtils.replacePlaceholdersAdvanced(reqTpl, row, ctx); // thay tất cả ${colName}
-
-        System.out.println("🧩 Request body sau replace:\n" + requestBody);
-
-        // ===== Step 3: Call API =====
+        // ===== Step 2: Build request (query) =====
+// Lấy từ context
         String tokenFromCtx = (String) ctx.getAttribute("AUTH_TOKEN");
         String tokenFromExcel = row.get("auth_token"); // optional in Excel
         String bearer = tokenFromCtx != null ? tokenFromCtx : tokenFromExcel;
 
+        String partnerCtx = (String) ctx.getAttribute("PARTNER_UID");
+        String courseCtx  = (String) ctx.getAttribute("COURSE_UID");
+
+// Query params: context + excel
+        Map<String, Object> q = new LinkedHashMap<>();
+        q.put("limit", row.get("limit"));
+        q.put("page",   row.get("page"));
+        q.put("sort_by",     row.get("sort_by"));
+        q.put("sort_dir",    row.get("sort_dir"));
+        q.put("course_uid",  courseCtx);
+        q.put("partner_uid", partnerCtx);
+        q.put("item_code", row.get("item_code"));
+        q.put("product_name", row.get("product_name"));
+        q.put("code_or_name", row.get("code_or_name"));
+        q.put("type", row.get("type"));
+        q.put("service_id", row.get("service_id"));
+        q.put("status", row.get("status"));
+        q.put("group_code", row.get("group_code"));
+
+        System.out.println("🧩 Request body sau replace:\n" + q);
+
+// ===== Step 3: Call API =====
         Response resp = given()
                 .contentType(ContentType.JSON)
-                .header("Accept", "application/json")
-                .header("Authorization", bearer != null ? bearer : "")
-                .body(requestBody)
+                .header("Authorization", bearer)
+                .queryParams(q)
                 .filter(new RequestLoggingFilter(LogDetail.ALL, true, reqCapture))
                 .when()
-                .post(BASE_URL + "/golf-cms/api/service-cart/add")
+                .get(BASE_URL + "/golf-cms/api/kiosk-inventory/list")
                 .then()
-                .extract().response();
+                .extract()
+                .response();
 
         String respJson = resp.asString();
+
 
         // ===== Step 4: Gắn log request/response vào report =====
         reqCapture.flush();
         ITestResult tr = Reporter.getCurrentTestResult();
         tr.setAttribute("requestLog", reqWriter.toString());
         tr.setAttribute("responseLog", resp.getBody().prettyPrint());
-        ctx.setAttribute("LAST_REQUEST_LOG", requestBody);
+        ctx.setAttribute("LAST_REQUEST_LOG", q);
         ctx.setAttribute("LAST_RESPONSE_LOG", resp.asString());
+
 
         // ===== Step 5: Load expect JSON =====
         // Excel cột 'expected_validation_data' trỏ tới file expect (vd: create_booking_batch_expect.json)
@@ -123,9 +139,18 @@ public class RestaurantCreateBillPlayer1Test extends TestConfig implements FlowR
 
         // ===== Step 8: Extract lưu biến cho bước sau (nếu cần) =====
         JsonPath jp = resp.jsonPath();
-        String bill_id      = jp.getString("id");
 
-        if (bill_id != null)      ctx.setAttribute("BILL_ID_0", bill_id);
+        for (int i = 0; i < 4; i++) {
+            String id            = jp.getString("data[" + i + "].id");
+            String code     = jp.getString("data[" + i + "].code");
+            String price = jp.getString("data[" + i + "].item_info.price");
+
+
+            if (id != null)            ctx.setAttribute("ITEM_ID_" + i, id);
+            if (code != null)     ctx.setAttribute("ITEM_CODE_" + i, code);
+            if (price != null) ctx.setAttribute("UNIT_PRICE_" + i, price);
+
+        }
 
     }
     //    Flow chạy tích hợp
@@ -133,12 +158,11 @@ public class RestaurantCreateBillPlayer1Test extends TestConfig implements FlowR
     public void runCase(String caseId, ITestContext ctx, ExtentTest logger) throws Exception {
         Map<String, String> row = findRowByCaseId(EXCEL_FILE, SHEET_NAME, caseId);
         logger.info("▶️ Running Login case: " + caseId);
-        testCreateBill(row, ctx);   // chỉ gọi lại hàm test cũ
+        testGetListMenu(row, ctx);   // chỉ gọi lại hàm test cũ
     }
 
     @AfterMethod(alwaysRun = true)
     public void dumpCtxToReport(ITestContext ctx) {
         ReportHelper.logAllContext(ctx);
     }
-
 }
