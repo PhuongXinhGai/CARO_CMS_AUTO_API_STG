@@ -1,0 +1,15 @@
+{
+  "status_code": ${status_code},
+
+"assertions_explicit": [
+],
+
+"assertions": {
+"$.booking_buggy": "${assert_rentals}",
+"$.booking_caddie": "${assert_booking_buggy}",
+"$.rentals": "${assert_booking_caddie}"
+},
+
+"extract": {
+}
+}

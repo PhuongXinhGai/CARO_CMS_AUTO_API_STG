@@ -62,6 +62,14 @@ public class ApiRegistry {
         put("driving_get_list_menu_id", "tests.test_scripts.api.pos.driving.DrivingGetListMenuTest");
         put("driving_add_item_to_bill_id", "tests.test_scripts.api.pos.driving.DrivingAddItemToBillPlayer1Test");
 
+        put("rental_create_bill_player1_id", "tests.test_scripts.api.pos.rental.RentalCreateBillPlayer1Test");
+        put("rental_get_list_menu_id", "tests.test_scripts.api.pos.rental.RentalGetListMenuTest");
+        put("rental_add_item_to_bill_id", "tests.test_scripts.api.pos.rental.RentalAddItemToBillPlayer1Test");
+
+        put("proshop_create_bill_player1_id", "tests.test_scripts.api.pos.proshop.ProshopCreateBillPlayer1Test");
+        put("proshop_get_list_menu_id", "tests.test_scripts.api.pos.proshop.ProshopGetListMenuTest");
+        put("proshop_add_item_to_bill_id", "tests.test_scripts.api.pos.proshop.ProshopAddItemToBillPlayer1Test");
+
 
     }};
 
@@ -123,7 +131,15 @@ public class ApiRegistry {
 
                 "driving_create_bill_player1_id",
                 "driving_get_list_menu_id",
-                "driving_add_item_to_bill_id"
+                "driving_add_item_to_bill_id",
+
+                "rental_create_bill_player1_id",
+                "rental_get_list_menu_id",
+                "rental_add_item_to_bill_id",
+
+                "proshop_create_bill_player1_id",
+                "proshop_get_list_menu_id",
+                "proshop_add_item_to_bill_id"
         );
     }
 }

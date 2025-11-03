@@ -1,0 +1,15 @@
+{
+  "status_code": ${status_code},
+
+"assertions_explicit": [
+],
+
+"assertions": {
+"$.id": "${assert_id}",
+"$.service_type": "${assert_service_type}",
+"$.service_id": "${assert_service_id}"
+},
+
+"extract": {
+}
+}
