@@ -1,0 +1,21 @@
+{
+  "status_code": ${status_code},
+
+"assertions": {
+"$.customer_type": "${assert_customer_type}",
+"$.guest_style": "${assert_guest_style}",
+"$.agency_id": ${assert_agency_id},
+"$.check_in_time": "${assert_check_in_time}",
+"$.flight_id": "${assert_flight_id}",
+"$.buggy_id": "${assert_buggy_id}",
+"$.init_type": ${assert_init_type}
+},
+
+"assertions_explicit": [
+{ "path": "$.rounds", "op": "size", "value": ${assert_size_rounds} },
+{ "path": "$.list_service_items", "op": "size", "value": ${assert_size_list_service_items} }
+],
+
+"extract": {
+}
+}

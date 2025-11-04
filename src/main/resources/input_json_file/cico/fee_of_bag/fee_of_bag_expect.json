@@ -1,0 +1,43 @@
+{
+  "status_code": ${status_code},
+
+"assertions": {
+"$.total_bill.total": ${assert_total_bill.total},
+
+"$.agency_paid_all": ${assert_agency_paid_all},
+"$.total_bill.agency_pay": ${assert_total_bill.agency_pay},
+"$.agency_player_pay": ${assert_agency_player_pay},
+"$.agency_paid_discount": ${assert_agency_paid_discount},
+
+"$.mush_pay_info.mush_pay": ${assert_mush_pay_info.mush_pay},
+
+"$.rounds[0].green_fee": ${assert_rounds[0].green_fee},
+"$.rounds[0].caddie_fee": ${assert_rounds[0].caddie_fee},
+"$.rounds[0].voucher_green_fee_amount": ${assert_rounds[0].voucher_green_fee_amount},
+"$.rounds[0].voucher_caddie_fee_amount": ${assert_rounds[0].voucher_caddie_fee_amount},
+
+"$.total_golf_fee.green_fee": ${assert_total_golf_fee.green_fee},
+"$.total_golf_fee.caddie_fee": ${assert_total_golf_fee.caddie_fee},
+"$.total_golf_fee.total": ${assert_total_golf_fee.total},
+
+"$.total_item_fee": ${assert_total_item_fee},
+
+"$.total_service_fee.golf_fee": ${assert_total_service_fee.golf_fee},
+"$.total_service_fee.rental": ${assert_total_service_fee.rental},
+"$.total_service_fee.tee_driving": ${assert_total_service_fee.tee_driving},
+"$.total_service_fee.pro_shop": ${assert_total_service_fee.pro_shop},
+"$.total_service_fee.restaurant": ${assert_total_service_fee.restaurant},
+"$.total_service_fee.kiosk": ${assert_total_service_fee.kiosk},
+"$.total_service_fee.mini_bar": ${assert_total_service_fee.mini_bar},
+"$.total_service_fee.other_fee": ${assert_total_service_fee.other_fee},
+"$.total_service_fee.total": ${assert_total_service_fee.total}
+},
+
+"assertions_explicit": [
+{ "path": "$.rounds", "op": "size", "value": ${assert_size_rounds} },
+{ "path": "$.list_service_items", "op": "size", "value": ${assert_size_list_service_items} }
+],
+
+"extract": {
+}
+}

@@ -1,0 +1,24 @@
+{
+  "status_code": ${status_code},
+
+"assertions": {
+"$.agency_paid_all": ${assert_agency_paid_all},
+"$.agency_player_pay": ${assert_agency_player_pay},
+"$.agency_paid_discount": ${assert_agency_paid_discount},
+
+"$.mush_pay_info.mush_pay": ${assert_mush_pay_info.mush_pay},
+
+"$.rounds[0].green_fee": ${assert_rounds[0].green_fee},
+"$.rounds[0].caddie_fee": ${assert_rounds[0].caddie_fee},
+"$.rounds[0].voucher_green_fee_amount": ${assert_rounds[0].voucher_green_fee_amount},
+"$.rounds[0].voucher_caddie_fee_amount": ${assert_rounds[0].voucher_caddie_fee_amount}
+},
+
+"assertions_explicit": [
+{ "path": "$.rounds", "op": "size", "value": ${assert_size_rounds} },
+{ "path": "$.list_service_items", "op": "size", "value": ${assert_size_list_service_items} }
+],
+
+"extract": {
+}
+}

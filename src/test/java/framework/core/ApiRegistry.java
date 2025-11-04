@@ -47,20 +47,44 @@ public class ApiRegistry {
         put("add_round_player1_id", "tests.test_scripts.api.go_course_information.AddRoundPlayer1Test");
 
         put("restaurant_create_bill_player1_id", "tests.test_scripts.api.pos.restaurant.RestaurantCreateBillPlayer1Test");
+        put("restaurant_create_bill_player2_id", "tests.test_scripts.api.pos.restaurant.RestaurantCreateBillPlayer2Test");
+        put("restaurant_create_bill_player3_id", "tests.test_scripts.api.pos.restaurant.RestaurantCreateBillPlayer3Test");
+        put("restaurant_create_bill_player4_id", "tests.test_scripts.api.pos.restaurant.RestaurantCreateBillPlayer4Test");
         put("restaurant_get_list_menu_id", "tests.test_scripts.api.pos.restaurant.RestaurantGetListMenuTest");
-        put("restaurant_add_item_to_bill_id", "tests.test_scripts.api.pos.restaurant.RestaurantAddItemToBillPlayer1Test");
+        put("restaurant_add_item_to_bill_player1_id", "tests.test_scripts.api.pos.restaurant.RestaurantAddItemToBillPlayer1Test");
+        put("restaurant_add_item_to_bill_player2_id", "tests.test_scripts.api.pos.restaurant.RestaurantAddItemToBillPlayer2Test");
+        put("restaurant_add_item_to_bill_player3_id", "tests.test_scripts.api.pos.restaurant.RestaurantAddItemToBillPlayer3Test");
+        put("restaurant_add_item_to_bill_player4_id", "tests.test_scripts.api.pos.restaurant.RestaurantAddItemToBillPlayer4Test");
 
         put("kiosk_create_bill_player1_id", "tests.test_scripts.api.pos.kiosk.KioskCreateBillPlayer1Test");
+        put("kiosk_create_bill_player2_id", "tests.test_scripts.api.pos.kiosk.KioskCreateBillPlayer2Test");
+        put("kiosk_create_bill_player3_id", "tests.test_scripts.api.pos.kiosk.KioskCreateBillPlayer3Test");
+        put("kiosk_create_bill_player4_id", "tests.test_scripts.api.pos.kiosk.KioskCreateBillPlayer4Test");
         put("kiosk_get_list_menu_id", "tests.test_scripts.api.pos.kiosk.KioskGetListMenuTest");
-        put("kiosk_add_item_to_bill_id", "tests.test_scripts.api.pos.kiosk.KioskAddItemToBillPlayer1Test");
+        put("kiosk_add_item_to_bill_player1_id", "tests.test_scripts.api.pos.kiosk.KioskAddItemToBillPlayer1Test");
+        put("kiosk_add_item_to_bill_player2_id", "tests.test_scripts.api.pos.kiosk.KioskAddItemToBillPlayer2Test");
+        put("kiosk_add_item_to_bill_player3_id", "tests.test_scripts.api.pos.kiosk.KioskAddItemToBillPlayer3Test");
+        put("kiosk_add_item_to_bill_player4_id", "tests.test_scripts.api.pos.kiosk.KioskAddItemToBillPlayer4Test");
 
         put("mini_bar_create_bill_player1_id", "tests.test_scripts.api.pos.mini_bar.MiniBarCreateBillPlayer1Test");
+        put("mini_bar_create_bill_player2_id", "tests.test_scripts.api.pos.mini_bar.MiniBarCreateBillPlayer2Test");
+        put("mini_bar_create_bill_player3_id", "tests.test_scripts.api.pos.mini_bar.MiniBarCreateBillPlayer3Test");
+        put("mini_bar_create_bill_player4_id", "tests.test_scripts.api.pos.mini_bar.MiniBarCreateBillPlayer4Test");
         put("mini_bar_get_list_menu_id", "tests.test_scripts.api.pos.mini_bar.MiniBarGetListMenuTest");
-        put("mini_bar_add_item_to_bill_id", "tests.test_scripts.api.pos.mini_bar.MiniBarAddItemToBillPlayer1Test");
+        put("mini_bar_add_item_to_bill_player1_id", "tests.test_scripts.api.pos.mini_bar.MiniBarAddItemToBillPlayer1Test");
+        put("mini_bar_add_item_to_bill_player2_id", "tests.test_scripts.api.pos.mini_bar.MiniBarAddItemToBillPlayer2Test");
+        put("mini_bar_add_item_to_bill_player3_id", "tests.test_scripts.api.pos.mini_bar.MiniBarAddItemToBillPlayer3Test");
+        put("mini_bar_add_item_to_bill_player4_id", "tests.test_scripts.api.pos.mini_bar.MiniBarAddItemToBillPlayer4Test");
 
         put("driving_create_bill_player1_id", "tests.test_scripts.api.pos.driving.DrivingCreateBillPlayer1Test");
+        put("driving_create_bill_player2_id", "tests.test_scripts.api.pos.driving.DrivingCreateBillPlayer2Test");
+        put("driving_create_bill_player3_id", "tests.test_scripts.api.pos.driving.DrivingCreateBillPlayer3Test");
+        put("driving_create_bill_player4_id", "tests.test_scripts.api.pos.driving.DrivingCreateBillPlayer4Test");
         put("driving_get_list_menu_id", "tests.test_scripts.api.pos.driving.DrivingGetListMenuTest");
-        put("driving_add_item_to_bill_id", "tests.test_scripts.api.pos.driving.DrivingAddItemToBillPlayer1Test");
+        put("driving_add_item_to_bill_player1_id", "tests.test_scripts.api.pos.driving.DrivingAddItemToBillPlayer1Test");
+        put("driving_add_item_to_bill_player2_id", "tests.test_scripts.api.pos.driving.DrivingAddItemToBillPlayer2Test");
+        put("driving_add_item_to_bill_player3_id", "tests.test_scripts.api.pos.driving.DrivingAddItemToBillPlayer3Test");
+        put("driving_add_item_to_bill_player4_id", "tests.test_scripts.api.pos.driving.DrivingAddItemToBillPlayer4Test");
 
         put("rental_create_bill_player1_id", "tests.test_scripts.api.pos.rental.RentalCreateBillPlayer1Test");
         put("rental_get_list_menu_id", "tests.test_scripts.api.pos.rental.RentalGetListMenuTest");
@@ -69,6 +93,10 @@ public class ApiRegistry {
         put("proshop_create_bill_player1_id", "tests.test_scripts.api.pos.proshop.ProshopCreateBillPlayer1Test");
         put("proshop_get_list_menu_id", "tests.test_scripts.api.pos.proshop.ProshopGetListMenuTest");
         put("proshop_add_item_to_bill_id", "tests.test_scripts.api.pos.proshop.ProshopAddItemToBillPlayer1Test");
+
+        put("booking_by_bag_player1_id", "tests.test_scripts.api.cico.GetBookingByBagPlayer1Test");
+        put("fee_of_bag_player1_id", "tests.test_scripts.api.cico.GetFeeOfBagPlayer1Test");
+        put("fee_of_bag_bill_player1_id", "tests.test_scripts.api.cico.GetFeeOfBagBillPlayer1Test");
 
 
     }};
@@ -118,20 +146,44 @@ public class ApiRegistry {
                 "add_round_player1_id",
 
                 "restaurant_create_bill_player1_id",
+                "restaurant_create_bill_player2_id",
+                "restaurant_create_bill_player3_id",
+                "restaurant_create_bill_player4_id",
                 "restaurant_get_list_menu_id",
-                "restaurant_add_item_to_bill_id",
+                "restaurant_add_item_to_bill_player1_id",
+                "restaurant_add_item_to_bill_player2_id",
+                "restaurant_add_item_to_bill_player3_id",
+                "restaurant_add_item_to_bill_player4_id",
 
                 "kiosk_create_bill_player1_id",
+                "kiosk_create_bill_player2_id",
+                "kiosk_create_bill_player3_id",
+                "kiosk_create_bill_player4_id",
                 "kiosk_get_list_menu_id",
-                "kiosk_add_item_to_bill_id",
+                "kiosk_add_item_to_bill_player1_id",
+                "kiosk_add_item_to_bill_player2_id",
+                "kiosk_add_item_to_bill_player3_id",
+                "kiosk_add_item_to_bill_player4_id",
 
                 "mini_bar_create_bill_player1_id",
+                "mini_bar_create_bill_player2_id",
+                "mini_bar_create_bill_player3_id",
+                "mini_bar_create_bill_player4_id",
                 "mini_bar_get_list_menu_id",
-                "mini_bar_add_item_to_bill_id",
+                "mini_bar_add_item_to_bill_player1_id",
+                "mini_bar_add_item_to_bill_player2_id",
+                "mini_bar_add_item_to_bill_player3_id",
+                "mini_bar_add_item_to_bill_player4_id",
 
                 "driving_create_bill_player1_id",
+                "driving_create_bill_player2_id",
+                "driving_create_bill_player3_id",
+                "driving_create_bill_player4_id",
                 "driving_get_list_menu_id",
-                "driving_add_item_to_bill_id",
+                "driving_add_item_to_bill_player1_id",
+                "driving_add_item_to_bill_player2_id",
+                "driving_add_item_to_bill_player3_id",
+                "driving_add_item_to_bill_player4_id",
 
                 "rental_create_bill_player1_id",
                 "rental_get_list_menu_id",
@@ -139,7 +191,11 @@ public class ApiRegistry {
 
                 "proshop_create_bill_player1_id",
                 "proshop_get_list_menu_id",
-                "proshop_add_item_to_bill_id"
+                "proshop_add_item_to_bill_id",
+
+                "booking_by_bag_player1_id",
+                "fee_of_bag_player1_id",
+                "fee_of_bag_bill_player1_id"
         );
     }
 }
