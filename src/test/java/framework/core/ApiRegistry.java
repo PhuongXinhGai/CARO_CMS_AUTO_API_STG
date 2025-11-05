@@ -87,16 +87,40 @@ public class ApiRegistry {
         put("driving_add_item_to_bill_player4_id", "tests.test_scripts.api.pos.driving.DrivingAddItemToBillPlayer4Test");
 
         put("rental_create_bill_player1_id", "tests.test_scripts.api.pos.rental.RentalCreateBillPlayer1Test");
+        put("rental_create_bill_player2_id", "tests.test_scripts.api.pos.rental.RentalCreateBillPlayer2Test");
+        put("rental_create_bill_player3_id", "tests.test_scripts.api.pos.rental.RentalCreateBillPlayer3Test");
+        put("rental_create_bill_player4_id", "tests.test_scripts.api.pos.rental.RentalCreateBillPlayer4Test");
         put("rental_get_list_menu_id", "tests.test_scripts.api.pos.rental.RentalGetListMenuTest");
-        put("rental_add_item_to_bill_id", "tests.test_scripts.api.pos.rental.RentalAddItemToBillPlayer1Test");
+        put("rental_add_item_to_bill_player1_id", "tests.test_scripts.api.pos.rental.RentalAddItemToBillPlayer1Test");
+        put("rental_add_item_to_bill_player2_id", "tests.test_scripts.api.pos.rental.RentalAddItemToBillPlayer2Test");
+        put("rental_add_item_to_bill_player3_id", "tests.test_scripts.api.pos.rental.RentalAddItemToBillPlayer3Test");
+        put("rental_add_item_to_bill_player4_id", "tests.test_scripts.api.pos.rental.RentalAddItemToBillPlayer4Test");
 
         put("proshop_create_bill_player1_id", "tests.test_scripts.api.pos.proshop.ProshopCreateBillPlayer1Test");
+        put("proshop_create_bill_player2_id", "tests.test_scripts.api.pos.proshop.ProshopCreateBillPlayer2Test");
+        put("proshop_create_bill_player3_id", "tests.test_scripts.api.pos.proshop.ProshopCreateBillPlayer3Test");
+        put("proshop_create_bill_player4_id", "tests.test_scripts.api.pos.proshop.ProshopCreateBillPlayer4Test");
         put("proshop_get_list_menu_id", "tests.test_scripts.api.pos.proshop.ProshopGetListMenuTest");
-        put("proshop_add_item_to_bill_id", "tests.test_scripts.api.pos.proshop.ProshopAddItemToBillPlayer1Test");
+        put("proshop_add_item_to_bill_player1_id", "tests.test_scripts.api.pos.proshop.ProshopAddItemToBillPlayer1Test");
+        put("proshop_add_item_to_bill_player2_id", "tests.test_scripts.api.pos.proshop.ProshopAddItemToBillPlayer2Test");
+        put("proshop_add_item_to_bill_player3_id", "tests.test_scripts.api.pos.proshop.ProshopAddItemToBillPlayer3Test");
+        put("proshop_add_item_to_bill_player4_id", "tests.test_scripts.api.pos.proshop.ProshopAddItemToBillPlayer4Test");
 
         put("booking_by_bag_player1_id", "tests.test_scripts.api.cico.GetBookingByBagPlayer1Test");
+        put("booking_by_bag_player2_id", "tests.test_scripts.api.cico.GetBookingByBagPlayer2Test");
+        put("booking_by_bag_player3_id", "tests.test_scripts.api.cico.GetBookingByBagPlayer3Test");
+        put("booking_by_bag_player4_id", "tests.test_scripts.api.cico.GetBookingByBagPlayer4Test");
+
+        put("add_sub_bag_id", "tests.test_scripts.api.cico.AddSubBagTest");
+
         put("fee_of_bag_player1_id", "tests.test_scripts.api.cico.GetFeeOfBagPlayer1Test");
+        put("fee_of_bag_player2_id", "tests.test_scripts.api.cico.GetFeeOfBagPlayer2Test");
+        put("fee_of_bag_player3_id", "tests.test_scripts.api.cico.GetFeeOfBagPlayer3Test");
+        put("fee_of_bag_player4_id", "tests.test_scripts.api.cico.GetFeeOfBagPlayer4Test");
         put("fee_of_bag_bill_player1_id", "tests.test_scripts.api.cico.GetFeeOfBagBillPlayer1Test");
+        put("fee_of_bag_bill_player2_id", "tests.test_scripts.api.cico.GetFeeOfBagBillPlayer2Test");
+        put("fee_of_bag_bill_player3_id", "tests.test_scripts.api.cico.GetFeeOfBagBillPlayer3Test");
+        put("fee_of_bag_bill_player4_id", "tests.test_scripts.api.cico.GetFeeOfBagBillPlayer4Test");
 
 
     }};
@@ -127,6 +151,12 @@ public class ApiRegistry {
                 "check_in_bag_player3_id",
                 "check_in_bag_player4_id",
                 "check_in_ekyc_id",
+
+                "undo_check_in_bag_id",
+                "check_in_bag_player1_id",
+                "undo_check_in_bag_id",
+
+
 
                 "create_flight_id",
                 "add_bag_to_flight_id",
@@ -186,16 +216,40 @@ public class ApiRegistry {
                 "driving_add_item_to_bill_player4_id",
 
                 "rental_create_bill_player1_id",
+                "rental_create_bill_player2_id",
+                "rental_create_bill_player3_id",
+                "rental_create_bill_player4_id",
                 "rental_get_list_menu_id",
-                "rental_add_item_to_bill_id",
+                "rental_add_item_to_bill_player1_id",
+                "rental_add_item_to_bill_player2_id",
+                "rental_add_item_to_bill_player3_id",
+                "rental_add_item_to_bill_player4_id",
 
                 "proshop_create_bill_player1_id",
+                "proshop_create_bill_player2_id",
+                "proshop_create_bill_player3_id",
+                "proshop_create_bill_player4_id",
                 "proshop_get_list_menu_id",
-                "proshop_add_item_to_bill_id",
+                "proshop_add_item_to_bill_player1_id",
+                "proshop_add_item_to_bill_player2_id",
+                "proshop_add_item_to_bill_player3_id",
+                "proshop_add_item_to_bill_player4_id",
 
                 "booking_by_bag_player1_id",
+                "booking_by_bag_player2_id",
+                "booking_by_bag_player3_id",
+                "booking_by_bag_player4_id",
+
+                "add_sub_bag_id",
+
                 "fee_of_bag_player1_id",
-                "fee_of_bag_bill_player1_id"
+                "fee_of_bag_player2_id",
+                "fee_of_bag_player3_id",
+                "fee_of_bag_player3_id",
+                "fee_of_bag_bill_player1_id",
+                "fee_of_bag_bill_player2_id",
+                "fee_of_bag_bill_player3_id",
+                "fee_of_bag_bill_player4_id"
         );
     }
 }

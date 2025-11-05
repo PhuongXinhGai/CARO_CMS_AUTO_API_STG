@@ -9,7 +9,7 @@
 "$.agency_player_pay": ${assert_agency_player_pay},
 "$.agency_paid_discount": ${assert_agency_paid_discount},
 
-"$.mush_pay_info.mush_pay": ${assert_mush_pay_info.mush_pay},
+"$.mush_pay_info": ${assert_mush_pay_info_0_VND},
 
 "$.rounds[0].green_fee": ${assert_rounds[0].green_fee},
 "$.rounds[0].caddie_fee": ${assert_rounds[0].caddie_fee},

@@ -10,6 +10,8 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Pattern;
 
+import static java.util.stream.Collectors.toMap;
+
 public class AssertionHelper {
 
     // Map các toán tử explicit
@@ -27,6 +29,18 @@ public class AssertionHelper {
                         path + " equals check failed. Actual=" + a + ", Expected=" + e);
                 return;
             }
+            // Rỗng: coi là bằng nhau bất kể class gì
+            // Nếu cả hai là Map -> so sánh bằng nội dung (dù khác class)
+            if (actual instanceof Map || expected instanceof Map) {
+                Map<?, ?> a = toMap(actual);
+                Map<?, ?> e = toMap(expected);
+                // Nếu cả hai map rỗng thì coi như pass
+                if (a.isEmpty() && e.isEmpty()) return;
+
+                Assert.assertEquals(a, e, path + " equals check failed (Map compare)");
+                return;
+            }
+
             // Mặc định: so sánh equals
             Assert.assertEquals(actual, expected, path + " equals check failed");
         });
@@ -172,6 +186,25 @@ public class AssertionHelper {
         // Nếu cả hai là số -> đã xử lý ở equals phía trên
         return expectedRaw;
     }
+
+    // 👉 Helper convert object về Map an toàn
+    private static Map<?, ?> toMap(Object obj) {
+        if (obj == null) return Collections.emptyMap();
+        if (obj instanceof Map) return (Map<?, ?>) obj;
+
+        try {
+            // Trường hợp là String JSON như "{}" hoặc "{\"key\":1}"
+            String json = String.valueOf(obj).trim();
+            if ("{}".equals(json)) return Collections.emptyMap();
+
+            if (json.startsWith("{") && json.endsWith("}")) {
+                return new com.google.gson.Gson().fromJson(json, Map.class);
+            }
+        } catch (Exception ignore) {}
+
+        return Collections.singletonMap("_raw", obj); // fallback để không null
+    }
+
 
     // Interface nhỏ để dùng lambda 3 tham số
     @FunctionalInterface

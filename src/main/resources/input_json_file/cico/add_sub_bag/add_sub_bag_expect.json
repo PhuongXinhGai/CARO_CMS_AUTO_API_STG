@@ -1,0 +1,13 @@
+{
+  "status_code": ${status_code},
+
+"assertions": {
+},
+
+"assertions_explicit": [
+{ "path": "$.sub_bags", "op": "size", "value": ${assert_size_sub_bags} }
+],
+
+"extract": {
+}
+}

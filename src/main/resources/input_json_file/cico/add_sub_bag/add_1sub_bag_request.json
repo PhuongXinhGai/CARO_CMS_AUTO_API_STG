@@ -1,0 +1,9 @@
+{
+  "booking_uid": "${booking_uid}",
+  "sub_bags": [
+    {
+      "booking_uid": "${sub_bags[0].booking_uid}",
+      "transfer_payment": "${sub_bags[0].transfer_payment}"
+    }
+  ]
+}
