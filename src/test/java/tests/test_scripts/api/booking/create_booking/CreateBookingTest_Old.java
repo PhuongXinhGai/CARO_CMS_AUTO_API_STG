@@ -30,7 +30,7 @@ import static io.restassured.RestAssured.given;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
-public class CreateBookingBatchTest_Old extends TestConfig {
+public class CreateBookingTest_Old extends TestConfig {
 
     @DataProvider(name = "createBookingBatchData")
     public Object[][] getCreateBookingBatchData() throws IOException {

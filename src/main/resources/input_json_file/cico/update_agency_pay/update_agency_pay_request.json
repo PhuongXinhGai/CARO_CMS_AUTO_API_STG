@@ -1,0 +1,28 @@
+{
+  "cms_user": "${cms_user}",
+  "partner_uid": "${partner_uid}",
+  "course_uid": "${course_uid}",
+  "uid": "${uid}",
+  "customer_name": "${customer_name}",
+  "agency_id": ${agency_id},
+  "hole": ${hole},
+  "guest_style": "${guest_style}",
+  "guest_style_name": "${guest_style_name}",
+  "course_type": "${course_type}",
+  "tee_type": "${tee_type}",
+  "agency_paid_all": ${agency_paid_all},
+  "caddie_code": "${caddie_code}",
+  "agency_player_pay": ${agency_player_pay},
+  "fee_info": {
+    "golf_fee": ${fee_info.golf_fee},
+    "buggy_fee": ${fee_info.buggy_fee},
+    "odd_car_fee": ${fee_info.odd_car_fee},
+    "caddie_fee": ${fee_info.caddie_fee},
+    "private_car_fee": ${fee_info.private_car_fee},
+    "has_price_spread": ${fee_info.has_price_spread},
+    "package_add_on_fee": ${fee_info.package_add_on_fee},
+    "add_on_fee": ${fee_info.add_on_fee},
+    "has_pay_round_second": ${fee_info.has_pay_round_second}
+    },
+  "is_private_buggy": ${is_private_buggy}
+}

@@ -112,6 +112,8 @@ public class ApiRegistry {
         put("booking_by_bag_player4_id", "tests.test_scripts.api.cico.GetBookingByBagPlayer4Test");
 
         put("add_sub_bag_id", "tests.test_scripts.api.cico.AddSubBagTest");
+        put("detail_agency_pay_id", "tests.test_scripts.api.cico.DetailAgencyPayTest");
+        put("update_agency_pay_id", "tests.test_scripts.api.cico.UpdateAgencyPayTest");
 
         put("fee_of_bag_player1_id", "tests.test_scripts.api.cico.GetFeeOfBagPlayer1Test");
         put("fee_of_bag_player2_id", "tests.test_scripts.api.cico.GetFeeOfBagPlayer2Test");
@@ -155,8 +157,6 @@ public class ApiRegistry {
                 "undo_check_in_bag_id",
                 "check_in_bag_player1_id",
                 "undo_check_in_bag_id",
-
-
 
                 "create_flight_id",
                 "add_bag_to_flight_id",
@@ -241,6 +241,11 @@ public class ApiRegistry {
                 "booking_by_bag_player4_id",
 
                 "add_sub_bag_id",
+                "detail_agency_pay_id",
+                "update_agency_pay_id",
+                "update_agency_pay_id",
+                "update_agency_pay_id",
+                "update_agency_pay_id",
 
                 "fee_of_bag_player1_id",
                 "fee_of_bag_player2_id",

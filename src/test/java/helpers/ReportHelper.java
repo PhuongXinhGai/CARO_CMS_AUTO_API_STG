@@ -31,7 +31,7 @@ public class ReportHelper {
             // 🔹 1 dòng duy nhất: title + desc
             ExtentTest flowNode = extent.createTest("🌊 " + flowId + " – " + flowDesc);
             flowNode.assignCategory(flowId);
-            flowNode.info("🚀 Bắt đầu Flow: " + flowId);
+//            flowNode.info("🚀 Bắt đầu Flow: " + flowId);
 
             // Lưu lại để các class khác có thể lấy lại
             FlowTestListener.getExtentTestMap().put(flowId, flowNode);

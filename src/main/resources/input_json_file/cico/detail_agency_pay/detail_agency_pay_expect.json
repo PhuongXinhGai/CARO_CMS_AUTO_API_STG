@@ -1,0 +1,16 @@
+{
+  "status_code": ${status_code},
+
+"assertions": {
+"$.agency_paid_all": ${assert_agency_paid_all},
+"$.agency_player_pay": "${assert_agency_player_pay}"
+},
+
+"assertions_explicit": [
+{ "path": "$.agency_pre_paid", "op": "size", "value": ${assert_size_agency_pre_paid} },
+{ "path": "$.agency_paid_v2", "op": "size", "value": ${assert_size_agency_paid_v2} }
+],
+
+"extract": {
+}
+}

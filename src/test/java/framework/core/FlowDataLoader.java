@@ -48,7 +48,14 @@ public class FlowDataLoader {
                         value = cell.getStringCellValue().trim();
                         if (!value.isEmpty()) emptyRow = false;
                     }
-                    map.put(headers.get(c), value);
+//                    map.put(headers.get(c), value);
+                    String headerName = headers.get(c);
+                    String key = headerName;
+                    int idx = 1;
+                    while (map.containsKey(key)) {
+                        key = headerName + "_" + (++idx);
+                    }
+                    map.put(key, value);
                 }
 
                 if (!emptyRow) list.add(map);

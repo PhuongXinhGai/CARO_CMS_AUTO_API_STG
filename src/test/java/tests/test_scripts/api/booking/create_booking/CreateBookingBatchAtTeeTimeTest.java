@@ -128,6 +128,7 @@ public class CreateBookingBatchAtTeeTimeTest extends TestConfig implements FlowR
 
         for (int i = 0; i < 4; i++) {
             String uid            = jp.getString("[" + i + "].uid");
+            String bill_code           = jp.getString("[" + i + "].bill_code");
             String guestStyle     = jp.getString("[" + i + "].guest_style");
             String guestStyleName = jp.getString("[" + i + "].guest_style_name");
 
@@ -156,11 +157,13 @@ public class CreateBookingBatchAtTeeTimeTest extends TestConfig implements FlowR
             String member_name_of_guest   = jp.getString("[" + i + "].member_name_of_guest");
             String member_uid_of_guest   = jp.getString("[" + i + "].member_uid_of_guest");
             String member_card_uid   = jp.getString("[" + i + "].member_card_uid");
+            String agency_id   = jp.getString("[" + i + "].agency_id");
 
             String bagStatus   = jp.getString("[" + i + "].bag_status");
 
 
             if (uid != null)            ctx.setAttribute("BOOKING_UID_" + i, uid);
+            if (bill_code != null)            ctx.setAttribute("BILL_CODE_" + i, bill_code);
             if (guestStyle != null)     ctx.setAttribute("GUEST_STYLE_" + i, guestStyle);
             if (guestStyleName != null) ctx.setAttribute("GUEST_STYLE_NAME_" + i, guestStyleName);
 
@@ -189,6 +192,7 @@ public class CreateBookingBatchAtTeeTimeTest extends TestConfig implements FlowR
             if (member_name_of_guest != null)   ctx.setAttribute("MEMBER_NAME_OF_GUEST_" + i, member_name_of_guest);
             if (member_uid_of_guest != null)   ctx.setAttribute("MEMBER_UID_OF_GUEST_" + i, member_uid_of_guest);
             if (member_card_uid != null)   ctx.setAttribute("MEMBER_CARD_UID_" + i, member_card_uid);
+            if (agency_id != null)   ctx.setAttribute("AGENCY_ID_" + i, agency_id);
 
             if (bagStatus != null)   ctx.setAttribute("BAG_STATUS_" + i, bagStatus);
         }

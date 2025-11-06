@@ -1,0 +1,11 @@
+{
+  "partner_uid": "${partner_uid}",
+  "course_uid": "${course_uid}",
+  "bill_code": "${bill_code}",
+  "booking_date": "${booking_date}",
+  "hole": ${hole},
+  "agency_id": ${agency_id},
+  "guest_style": "${guest_style}",
+  "booking_uid": "${booking_uid}",
+  "tee_time": "${tee_time}"
+}

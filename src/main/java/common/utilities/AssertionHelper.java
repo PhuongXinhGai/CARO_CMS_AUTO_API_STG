@@ -1,7 +1,5 @@
 package common.utilities;
 
-import com.aventstack.extentreports.ExtentTest;
-import com.aventstack.extentreports.Status;
 import com.jayway.jsonpath.JsonPath;
 import io.restassured.response.Response;
 import org.testng.Assert;
@@ -10,7 +8,6 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import static java.util.stream.Collectors.toMap;
 
 public class AssertionHelper {
 
@@ -40,6 +37,8 @@ public class AssertionHelper {
                 Assert.assertEquals(a, e, path + " equals check failed (Map compare)");
                 return;
             }
+
+            if (isNullEquivalent(actual) && isNullEquivalent(expected)) return;
 
             // Mặc định: so sánh equals
             Assert.assertEquals(actual, expected, path + " equals check failed");
@@ -205,6 +204,13 @@ public class AssertionHelper {
         return Collections.singletonMap("_raw", obj); // fallback để không null
     }
 
+    // Kiểm tra null tương đương
+    private static boolean isNullEquivalent(Object obj) {
+        if (obj == null) return true;
+        if (obj instanceof String && ((String) obj).equalsIgnoreCase("null")) return true;
+        if (obj.getClass().getSimpleName().equals("JsonNull")) return true; // Gson JsonNull
+        return false;
+    }
 
     // Interface nhỏ để dùng lambda 3 tham số
     @FunctionalInterface
