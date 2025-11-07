@@ -116,12 +116,14 @@ public class LoginTest extends TestConfig implements FlowRunnable {
         String courseUid  = jp.getString("data.course_uid");
         String userNameRp = jp.getString("data.user_name");
         String full_name = jp.getString("data.full_name");
+        String REACT_APP_KEY_256 = jp.getString("keys[0].value");
 
         if (token != null)      ctx.setAttribute("AUTH_TOKEN", token);
         if (partnerUid != null) ctx.setAttribute("PARTNER_UID", partnerUid);
         if (courseUid != null)  ctx.setAttribute("COURSE_UID", courseUid);
         if (userNameRp != null) ctx.setAttribute("USER_NAME",  userNameRp);
         if (full_name != null)  ctx.setAttribute("FULL_NAME",  full_name);
+        if (REACT_APP_KEY_256 != null)  ctx.setAttribute("REACT_APP_KEY_256",  REACT_APP_KEY_256);
     }
 
 //    Flow chạy tích hợp

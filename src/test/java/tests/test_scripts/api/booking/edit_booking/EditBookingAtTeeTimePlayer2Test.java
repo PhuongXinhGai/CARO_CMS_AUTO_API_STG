@@ -1,4 +1,4 @@
-package tests.test_scripts.api.cico;
+package tests.test_scripts.api.booking.edit_booking;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.google.gson.Gson;
@@ -32,18 +32,18 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
-public class UpdateAgencyPayTest extends TestConfig implements FlowRunnable {
+public class EditBookingAtTeeTimePlayer2Test extends TestConfig implements FlowRunnable {
     // ==== ĐƯỜNG DẪN — chỉnh cho khớp project của bạn ====
     private static final String EXCEL_FILE = System.getProperty("user.dir")
-            + "/src/main/resources/input_excel_file/booking/CICO.xlsx";
-    private static final String SHEET_NAME = "Update_Agency_Pay";
+            + "/src/main/resources/input_excel_file/booking/Create_Booking_Batch.xlsx";
+    private static final String SHEET_NAME = "Edit_Booking_At_TeeTime_Player2";
     // Thư mục chứa JSON request/expect cho API này
     private static final String JSON_DIR = System.getProperty("user.dir")
-            + "/src/main/resources/input_json_file/cico/update_agency_pay/";
+            + "/src/main/resources/input_json_file/booking/edit_booking/";
 
     // ======================= DataProvider =======================
-    @DataProvider(name = "updateAgencyPayData")
-    public Object[][] updateAgencyPayData() throws IOException {
+    @DataProvider(name = "editBookingData")
+    public Object[][] editBookingData() throws IOException {
         return ExcelUtils.readSheetAsMaps(EXCEL_FILE, SHEET_NAME);
     }
 
@@ -58,8 +58,8 @@ public class UpdateAgencyPayTest extends TestConfig implements FlowRunnable {
      * 7) So sánh actual vs expect (AssertionHelper)
      * 8) Extract và lưu biến cho step sau (nếu cần)
      */
-    @Test(dataProvider = "updateAgencyPayData")
-    public void testUpdateAgencyPay(Map<String, String> row, ITestContext ctx) throws IOException {
+    @Test(dataProvider = "editBookingData")
+    public void testEditBooking(Map<String, String> row, ITestContext ctx) throws IOException {
         final String tcId = row.getOrDefault("tc_id", "NO_ID");
         final String desc = row.getOrDefault("tc_description", "Create booking batch");
 
@@ -70,6 +70,7 @@ public class UpdateAgencyPayTest extends TestConfig implements FlowRunnable {
         PrintStream reqCapture = new PrintStream(new WriterOutputStream(reqWriter), true);
 
         // ===== Step 2: Build request =====
+        // Excel cột 'input_placeholders' trỏ tới file request (vd: create_booking_batch_request.json)
         String reqFileName = row.getOrDefault("input_placeholders", "");
         String reqTpl = Files.readString(Paths.get(JSON_DIR + reqFileName));
 
@@ -81,7 +82,7 @@ public class UpdateAgencyPayTest extends TestConfig implements FlowRunnable {
         String tokenFromExcel = row.get("auth_token"); // optional in Excel
         String bearer = tokenFromCtx != null ? tokenFromCtx : tokenFromExcel;
 
-        String booking_uid = (String) ctx.getAttribute("BOOKING_UID_0");
+        String booking_uid = (String) ctx.getAttribute("BOOKING_UID_1");
 
 
         Response resp = given()
@@ -122,34 +123,34 @@ public class UpdateAgencyPayTest extends TestConfig implements FlowRunnable {
         AssertionHelper.assertFromJson(respJson, expectJson);
 
         // ===== Step 8: Extract lưu biến cho bước sau (nếu cần) =====
-//        // tuỳ nhu cầu: VD lưu booking_code_0, booking_uid_0 (đã định nghĩa trong "extract" của expect)
-//        // nếu bạn muốn parse nhanh ở đây, có thể dùng JsonPath đọc lại:
-////         JsonPath jp = new JsonPath(respJson);
-//        // ctx.setAttribute("BOOKING_CODE_0", jp.getString("[0].booking_code"));
-//        JsonPath jp = resp.jsonPath();
-//
-//        for (int i = 0; i < 4; i++) {
-//            String uid            = jp.getString("[" + i + "].uid");
-//            String guestStyle     = jp.getString("[" + i + "].guest_style");
-//            String guestStyleName = jp.getString("[" + i + "].guest_style_name");
-//            String greenFee       = jp.getString("[" + i + "].list_golf_fee[0].green_fee");
-//            String caddieFee      = jp.getString("[" + i + "].list_golf_fee[0].caddie_fee");
-//            String totalGolfFee   = jp.getString("[" + i + "].mush_pay_info.total_golf_fee");
-//
-//            if (uid != null)            ctx.setAttribute("BOOKING_UID_" + i, uid);
-//            if (guestStyle != null)     ctx.setAttribute("GUEST_STYLE_" + i, guestStyle);
-//            if (guestStyleName != null) ctx.setAttribute("GUEST_STYLE_NAME_" + i, guestStyleName);
-//            if (greenFee != null)       ctx.setAttribute("GREEN_FEE_" + i, greenFee);
-//            if (caddieFee != null)      ctx.setAttribute("CADDIE_FEE_" + i, caddieFee);
-//            if (totalGolfFee != null)   ctx.setAttribute("TOTAL_GOLF_FEE_" + i, totalGolfFee);
-//        }
+        // tuỳ nhu cầu: VD lưu booking_code_0, booking_uid_0 (đã định nghĩa trong "extract" của expect)
+        // nếu bạn muốn parse nhanh ở đây, có thể dùng JsonPath đọc lại:
+//         JsonPath jp = new JsonPath(respJson);
+        // ctx.setAttribute("BOOKING_CODE_0", jp.getString("[0].booking_code"));
+        JsonPath jp = resp.jsonPath();
+
+        for (int i = 0; i < 4; i++) {
+            String uid            = jp.getString("[" + i + "].uid");
+            String guestStyle     = jp.getString("[" + i + "].guest_style");
+            String guestStyleName = jp.getString("[" + i + "].guest_style_name");
+            String greenFee       = jp.getString("[" + i + "].list_golf_fee[0].green_fee");
+            String caddieFee      = jp.getString("[" + i + "].list_golf_fee[0].caddie_fee");
+            String totalGolfFee   = jp.getString("[" + i + "].mush_pay_info.total_golf_fee");
+
+            if (uid != null)            ctx.setAttribute("BOOKING_UID_" + i, uid);
+            if (guestStyle != null)     ctx.setAttribute("GUEST_STYLE_" + i, guestStyle);
+            if (guestStyleName != null) ctx.setAttribute("GUEST_STYLE_NAME_" + i, guestStyleName);
+            if (greenFee != null)       ctx.setAttribute("GREEN_FEE_" + i, greenFee);
+            if (caddieFee != null)      ctx.setAttribute("CADDIE_FEE_" + i, caddieFee);
+            if (totalGolfFee != null)   ctx.setAttribute("TOTAL_GOLF_FEE_" + i, totalGolfFee);
+        }
     }
     //    Flow chạy tích hợp
     @Override
     public void runCase(String caseId, ITestContext ctx, ExtentTest logger) throws Exception {
         Map<String, String> row = findRowByCaseId(EXCEL_FILE, SHEET_NAME, caseId);
         logger.info("▶️ Running Login case: " + caseId);
-        testUpdateAgencyPay(row, ctx);   // chỉ gọi lại hàm test cũ
+        testEditBooking(row, ctx);   // chỉ gọi lại hàm test cũ
     }
 
     @AfterMethod(alwaysRun = true)

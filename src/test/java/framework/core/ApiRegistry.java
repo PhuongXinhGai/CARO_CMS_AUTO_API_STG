@@ -13,7 +13,8 @@ public class ApiRegistry {
         put("create_booking_Voucher_case_id", "tests.test_scripts.api.booking.create_booking.CreateBookingBatchVoucherTest");
         put("create_booking_4_player_case_id", "tests.test_scripts.api.booking.create_booking.CreateBookingBatch4PlayerTest");
 
-        put("edit_booking_at_tee_time_id", "tests.test_scripts.api.booking.edit_booking.EditBookingAtTeeTimeTest");
+        put("edit_booking_at_tee_time_player1_id", "tests.test_scripts.api.booking.edit_booking.EditBookingAtTeeTimePlayer1Test");
+        put("edit_booking_at_tee_time_player2_id", "tests.test_scripts.api.booking.edit_booking.EditBookingAtTeeTimePlayer2Test");
         put("edit_booking_1_player_id", "tests.test_scripts.api.booking.edit_booking.EditBooking1PlayerTest");
 
         put("get_list_case_id", "tests.test_scripts.api.booking.create_booking.GetBookingListSelectTest");
@@ -124,6 +125,8 @@ public class ApiRegistry {
         put("fee_of_bag_bill_player3_id", "tests.test_scripts.api.cico.GetFeeOfBagBillPlayer3Test");
         put("fee_of_bag_bill_player4_id", "tests.test_scripts.api.cico.GetFeeOfBagBillPlayer4Test");
 
+        put("input_payment_id", "tests.test_scripts.api.cico.InputPaymentTest");
+
 
     }};
 
@@ -142,7 +145,8 @@ public class ApiRegistry {
                 "create_booking_Voucher_case_id",
                 "create_booking_4_player_case_id",
 
-                "edit_booking_at_tee_time_id",
+                "edit_booking_at_tee_time_player1_id",
+                "edit_booking_at_tee_time_player2_id",
                 "edit_booking_1_player_id",
 
                 "get_list_case_id",
@@ -152,6 +156,9 @@ public class ApiRegistry {
                 "check_in_bag_player2_id",
                 "check_in_bag_player3_id",
                 "check_in_bag_player4_id",
+                "check_in_ekyc_id",
+                "check_in_ekyc_id",
+                "check_in_ekyc_id",
                 "check_in_ekyc_id",
 
                 "undo_check_in_bag_id",
@@ -254,7 +261,12 @@ public class ApiRegistry {
                 "fee_of_bag_bill_player1_id",
                 "fee_of_bag_bill_player2_id",
                 "fee_of_bag_bill_player3_id",
-                "fee_of_bag_bill_player4_id"
+                "fee_of_bag_bill_player4_id",
+
+                "input_payment_id",
+                "input_payment_id",
+                "input_payment_id",
+                "input_payment_id"
         );
     }
 }

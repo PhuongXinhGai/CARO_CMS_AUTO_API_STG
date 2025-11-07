@@ -1,0 +1,32 @@
+{
+  "booking_uid": "${booking_uid}",
+  "bill_code": "${bill_code}",
+  "date_str": "${date_str}",
+  "check_sum": "${check_sum}",
+  "note": "${note}",
+  "list_item": [
+    {
+      "payment_type": "${list_item[0].payment_type}",
+      "amount": ${list_item[0].amount},
+    "note": "${list_item[0].note}",
+    "bank_type": "${list_item[0].bank_type}",
+    "payment_provider": "${list_item[0].payment_provider}",
+    "paid": ${list_item[0].paid},
+    "cashiers": "${list_item[0].cashiers}",
+    "uid_temp": ${list_item[0].uid_temp},
+    "action_type": "${list_item[0].action_type}",
+    "location": {
+      "service_type": "${list_item[0].location.service_type}",
+      "kiosk_type": "${list_item[0].location.kiosk_type}",
+      "path": "${list_item[0].location.path}",
+      "id": ${list_item[0].location.id}
+  },
+    "service_item_ids": ${list_item[0].service_item_ids},
+    "round_ids": ${list_item[0].round_ids},
+    "is_payment_on_behalf": ${list_item[0].is_payment_on_behalf}
+  }
+  ],
+  "list_auto_invoice": ${list_auto_invoice},
+"list_auto_inv_agency": ${list_auto_inv_agency},
+"is_negative_amount": ${is_negative_amount}
+}
