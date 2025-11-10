@@ -1,0 +1,16 @@
+{
+  "status_code": ${status_code},
+
+"assertions": {
+"$.data[0].payment_type": "${assert_data[0].payment_type}",
+"$.data[0].bank_type": "${assert_data[0].bank_type}",
+"$.data[0].paid": ${assert_data[0].paid}
+},
+
+"assertions_explicit": [
+{ "path": "$.data", "op": "size", "value": ${assert_size_data} }
+],
+
+"extract": {
+}
+}

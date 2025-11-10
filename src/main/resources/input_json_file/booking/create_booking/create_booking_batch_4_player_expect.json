@@ -48,13 +48,5 @@
 },
 
 "extract": {
-"booking_uid_0": "$[0].uid",
-"booking_code_0": "$[0].booking_code",
-"booking_uid_1": "$[1].uid",
-"booking_code_1": "$[1].booking_code",
-"booking_uid_2": "$[2].uid",
-"booking_code_2": "$[2].booking_code",
-"booking_uid_3": "$[3].uid",
-"booking_code_3": "$[3].booking_code"
 }
 }

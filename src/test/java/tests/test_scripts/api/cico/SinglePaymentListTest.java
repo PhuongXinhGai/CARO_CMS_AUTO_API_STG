@@ -11,7 +11,6 @@ import helpers.ReportHelper;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.http.ContentType;
-import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.apache.commons.io.output.WriterOutputStream;
 import org.testng.ITestContext;
@@ -32,19 +31,19 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
-public class InputPaymentTest extends TestConfig implements FlowRunnable {
+public class SinglePaymentListTest extends TestConfig implements FlowRunnable {
 
     // ==== ĐƯỜNG DẪN — chỉnh cho khớp project của bạn ====
     private static final String EXCEL_FILE = System.getProperty("user.dir")
             + "/src/main/resources/input_excel_file/booking/CICO.xlsx";
-    private static final String SHEET_NAME = "Input_Payment";
+    private static final String SHEET_NAME = "Single_Payment_List";
     // Thư mục chứa JSON request/expect cho API này
     private static final String JSON_DIR = System.getProperty("user.dir")
-            + "/src/main/resources/input_json_file/cico/input_payment/";
+            + "/src/main/resources/input_json_file/cico/single_payment_list/";
 
     // ======================= DataProvider =======================
-    @DataProvider(name = "inputPaymentData")
-    public Object[][] inputPaymentData() throws IOException {
+    @DataProvider(name = "singlePaymentListData")
+    public Object[][] singlePaymentListData() throws IOException {
         return ExcelUtils.readSheetAsMaps(EXCEL_FILE, SHEET_NAME);
     }
 
@@ -59,8 +58,8 @@ public class InputPaymentTest extends TestConfig implements FlowRunnable {
      * 7) So sánh actual vs expect (AssertionHelper)
      * 8) Extract và lưu biến cho step sau (nếu cần)
      */
-    @Test(dataProvider = "inputPaymentData")
-    public void testInputPayment(Map<String, String> row, ITestContext ctx) throws IOException {
+    @Test(dataProvider = "singlePaymentListData")
+    public void testSinglePaymentList(Map<String, String> row, ITestContext ctx) throws IOException {
         final String tcId = row.getOrDefault("tc_id", "NO_ID");
         final String desc = row.getOrDefault("tc_description", "Create booking batch");
 
@@ -89,7 +88,7 @@ public class InputPaymentTest extends TestConfig implements FlowRunnable {
                 .body(requestBody)
                 .filter(new RequestLoggingFilter(LogDetail.ALL, true, reqCapture))
                 .when()
-                .post(BASE_URL + "/golf-cms/api/payment/single-payment/add-list")
+                .post(BASE_URL + "/golf-cms/api/payment/single-payment/list/item")
                 .then()
                 .extract().response();
 
@@ -126,7 +125,7 @@ public class InputPaymentTest extends TestConfig implements FlowRunnable {
     public void runCase(String caseId, ITestContext ctx, ExtentTest logger) throws Exception {
         Map<String, String> row = findRowByCaseId(EXCEL_FILE, SHEET_NAME, caseId);
         logger.info("▶️ Running Login case: " + caseId);
-        testInputPayment(row, ctx);   // chỉ gọi lại hàm test cũ
+        testSinglePaymentList(row, ctx);   // chỉ gọi lại hàm test cũ
     }
 
     @AfterMethod(alwaysRun = true)

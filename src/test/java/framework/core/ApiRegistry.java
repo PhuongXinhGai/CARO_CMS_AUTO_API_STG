@@ -24,7 +24,10 @@ public class ApiRegistry {
         put("check_in_bag_player2_id", "tests.test_scripts.api.booking.checkin.CheckInBagPlayer2Test");
         put("check_in_bag_player3_id", "tests.test_scripts.api.booking.checkin.CheckInBagPlayer3Test");
         put("check_in_bag_player4_id", "tests.test_scripts.api.booking.checkin.CheckInBagPlayer4Test");
-        put("check_in_ekyc_id", "tests.test_scripts.api.booking.checkin.CheckInEkycTest");
+        put("Check_In_Ekyc_Player1_id", "tests.test_scripts.api.booking.checkin.CheckInEkycPlayer1Test");
+        put("Check_In_Ekyc_Player2_id", "tests.test_scripts.api.booking.checkin.CheckInEkycPlayer2Test");
+        put("Check_In_Ekyc_Player3_id", "tests.test_scripts.api.booking.checkin.CheckInEkycPlayer3Test");
+        put("Check_In_Ekyc_Player4_id", "tests.test_scripts.api.booking.checkin.CheckInEkycPlayer4Test");
         put("undo_check_in_bag_id", "tests.test_scripts.api.booking.checkin.UndoCheckInBagTest");
 
         put("create_flight_id", "tests.test_scripts.api.go_course_information.CreateFlightTest");
@@ -114,7 +117,7 @@ public class ApiRegistry {
 
         put("add_sub_bag_id", "tests.test_scripts.api.cico.AddSubBagTest");
         put("detail_agency_pay_id", "tests.test_scripts.api.cico.DetailAgencyPayTest");
-        put("update_agency_pay_id", "tests.test_scripts.api.cico.UpdateAgencyPayTest");
+        put("update_agency_pay_player1_id", "tests.test_scripts.api.cico.UpdateAgencyPayPlayer1Test");
 
         put("fee_of_bag_player1_id", "tests.test_scripts.api.cico.GetFeeOfBagPlayer1Test");
         put("fee_of_bag_player2_id", "tests.test_scripts.api.cico.GetFeeOfBagPlayer2Test");
@@ -125,8 +128,11 @@ public class ApiRegistry {
         put("fee_of_bag_bill_player3_id", "tests.test_scripts.api.cico.GetFeeOfBagBillPlayer3Test");
         put("fee_of_bag_bill_player4_id", "tests.test_scripts.api.cico.GetFeeOfBagBillPlayer4Test");
 
-        put("input_payment_id", "tests.test_scripts.api.cico.InputPaymentTest");
+        put("input_single_payment_id", "tests.test_scripts.api.cico.InputSinglePaymentTest");
+        put("single_payment_list_id", "tests.test_scripts.api.cico.SinglePaymentListTest");
 
+        put("check_out_bag_id", "tests.test_scripts.api.cico.CheckOutBagTest");
+        put("check_out_group_id", "tests.test_scripts.api.cico.CheckOutGroupTest");
 
     }};
 
@@ -156,10 +162,10 @@ public class ApiRegistry {
                 "check_in_bag_player2_id",
                 "check_in_bag_player3_id",
                 "check_in_bag_player4_id",
-                "check_in_ekyc_id",
-                "check_in_ekyc_id",
-                "check_in_ekyc_id",
-                "check_in_ekyc_id",
+                "Check_In_Ekyc_Player1_id",
+                "Check_In_Ekyc_Player2_id",
+                "Check_In_Ekyc_Player3_id",
+                "Check_In_Ekyc_Player4_id",
 
                 "undo_check_in_bag_id",
                 "check_in_bag_player1_id",
@@ -249,10 +255,10 @@ public class ApiRegistry {
 
                 "add_sub_bag_id",
                 "detail_agency_pay_id",
-                "update_agency_pay_id",
-                "update_agency_pay_id",
-                "update_agency_pay_id",
-                "update_agency_pay_id",
+                "update_agency_pay_player1_id",
+                "update_agency_pay_player1_id",
+                "update_agency_pay_player1_id",
+                "update_agency_pay_player1_id",
 
                 "fee_of_bag_player1_id",
                 "fee_of_bag_player2_id",
@@ -263,10 +269,21 @@ public class ApiRegistry {
                 "fee_of_bag_bill_player3_id",
                 "fee_of_bag_bill_player4_id",
 
-                "input_payment_id",
-                "input_payment_id",
-                "input_payment_id",
-                "input_payment_id"
+                "input_single_payment_id",
+                "input_single_payment_id",
+                "input_single_payment_id",
+                "input_single_payment_id",
+                "single_payment_list_id",
+                "single_payment_list_id",
+                "single_payment_list_id",
+                "single_payment_list_id",
+
+                "check_out_bag_id",
+                "check_out_bag_id",
+                "check_out_bag_id",
+                "check_out_bag_id",
+                "check_out_group_id"
+
         );
     }
 }

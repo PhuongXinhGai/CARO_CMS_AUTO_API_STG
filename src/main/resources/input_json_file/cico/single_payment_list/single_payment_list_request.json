@@ -1,0 +1,8 @@
+{
+  "bag": "${bag}",
+  "bill_code": "${bill_code}",
+  "check_sum": "${check_sum}",
+  "partner_uid": "${partner_uid}",
+  "course_uid": "${course_uid}",
+  "payment_date": "${payment_date}"
+}

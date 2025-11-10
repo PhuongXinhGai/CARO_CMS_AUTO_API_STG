@@ -18,9 +18,9 @@ public class DynamicDataHelper {
     private static final Pattern TODAY_MATH_PATTERN = Pattern.compile("\\{\\{TODAY\\s*([+-])\\s*(\\d+)}}", Pattern.CASE_INSENSITIVE);
 
     // NEW: {{CHECKSUM}}
-    private static final Pattern CHECKSUM_PATTERN   = Pattern.compile("\\{\\{CHECKSUM}}", Pattern.CASE_INSENSITIVE);
     private static final Pattern CHECKSUM_EKYC_PATTERN = Pattern.compile("\\{\\{CHECKSUM_EKYC_(\\d+)}}", Pattern.CASE_INSENSITIVE);
     private static final Pattern CHECKSUM_SINGLE_PAYMENT_PATTERN = Pattern.compile("\\{\\{CHECKSUM_SINGLE_PAYMENT_\\d+}}", Pattern.CASE_INSENSITIVE);
+    private static final Pattern CHECKSUM_SINGLE_PAYMENT_LIST_PATTERN = Pattern.compile("\\{\\{CHECKSUM_SINGLE_PAYMENT_LIST_\\d+}}", Pattern.CASE_INSENSITIVE);
 
     private DynamicDataHelper() {}
 
@@ -92,37 +92,6 @@ public class DynamicDataHelper {
             value = sbCs.toString();
         }
 
-
-        // 3) {{CHECKSUM}}  (chỉ resolve nếu có ctx)
-//        if (ctx != null) {
-//            Matcher cs = CHECKSUM_PATTERN.matcher(value);
-//            if (cs.find()) {
-//                String apiKey      = ConfigReader.getProperty("api_key"); // chú ý key trong config.properties
-//                String partnerUid  = str(ctx.getAttribute("PARTNER_UID"));
-//                String courseUid   = str(ctx.getAttribute("COURSE_UID"));
-//                String bookingUid  = str(ctx.getAttribute("BOOKING_UID_0"));
-//                String bookingDate = str(ctx.getAttribute("BOOKING_DATE_0"));
-//
-//                String raw = (apiKey==null?"":apiKey)
-//                        + partnerUid + courseUid + bookingUid + bookingDate;
-//
-//                // 🧩 Log debug từng thành phần và chuỗi nối
-//                System.out.println("=========== DEBUG CHECKSUM ===========");
-//                System.out.println("api_key      = " + apiKey);
-//                System.out.println("partner_uid  = " + partnerUid);
-//                System.out.println("course_uid   = " + courseUid);
-//                System.out.println("booking_uid  = " + bookingUid);
-//                System.out.println("booking_date = " + bookingDate);
-//                System.out.println("-------------------------------------");
-//                System.out.println("RAW String   = [" + raw + "]");
-//                System.out.println("SHA256 HEX   = " + ChecksumHelper.sha256(raw));
-//                System.out.println("=====================================");
-//
-//                String checksum = ChecksumHelper.sha256(raw);
-//                value = cs.replaceAll(Matcher.quoteReplacement(checksum));
-//            }
-//        }
-
         // 4) {{CHECKSUM_SINGLE_PAYMENT_N}} – hỗ trợ nhiều index
         if (ctx != null) {
             Matcher csp = CHECKSUM_SINGLE_PAYMENT_PATTERN.matcher(value);
@@ -167,13 +136,57 @@ public class DynamicDataHelper {
                 // Dùng appendReplacement để thay thế chính xác từng match
                 csp.appendReplacement(sbCsp, Matcher.quoteReplacement(checksum));
             }
-
             // Ghép phần còn lại
             csp.appendTail(sbCsp);
             value = sbCsp.toString();
         }
 
+        // 5) {{CHECKSUM_SINGLE_PAYMENT_LIST_N}} – hỗ trợ nhiều index
+        if (ctx != null) {
+            Matcher cspl = CHECKSUM_SINGLE_PAYMENT_LIST_PATTERN.matcher(value);
+            StringBuffer sbCspl = new StringBuffer();
 
+            while (cspl.find()) {
+                // Lấy index (VD: 0, 1, 2, ...)
+                String fullMatch = cspl.group();
+                Matcher idxMatcher = Pattern.compile("CHECKSUM_SINGLE_PAYMENT_LIST_(\\d+)", Pattern.CASE_INSENSITIVE).matcher(fullMatch);
+                String idx = "0";
+                if (idxMatcher.find()) idx = idxMatcher.group(1);
+
+                // ===== Lấy dữ liệu từ context =====
+                String base64Key = str(ctx.getAttribute("REACT_APP_KEY_256"));
+                String billCode  = str(ctx.getAttribute("BILL_CODE_" + idx));
+                String bag       = str(ctx.getAttribute("BAG_" + idx));
+
+                // ===== Giải mã base64 key =====
+                String decodedKey = "";
+                try {
+                    decodedKey = new String(java.util.Base64.getDecoder().decode(base64Key));
+                } catch (Exception e) {
+                    System.err.println("⚠️ Base64 decode lỗi cho REACT_APP_KEY_256: " + e.getMessage());
+                }
+
+                // ===== Ghép chuỗi và hash =====
+                String raw = decodedKey + "|" + billCode + "|" + bag;
+                String checksum = ChecksumHelper.sha256(raw);
+
+                // ===== Log debug chi tiết =====
+                System.out.println("=========== DEBUG CHECKSUM_SINGLE_PAYMENT_LIST_" + idx + " ===========");
+                System.out.println("decodedKey  = " + decodedKey);
+                System.out.println("billCode    = " + billCode);
+                System.out.println("bag         = " + bag);
+                System.out.println("--------------------------------------------");
+                System.out.println("RAW String  = [" + raw + "]");
+                System.out.println("SHA256 HEX  = " + checksum);
+                System.out.println("============================================");
+
+                // Thay thế chính xác match hiện tại
+                cspl.appendReplacement(sbCspl, Matcher.quoteReplacement(checksum));
+            }
+
+            cspl.appendTail(sbCspl);
+            value = sbCspl.toString();
+        }
 
         return value;
     }

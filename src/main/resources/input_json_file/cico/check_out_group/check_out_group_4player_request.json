@@ -1,0 +1,8 @@
+{
+  "booking_uid_list": [
+    "${booking_uid_list[0]}",
+    "${booking_uid_list[1]}",
+    "${booking_uid_list[2]}",
+    "${booking_uid_list[3]}"
+  ]
+}
