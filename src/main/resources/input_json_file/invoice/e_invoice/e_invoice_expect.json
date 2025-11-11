@@ -1,0 +1,29 @@
+{
+  "status_code": ${status_code},
+
+"assertions": {
+"$.total": ${assert_total},
+"$.total_payment.total_must_pay": ${assert_total_payment.total_must_pay},
+"$.total_payment.total_invoice_amount": ${assert_total_payment.total_invoice_amount},
+"$.total_payment.total_cash": ${assert_total_payment.total_cash},
+"$.total_payment.total_card": ${assert_total_payment.total_card},
+"$.total_payment.total_qr_code": ${assert_total_payment.total_qr_code},
+"$.total_payment.total_vnpay_gateway": ${assert_total_payment.total_vnpay_gateway},
+"$.total_payment.total_transfer": ${assert_total_payment.total_transfer},
+"$.total_payment.total_debit": ${assert_total_payment.total_debit},
+"$.total_payment.total_com": ${assert_total_payment.total_com},
+"$.total_payment.total_ent": ${assert_total_payment.total_ent},
+"$.total_payment.total_house_use": ${assert_total_payment.total_house_use},
+"$.total_payment.total_oc": ${assert_total_payment.total_oc},
+"$.total_payment.total_payment_on_behalf": ${assert_total_payment.total_payment_on_behalf},
+"$.total_payment.total_room_charge": ${assert_total_payment.total_room_charge},
+"$.total_payment.total_shared_revenue": ${assert_total_payment.total_shared_revenue}
+},
+
+"assertions_explicit": [
+{ "path": "$.data", "op": "size", "value": ${assert_size_data} }
+],
+
+"extract": {
+}
+}

@@ -1,0 +1,16 @@
+{
+  "partner_uid": "${partner_uid}",
+  "course_uid": "${course_uid}",
+  "check_sum": "${check_sum}",
+  "booking_date": "${booking_date}",
+  "invoice_status": "${invoice_status}",
+  "software_status": "${software_status}",
+  "payment_method": "${payment_method}",
+  "bag": "${bag}",
+  "customer_name": "${customer_name}",
+  "request_by_customer": ${request_by_customer},
+"agency_name": "${agency_name}",
+"sort_dir": "${sort_dir}",
+"sort_by": "${sort_by}",
+"invoice_source": "${invoice_source}"
+}

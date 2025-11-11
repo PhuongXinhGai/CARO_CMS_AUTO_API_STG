@@ -21,6 +21,7 @@ public class DynamicDataHelper {
     private static final Pattern CHECKSUM_EKYC_PATTERN = Pattern.compile("\\{\\{CHECKSUM_EKYC_(\\d+)}}", Pattern.CASE_INSENSITIVE);
     private static final Pattern CHECKSUM_SINGLE_PAYMENT_PATTERN = Pattern.compile("\\{\\{CHECKSUM_SINGLE_PAYMENT_\\d+}}", Pattern.CASE_INSENSITIVE);
     private static final Pattern CHECKSUM_SINGLE_PAYMENT_LIST_PATTERN = Pattern.compile("\\{\\{CHECKSUM_SINGLE_PAYMENT_LIST_\\d+}}", Pattern.CASE_INSENSITIVE);
+    private static final Pattern CHECKSUM_E_INVOICE_PATTERN = Pattern.compile("\\{\\{CHECKSUM_E_INVOICE}}", Pattern.CASE_INSENSITIVE);
 
     private DynamicDataHelper() {}
 
@@ -187,6 +188,50 @@ public class DynamicDataHelper {
             cspl.appendTail(sbCspl);
             value = sbCspl.toString();
         }
+
+        // 6) {{CHECKSUM_E_INVOICE}}
+        if (ctx != null && value.contains("{{CHECKSUM_E_INVOICE}}")) {
+            Matcher cei = CHECKSUM_E_INVOICE_PATTERN.matcher(value);
+
+            StringBuffer sbCei = new StringBuffer();
+            while (cei.find()) {
+                // ===== Lấy dữ liệu từ context =====
+                String base64Key  = str(ctx.getAttribute("REACT_APP_KEY_256"));
+                String partnerUid = str(ctx.getAttribute("PARTNER_UID"));
+                String courseUid  = str(ctx.getAttribute("COURSE_UID"));
+                String bookingDate = today(); // ngày hiện tại dd/MM/yyyy
+
+                // ===== Giải mã base64 key =====
+                String decodedKey = "";
+                try {
+                    decodedKey = new String(java.util.Base64.getDecoder().decode(base64Key));
+                } catch (Exception e) {
+                    System.err.println("⚠️ Base64 decode lỗi cho REACT_APP_KEY_256: " + e.getMessage());
+                }
+
+                // ===== Ghép chuỗi và hash =====
+                String raw = decodedKey + "|" + partnerUid + "|" + courseUid + "|" + bookingDate;
+                String checksum = ChecksumHelper.sha256(raw);
+
+                // ===== Log debug chi tiết =====
+                System.out.println("=========== DEBUG CHECKSUM_E_INVOICE ===========");
+                System.out.println("decodedKey   = " + decodedKey);
+                System.out.println("partnerUid   = " + partnerUid);
+                System.out.println("courseUid    = " + courseUid);
+                System.out.println("bookingDate  = " + bookingDate);
+                System.out.println("--------------------------------------------");
+                System.out.println("RAW String   = [" + raw + "]");
+                System.out.println("SHA256 HEX   = " + checksum);
+                System.out.println("============================================");
+
+                // ===== Thay thế chính xác match hiện tại =====
+                cei.appendReplacement(sbCei, Matcher.quoteReplacement(checksum));
+            }
+
+            cei.appendTail(sbCei);
+            value = sbCei.toString();
+        }
+
 
         return value;
     }

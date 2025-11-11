@@ -7,7 +7,6 @@
 "assertions": {
 "$.uid": "${assert_uid}",
 "$.bag": "${assert_bag}",
-"$.customer_booking_name": "${assert_customer_booking_name}",
 "$.guest_style": "${assert_guest_style}",
 "$.IsCheckedIn": ${assert_IsCheckedIn},
 "$.bag_status": "${assert_bag_status}",

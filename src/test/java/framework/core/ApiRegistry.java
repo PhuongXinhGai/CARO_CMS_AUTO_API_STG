@@ -15,6 +15,8 @@ public class ApiRegistry {
 
         put("edit_booking_at_tee_time_player1_id", "tests.test_scripts.api.booking.edit_booking.EditBookingAtTeeTimePlayer1Test");
         put("edit_booking_at_tee_time_player2_id", "tests.test_scripts.api.booking.edit_booking.EditBookingAtTeeTimePlayer2Test");
+        put("edit_booking_at_tee_time_player3_id", "tests.test_scripts.api.booking.edit_booking.EditBookingAtTeeTimePlayer3Test");
+        put("edit_booking_at_tee_time_player4_id", "tests.test_scripts.api.booking.edit_booking.EditBookingAtTeeTimePlayer4Test");
         put("edit_booking_1_player_id", "tests.test_scripts.api.booking.edit_booking.EditBooking1PlayerTest");
 
         put("get_list_case_id", "tests.test_scripts.api.booking.create_booking.GetBookingListSelectTest");
@@ -118,6 +120,9 @@ public class ApiRegistry {
         put("add_sub_bag_id", "tests.test_scripts.api.cico.AddSubBagTest");
         put("detail_agency_pay_id", "tests.test_scripts.api.cico.DetailAgencyPayTest");
         put("update_agency_pay_player1_id", "tests.test_scripts.api.cico.UpdateAgencyPayPlayer1Test");
+        put("update_agency_pay_player2_id", "tests.test_scripts.api.cico.UpdateAgencyPayPlayer2Test");
+        put("update_agency_pay_player3_id", "tests.test_scripts.api.cico.UpdateAgencyPayPlayer3Test");
+        put("update_agency_pay_player4_id", "tests.test_scripts.api.cico.UpdateAgencyPayPlayer4Test");
 
         put("fee_of_bag_player1_id", "tests.test_scripts.api.cico.GetFeeOfBagPlayer1Test");
         put("fee_of_bag_player2_id", "tests.test_scripts.api.cico.GetFeeOfBagPlayer2Test");
@@ -133,6 +138,8 @@ public class ApiRegistry {
 
         put("check_out_bag_id", "tests.test_scripts.api.cico.CheckOutBagTest");
         put("check_out_group_id", "tests.test_scripts.api.cico.CheckOutGroupTest");
+
+        put("e_invoice_id", "tests.test_scripts.api.invoice.EInvoiceTest");
 
     }};
 
@@ -153,6 +160,8 @@ public class ApiRegistry {
 
                 "edit_booking_at_tee_time_player1_id",
                 "edit_booking_at_tee_time_player2_id",
+                "edit_booking_at_tee_time_player3_id",
+                "edit_booking_at_tee_time_player4_id",
                 "edit_booking_1_player_id",
 
                 "get_list_case_id",
@@ -256,9 +265,9 @@ public class ApiRegistry {
                 "add_sub_bag_id",
                 "detail_agency_pay_id",
                 "update_agency_pay_player1_id",
-                "update_agency_pay_player1_id",
-                "update_agency_pay_player1_id",
-                "update_agency_pay_player1_id",
+                "update_agency_pay_player2_id",
+                "update_agency_pay_player3_id",
+                "update_agency_pay_player4_id",
 
                 "fee_of_bag_player1_id",
                 "fee_of_bag_player2_id",
@@ -282,7 +291,9 @@ public class ApiRegistry {
                 "check_out_bag_id",
                 "check_out_bag_id",
                 "check_out_bag_id",
-                "check_out_group_id"
+                "check_out_group_id",
+
+                "e_invoice_id"
 
         );
     }
