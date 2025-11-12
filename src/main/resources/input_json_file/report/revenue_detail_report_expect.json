@@ -1,0 +1,44 @@
+{
+  "status_code": ${status_code},
+
+"assertions": {
+"$.total": ${assert_total},
+"$.report.all_fee": ${assert_report.all_fee},
+"$.report.total_fee": ${assert_report.total_fee},
+"$.report.agency_paid": ${assert_report.agency_paid},
+"$.report.mush_pay": ${assert_report.mush_pay},
+"$.report.green_fee": ${assert_report.green_fee},
+"$.report.buggy_fee": ${assert_report.buggy_fee},
+"$.report.caddie_fee": ${assert_report.caddie_fee},
+"$.report.rental_fee": ${assert_report.rental_fee},
+"$.report.booking_caddie_fee": ${assert_report.booking_caddie_fee},
+"$.report.light_fee": ${assert_report.light_fee},
+"$.report.proshop_fee": ${assert_report.proshop_fee},
+"$.report.restaurant_fee": ${assert_report.restaurant_fee},
+"$.report.kiosk_fee": ${assert_report.kiosk_fee},
+"$.report.minibar_fee": ${assert_report.minibar_fee},
+"$.report.phi_phat": ${assert_report.phi_phat},
+"$.report.seeing_fee": ${assert_report.seeing_fee},
+"$.report.other_fee": ${assert_report.other_fee},
+"$.report.hotel_fee": ${assert_report.hotel_fee},
+"$.report.cash": ${assert_report.cash},
+"$.report.transfer": ${assert_report.transfer},
+"$.report.card": ${assert_report.card},
+"$.report.qr_code": ${assert_report.qr_code},
+"$.report.debit": ${assert_report.debit},
+"$.report.com": ${assert_report.com},
+"$.report.ent": ${assert_report.ent},
+"$.report.oc": ${assert_report.oc},
+"$.report.payment_on_behalf": ${assert_report.payment_on_behalf},
+"$.report.shared_revenue": ${assert_report.shared_revenue},
+"$.report.vnpay_payment_gateway": ${assert_report.vnpay_payment_gateway},
+"$.report.room_charge": ${assert_report.room_charge}
+},
+
+"assertions_explicit": [
+{ "path": "$.data", "op": "size", "value": ${assert_size_data} }
+],
+
+"extract": {
+}
+}

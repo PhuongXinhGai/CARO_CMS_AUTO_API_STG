@@ -12,5 +12,6 @@
 "agency_name": "${agency_name}",
 "sort_dir": "${sort_dir}",
 "sort_by": "${sort_by}",
-"invoice_source": "${invoice_source}"
+"invoice_source": "${invoice_source}",
+"type_view": "${type_view}"
 }

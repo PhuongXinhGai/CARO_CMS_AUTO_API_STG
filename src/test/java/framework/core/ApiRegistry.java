@@ -140,6 +140,10 @@ public class ApiRegistry {
         put("check_out_group_id", "tests.test_scripts.api.cico.CheckOutGroupTest");
 
         put("e_invoice_id", "tests.test_scripts.api.invoice.EInvoiceTest");
+        put("invoice_detail_cost_id", "tests.test_scripts.api.invoice.InvoiceDetailCostTest");
+        put("invoice_detail_agency_paid_id", "tests.test_scripts.api.invoice.InvoiceDetailAgencyPaidTest");
+
+        put("revenue_detail_report_id", "tests.test_scripts.api.report.RevenueDetailReportTest");
 
     }};
 
@@ -293,7 +297,14 @@ public class ApiRegistry {
                 "check_out_bag_id",
                 "check_out_group_id",
 
-                "e_invoice_id"
+                "e_invoice_id",
+                "invoice_detail_cost_id",
+                "invoice_detail_cost_id",
+                "invoice_detail_cost_id",
+                "invoice_detail_cost_id",
+                "invoice_detail_agency_paid_id",
+
+                "revenue_detail_report_id"
 
         );
     }

@@ -1,0 +1,14 @@
+{
+  "status_code": ${status_code},
+
+"assertions": {
+},
+
+"assertions_explicit": [
+{ "path": "$.list_golf_fee", "op": "size", "value": ${assert_size_list_golf_fee} },
+{ "path": "$.list_service_items", "op": "size", "value": ${assert_size_list_service_items} }
+],
+
+"extract": {
+}
+}

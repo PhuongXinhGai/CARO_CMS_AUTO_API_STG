@@ -1,0 +1,6 @@
+{
+  "partner_uid": "${partner_uid}",
+  "course_uid": "${course_uid}",
+  "check_sum": "${check_sum}",
+  "payment_id": "${payment_id}"
+}
