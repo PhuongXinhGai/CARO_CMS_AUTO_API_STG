@@ -21,6 +21,10 @@ public class ApiRegistry {
 
         put("get_list_case_id", "tests.test_scripts.api.booking.create_booking.GetBookingListSelectTest");
         put("get_booking_price_case_id", "tests.test_scripts.api.booking.create_booking.GetBookingPriceTest");
+        put("get_booking_price_player1_id", "tests.test_scripts.api.booking.create_booking.GetBookingPricePlayer1Test");
+        put("get_booking_price_player2_id", "tests.test_scripts.api.booking.create_booking.GetBookingPricePlayer2Test");
+        put("get_booking_price_player3_id", "tests.test_scripts.api.booking.create_booking.GetBookingPricePlayer3Test");
+        put("get_booking_price_player4_id", "tests.test_scripts.api.booking.create_booking.GetBookingPricePlayer4Test");
 
         put("check_in_bag_player1_id", "tests.test_scripts.api.booking.checkin.CheckInBagPlayer1Test");
         put("check_in_bag_player2_id", "tests.test_scripts.api.booking.checkin.CheckInBagPlayer2Test");
@@ -140,10 +144,18 @@ public class ApiRegistry {
         put("check_out_group_id", "tests.test_scripts.api.cico.CheckOutGroupTest");
 
         put("e_invoice_id", "tests.test_scripts.api.invoice.EInvoiceTest");
+        put("e_invoice_payment_id_player1_id", "tests.test_scripts.api.invoice.EInvoicePaymentIdPlayer1Test");
+        put("e_invoice_payment_id_player2_id", "tests.test_scripts.api.invoice.EInvoicePaymentIdPlayer2Test");
+        put("e_invoice_payment_id_player3_id", "tests.test_scripts.api.invoice.EInvoicePaymentIdPlayer3Test");
+        put("e_invoice_payment_id_player4_id", "tests.test_scripts.api.invoice.EInvoicePaymentIdPlayer4Test");
         put("invoice_detail_cost_id", "tests.test_scripts.api.invoice.InvoiceDetailCostTest");
         put("invoice_detail_agency_paid_id", "tests.test_scripts.api.invoice.InvoiceDetailAgencyPaidTest");
 
         put("revenue_detail_report_id", "tests.test_scripts.api.report.RevenueDetailReportTest");
+        put("revenue_detail_report_player1_id", "tests.test_scripts.api.report.RevenueDetailReportPlayer1Test");
+        put("revenue_detail_report_player2_id", "tests.test_scripts.api.report.RevenueDetailReportPlayer2Test");
+        put("revenue_detail_report_player3_id", "tests.test_scripts.api.report.RevenueDetailReportPlayer3Test");
+        put("revenue_detail_report_player4_id", "tests.test_scripts.api.report.RevenueDetailReportPlayer4Test");
 
     }};
 
@@ -170,6 +182,10 @@ public class ApiRegistry {
 
                 "get_list_case_id",
                 "get_booking_price_case_id",
+                "get_booking_price_player1_id",
+                "get_booking_price_player2_id",
+                "get_booking_price_player3_id",
+                "get_booking_price_player4_id",
 
                 "check_in_bag_player1_id",
                 "check_in_bag_player2_id",
@@ -298,13 +314,21 @@ public class ApiRegistry {
                 "check_out_group_id",
 
                 "e_invoice_id",
+                "e_invoice_payment_id_player1_id",
+                "e_invoice_payment_id_player2_id",
+                "e_invoice_payment_id_player3_id",
+                "e_invoice_payment_id_player4_id",
                 "invoice_detail_cost_id",
                 "invoice_detail_cost_id",
                 "invoice_detail_cost_id",
                 "invoice_detail_cost_id",
                 "invoice_detail_agency_paid_id",
 
-                "revenue_detail_report_id"
+                "revenue_detail_report_id",
+                "revenue_detail_report_player1_id",
+                "revenue_detail_report_player2_id",
+                "revenue_detail_report_player3_id",
+                "revenue_detail_report_player4_id"
 
         );
     }

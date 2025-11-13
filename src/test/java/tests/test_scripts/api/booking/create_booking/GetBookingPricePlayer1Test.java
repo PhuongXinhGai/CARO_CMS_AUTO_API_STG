@@ -29,17 +29,16 @@ import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
 
-public class GetBookingPriceTest extends TestConfig implements FlowRunnable {
+public class GetBookingPricePlayer1Test extends TestConfig implements FlowRunnable {
     // ==== ĐƯỜNG DẪN — chỉnh cho khớp project của bạn ====
     private static final String EXCEL_FILE = System.getProperty("user.dir")
             + "/src/main/resources/input_excel_file/booking/Create_Booking_Batch.xlsx";
-    private static final String SHEET_NAME = "Get_Booking_Price";
+    private static final String SHEET_NAME = "Get_Booking_Price_Player1";
     // Thư mục chứa JSON request/expect cho API này
     private static final String JSON_DIR = System.getProperty("user.dir")
             + "/src/main/resources/input_json_file/booking/get_booking_price/";
@@ -131,7 +130,49 @@ public class GetBookingPriceTest extends TestConfig implements FlowRunnable {
 
         // ===== Step 7: So sánh actual vs expect =====
         AssertionHelper.verifyStatusCode(resp, expectJson);
-        AssertionHelper.assertFromJson(respJson, expectJson);
+        // ===== Step 7.1: Nghiệm thu expect theo cột excel expect_* =====
+
+// Lấy BOOKING_UID_0
+        String bookingUid = (String) ctx.getAttribute("BOOKING_UID_0");
+        if (bookingUid == null) {
+            throw new AssertionError("BOOKING_UID_0 không tồn tại trong context");
+        }
+
+// Parse response → list
+        List<Map<String, Object>> dataList = resp.jsonPath().getList("data");
+
+// Tìm phần tử có booking_uid
+        Map<String, Object> target = dataList.stream()
+                .filter(item -> bookingUid.equals(item.get("booking_uid")))
+                .findFirst()
+                .orElseThrow(() ->
+                        new AssertionError("Không tìm thấy phần tử booking_uid = " + bookingUid)
+                );
+
+        System.out.println("🔍 Đã tìm thấy phần tử cần nghiệm thu: " + target);
+
+// DUYỆT TẤT CẢ CÁC cột excel có prefix "expect_"
+        for (String colName : row.keySet()) {
+
+            if (colName.startsWith("expect_")) {
+
+                // field trong API = bỏ prefix
+                String jsonField = colName.replace("expect_", "");  // VD: expect_cash → cash
+
+                Object expected = row.get(colName);
+
+                // Skip nếu empty trong excel
+                if (expected == null || expected.toString().isBlank()) continue;
+
+                Object actual = target.get(jsonField);
+
+                System.out.println("🔎 Check field: " + jsonField +
+                        " | expected=" + expected +
+                        " | actual=" + actual);
+
+                AssertionHelper.assertEquals("$.data[*]." + jsonField, actual, expected);
+            }
+        }
 
         // ===== Step 8: Extract lưu biến cho bước sau (nếu cần) =====
 

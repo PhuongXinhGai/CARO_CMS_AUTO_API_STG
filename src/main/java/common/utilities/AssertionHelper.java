@@ -153,6 +153,16 @@ public class AssertionHelper {
             }
         }
     }
+
+//    Hàm chính: So sánh actual vs expected với toán tử 'equals' với các cột chứa 'expect_'
+    public static void assertEquals(String path, Object actual, Object expectedRaw) {
+        TriConsumer<String, Object, Object> equalsOp = OPS.get("equals");
+        if (equalsOp == null) {
+            throw new RuntimeException("Operator 'equals' is not defined in OPS map");
+        }
+        equalsOp.accept(path, actual, expectedRaw);
+    }
+
     // Chuyển expected về đúng kiểu của actual (nếu có thể)
     // ----- helpers -----
     private static Object coerceByActual(String expectedRaw, Object actual) {

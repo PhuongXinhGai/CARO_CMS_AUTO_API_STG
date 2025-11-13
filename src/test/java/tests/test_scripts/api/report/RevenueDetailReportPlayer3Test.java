@@ -1,4 +1,4 @@
-package tests.test_scripts.api.booking.create_booking;
+package tests.test_scripts.api.report;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.google.gson.Gson;
@@ -29,24 +29,23 @@ import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
 
-public class GetBookingPriceTest extends TestConfig implements FlowRunnable {
+public class RevenueDetailReportPlayer3Test extends TestConfig implements FlowRunnable {
     // ==== ĐƯỜNG DẪN — chỉnh cho khớp project của bạn ====
     private static final String EXCEL_FILE = System.getProperty("user.dir")
-            + "/src/main/resources/input_excel_file/booking/Create_Booking_Batch.xlsx";
-    private static final String SHEET_NAME = "Get_Booking_Price";
+            + "/src/main/resources/input_excel_file/booking/Report.xlsx";
+    private static final String SHEET_NAME = "Revenue_Detail_Report_Player3";
     // Thư mục chứa JSON request/expect cho API này
     private static final String JSON_DIR = System.getProperty("user.dir")
-            + "/src/main/resources/input_json_file/booking/get_booking_price/";
+            + "/src/main/resources/input_json_file/report/";
 
     // ======================= DataProvider =======================
-    @DataProvider(name = "getBookingPriceData")
-    public Object[][] getBookingPriceData() throws IOException {
+    @DataProvider(name = "revenueDetailReportData")
+    public Object[][] revenueDetailReportData() throws IOException {
         return ExcelUtils.readSheetAsMaps(EXCEL_FILE, SHEET_NAME);
     }
 
@@ -61,8 +60,8 @@ public class GetBookingPriceTest extends TestConfig implements FlowRunnable {
      * 7) So sánh actual vs expect (AssertionHelper)
      * 8) Extract và lưu biến cho step sau (nếu cần)
      */
-    @Test(dataProvider = "getBookingPriceData")
-    public void testGetBookingPrice(Map<String, String> row, ITestContext ctx) throws IOException {
+    @Test(dataProvider = "revenueDetailReportData")
+    public void testRevenueDetailReport(Map<String, String> row, ITestContext ctx) throws IOException {
         final String tcId = row.getOrDefault("tc_id", "NO_ID");
         final String desc = row.getOrDefault("tc_description", "Get Booking Price");
 
@@ -82,14 +81,26 @@ public class GetBookingPriceTest extends TestConfig implements FlowRunnable {
         String courseCtx  = (String) ctx.getAttribute("COURSE_UID");
 
 // Xử lý placeholder cho booking_date
-        String bookingDateRaw = row.getOrDefault("booking_date", "");
-        String resolvedBookingDate = DynamicDataHelper.resolveDynamicValue(bookingDateRaw);
+        String dateFromRaw = row.getOrDefault("date_from", "");
+        String resolvedDateFrom = DynamicDataHelper.resolveDynamicValue(dateFromRaw);
+
+        String dateToRaw = row.getOrDefault("date_to", "");
+        String resolvedDateTo = DynamicDataHelper.resolveDynamicValue(dateToRaw);
 
 // Query params: context + excel
         Map<String, Object> q = new LinkedHashMap<>();
         q.put("partner_uid", partnerCtx);
         q.put("course_uid",  courseCtx);
-        q.put("booking_date", resolvedBookingDate);
+        q.put("date_from", resolvedDateFrom);
+        q.put("date_to", resolvedDateTo);
+        q.put("guest_style", row.get("guest_style"));
+        q.put("bag", row.get("bag"));
+        q.put("transaction_code", row.get("transaction_code"));
+        q.put("revenue_type", row.get("revenue_type"));
+        q.put("limit", row.get("limit"));
+        q.put("page", row.get("page"));
+        q.put("sort_by", row.get("sort_by"));
+        q.put("sort_dir", row.get("sort_dir"));
 
         System.out.println("🧩 Request body sau replace:\n" + q);
 
@@ -100,7 +111,7 @@ public class GetBookingPriceTest extends TestConfig implements FlowRunnable {
                 .queryParams(q)
                 .filter(new RequestLoggingFilter(LogDetail.ALL, true, reqCapture))
                 .when()
-                .get(BASE_URL + "/golf-cms/api/booking/booking-price")
+                .get(BASE_URL + "/golf-cms/api/report/revenue/report-booking-detail")
                 .then()
                 .extract()
                 .response();
@@ -131,7 +142,51 @@ public class GetBookingPriceTest extends TestConfig implements FlowRunnable {
 
         // ===== Step 7: So sánh actual vs expect =====
         AssertionHelper.verifyStatusCode(resp, expectJson);
-        AssertionHelper.assertFromJson(respJson, expectJson);
+
+        // ===== Step 7.1: Nghiệm thu expect theo cột excel expect_* =====
+        // Lấy BAG_0 từ context
+        String bagCode = (String) ctx.getAttribute("BAG_2");
+        if (bagCode == null) {
+            throw new AssertionError("BAG_2 không tồn tại trong context");
+        }
+
+// Parse response → list
+        List<Map<String, Object>> dataList = resp.jsonPath().getList("data");
+
+// Tìm phần tử có 'bag' đúng với BAG_0
+        Map<String, Object> target = dataList.stream()
+                .filter(item -> bagCode.equals(item.get("bag")))
+                .findFirst()
+                .orElseThrow(() ->
+                        new AssertionError("Không tìm thấy phần tử bag = " + bagCode)
+                );
+
+        System.out.println("🔍 Đã tìm thấy phần tử cần nghiệm thu theo bag: " + target);
+
+// ===== DUYỆT TẤT CẢ CÁC cột excel có prefix "expect_" =====
+        for (String colName : row.keySet()) {
+
+            if (colName.startsWith("expect_")) {
+
+                // field trong API = bỏ prefix (VD: expect_cash → cash)
+                String jsonField = colName.replace("expect_", "");
+
+                Object expected = row.get(colName);
+
+                // Skip field nếu excel để trống
+                if (expected == null || expected.toString().isBlank())
+                    continue;
+
+                Object actual = target.get(jsonField);
+
+                System.out.println("🔎 Check field: " + jsonField +
+                        " | expected=" + expected +
+                        " | actual=" + actual);
+
+                AssertionHelper.assertEquals("$.data[*]." + jsonField, actual, expected);
+            }
+        }
+
 
         // ===== Step 8: Extract lưu biến cho bước sau (nếu cần) =====
 
@@ -141,7 +196,7 @@ public class GetBookingPriceTest extends TestConfig implements FlowRunnable {
     public void runCase(String caseId, ITestContext ctx, ExtentTest logger) throws Exception {
         Map<String, String> row = findRowByCaseId(EXCEL_FILE, SHEET_NAME, caseId);
         logger.info("▶️ Running Login case: " + caseId);
-        testGetBookingPrice(row, ctx);   // chỉ gọi lại hàm test cũ
+        testRevenueDetailReport(row, ctx);   // chỉ gọi lại hàm test cũ
     }
 
     @AfterMethod(alwaysRun = true)

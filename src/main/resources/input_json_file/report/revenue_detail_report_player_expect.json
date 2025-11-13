@@ -1,0 +1,12 @@
+{
+  "status_code": ${status_code},
+
+"assertions": {
+},
+
+"assertions_explicit": [
+],
+
+"extract": {
+}
+}
