@@ -9,8 +9,8 @@ public class ApiRegistry {
 
         put("quote_fee_case_id", "tests.test_scripts.api.booking.create_booking.QuoteFeeTest");
 
-        put("create_booking_case_id", "tests.test_scripts.api.booking.create_booking.CreateBookingBatchTest");
-        put("create_booking_Voucher_case_id", "tests.test_scripts.api.booking.create_booking.CreateBookingBatchVoucherTest");
+        put("create_booking_1_player_case_id", "tests.test_scripts.api.booking.create_booking.CreateBookingBatch1PlayerTest");
+        put("create_booking_Voucher_1_Player_case_id", "tests.test_scripts.api.booking.create_booking.CreateBookingBatchVoucher1PlayerTest");
         put("create_booking_4_player_case_id", "tests.test_scripts.api.booking.create_booking.CreateBookingBatch4PlayerTest");
 
         put("edit_booking_at_tee_time_player1_id", "tests.test_scripts.api.booking.edit_booking.EditBookingAtTeeTimePlayer1Test");
@@ -19,7 +19,7 @@ public class ApiRegistry {
         put("edit_booking_at_tee_time_player4_id", "tests.test_scripts.api.booking.edit_booking.EditBookingAtTeeTimePlayer4Test");
         put("edit_booking_1_player_id", "tests.test_scripts.api.booking.edit_booking.EditBooking1PlayerTest");
 
-        put("get_list_case_id", "tests.test_scripts.api.booking.create_booking.GetBookingListSelectTest");
+        put("get_booking_list_case_id", "tests.test_scripts.api.booking.create_booking.GetBookingListSelectTest");
         put("get_booking_price_case_id", "tests.test_scripts.api.booking.create_booking.GetBookingPriceTest");
         put("get_booking_price_player1_id", "tests.test_scripts.api.booking.create_booking.GetBookingPricePlayer1Test");
         put("get_booking_price_player2_id", "tests.test_scripts.api.booking.create_booking.GetBookingPricePlayer2Test");
@@ -170,8 +170,8 @@ public class ApiRegistry {
                 "login_case_id",
                 "quote_fee_case_id",
 
-                "create_booking_case_id",
-                "create_booking_Voucher_case_id",
+                "create_booking_1_player_case_id",
+                "create_booking_Voucher_1_Player_case_id",
                 "create_booking_4_player_case_id",
 
                 "edit_booking_at_tee_time_player1_id",
@@ -180,7 +180,7 @@ public class ApiRegistry {
                 "edit_booking_at_tee_time_player4_id",
                 "edit_booking_1_player_id",
 
-                "get_list_case_id",
+                "get_booking_list_case_id",
                 "get_booking_price_case_id",
                 "get_booking_price_player1_id",
                 "get_booking_price_player2_id",

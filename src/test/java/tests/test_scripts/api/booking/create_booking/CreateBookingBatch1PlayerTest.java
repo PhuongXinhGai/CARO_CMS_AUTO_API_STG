@@ -28,16 +28,15 @@ import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Map;
-
+import java.util.*;
 import static io.restassured.RestAssured.given;
 
-public class CreateBookingBatchVoucherTest extends TestConfig implements FlowRunnable {
+public class CreateBookingBatch1PlayerTest extends TestConfig implements FlowRunnable {
 
     // ==== ĐƯỜNG DẪN — chỉnh cho khớp project của bạn ====
     private static final String EXCEL_FILE = System.getProperty("user.dir")
             + "/src/main/resources/input_excel_file/booking/Create_Booking_Batch.xlsx";
-    private static final String SHEET_NAME = "Create_Booking_1_Player_VC";
+    private static final String SHEET_NAME = "Create_Booking_1_Player";
     // Thư mục chứa JSON request/expect cho API này
     private static final String JSON_DIR = System.getProperty("user.dir")
             + "/src/main/resources/input_json_file/booking/create_booking/";
@@ -71,10 +70,10 @@ public class CreateBookingBatchVoucherTest extends TestConfig implements FlowRun
         PrintStream reqCapture = new PrintStream(new WriterOutputStream(reqWriter), true);
 
         // ===== Step 2: Build request =====
-        // Excel cột 'input_placeholders' trỏ tới file request (vd: create_booking_batch_request.json)
         String reqFileName = row.getOrDefault("input_placeholders", "create_booking_batch_request.json");
         String reqTpl = Files.readString(Paths.get(JSON_DIR + reqFileName));
         String requestBody = StringUtils.replacePlaceholdersInString(reqTpl, row); // thay tất cả ${colName}
+
         System.out.println("🧩 Request body sau replace:\n" + requestBody);
 
         // ===== Step 3: Call API =====

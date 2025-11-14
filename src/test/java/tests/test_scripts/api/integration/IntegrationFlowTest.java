@@ -104,6 +104,9 @@ public class IntegrationFlowTest {
                 Object req = ctx.getAttribute("LAST_REQUEST_LOG");
                 Object resp = ctx.getAttribute("LAST_RESPONSE_LOG");
 
+                if (stepLogger != null)
+                    stepLogger.pass("✅ Passed: " + col + " (" + caseId + ")");
+
                 if (stepLogger != null) {
                     if (req != null) {
                         stepLogger.info("📤 **REQUEST:**");
@@ -114,16 +117,6 @@ public class IntegrationFlowTest {
                         stepLogger.info(MarkupHelper.createCodeBlock(resp.toString(), CodeLanguage.JSON));
                     }
                 }
-
-                if (stepLogger != null) {
-                    if (req != null)
-                        stepLogger.info(MarkupHelper.createCodeBlock(req.toString(), CodeLanguage.JSON));
-                    if (resp != null)
-                        stepLogger.info(MarkupHelper.createCodeBlock(resp.toString(), CodeLanguage.JSON));
-                }
-
-                if (stepLogger != null)
-                    stepLogger.pass("✅ Passed: " + col + " (" + caseId + ")");
 
             } catch (AssertionError ae) {
                 if (flowLogger != null)

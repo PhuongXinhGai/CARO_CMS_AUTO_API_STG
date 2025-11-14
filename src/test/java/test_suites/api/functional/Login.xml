@@ -7,7 +7,7 @@
     <test name="LOGIN TEST">
         <classes>
             <class name="tests.test_scripts.api.user.account.LoginTest"/>
-            <class name="tests.test_scripts.api.booking.create_booking.CreateBookingBatchTest"/>
+            <class name="tests.test_scripts.api.booking.create_booking.CreateBookingBatch1PlayerTest"/>
             <class name="tests.test_scripts.api.booking.edit_booking.EditBooking1PlayerTest"/>
 <!--            <class name="tests.test_scripts.api.booking.create_booking.GetBookingListSelectTest"/>-->
 <!--            <class name="tests.test_scripts.api.booking.create_booking.GetBookingPriceTest"/>-->

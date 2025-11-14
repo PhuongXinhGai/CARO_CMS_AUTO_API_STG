@@ -7,7 +7,7 @@
     <test name="Integration Flow: Login and Create Booking Batch">
         <classes>
             <class name="tests.test_scripts.api.user.account.LoginTest"/>
-            <class name="tests.test_scripts.api.booking.create_booking.CreateBookingBatchTest"/>
+            <class name="tests.test_scripts.api.booking.create_booking.CreateBookingBatch1PlayerTest"/>
         </classes>
     </test>
 </suite>

@@ -3,10 +3,7 @@ package tests.test_scripts.api.report;
 import com.aventstack.extentreports.ExtentTest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import common.utilities.AssertionHelper;
-import common.utilities.DynamicDataHelper;
-import common.utilities.ExcelUtils;
-import common.utilities.StringUtils;
+import common.utilities.*;
 import framework.core.FlowRunnable;
 import helpers.ReportHelper;
 import io.restassured.filter.log.LogDetail;
@@ -120,13 +117,17 @@ public class RevenueDetailReportPlayer3Test extends TestConfig implements FlowRu
 
 
         // ===== Step 4: Gắn log request/response vào report =====
-        reqCapture.flush();
-        ITestResult tr = Reporter.getCurrentTestResult();
-        tr.setAttribute("requestLog", reqWriter.toString());
-        tr.setAttribute("responseLog", resp.getBody().prettyPrint());
-        ctx.setAttribute("LAST_REQUEST_LOG", q);
-        ctx.setAttribute("LAST_RESPONSE_LOG", resp.asString());
+        String url = BASE_URL + "/golf-cms/api/report/revenue/report-booking-detail";
 
+        String requestLog = RequestLogHelper.buildRequestLog(
+                "GET",
+                url,
+                q,      // query map
+                null    // GET không có body
+        );
+
+        ctx.setAttribute("LAST_REQUEST_LOG", requestLog);
+        ctx.setAttribute("LAST_RESPONSE_LOG", respJson);
 
         // ===== Step 5: Load expect JSON =====
         // Excel cột 'expected_validation_data' trỏ tới file expect (vd: create_booking_batch_expect.json)
