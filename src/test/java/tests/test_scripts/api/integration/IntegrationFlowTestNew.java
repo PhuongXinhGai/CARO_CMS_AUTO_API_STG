@@ -18,7 +18,7 @@ public class IntegrationFlowTestNew {
     @DataProvider(name = "flowData")
     public Object[][] flowData() throws Exception {
         String excelPath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/flow_definition.xlsx";
-        String sheetName = "Test";
+        String sheetName = "Test_02";
 
         List<Map<String, String>> list = FlowDataLoader.readFlows(excelPath, sheetName);
 
