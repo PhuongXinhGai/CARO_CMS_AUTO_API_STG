@@ -102,36 +102,6 @@ public class IntegrationFlowTestNew {
 
             flowLogger.info("▶️ Step: " + key + " → " + caseId + " → " + className);
 
-//            try {
-//                Class<?> clazz = Class.forName(className);
-//                FlowRunnable apiTest = (FlowRunnable) clazz.getDeclaredConstructor().newInstance();
-//
-//                ExtentTest stepLogger = flowLogger.createNode(col + " - " + caseId);
-//
-//                apiTest.runCase(caseId, ctx, stepLogger);
-//
-//                Object req  = ctx.getAttribute("LAST_REQUEST_LOG");
-//                Object resp = ctx.getAttribute("LAST_RESPONSE_LOG");
-//
-//                if (req != null) {
-//                    stepLogger.info("📤 **REQUEST:**");
-//                    stepLogger.info(MarkupHelper.createCodeBlock(req.toString(), CodeLanguage.JSON));
-//                }
-//                if (resp != null) {
-//                    stepLogger.info("📥 **RESPONSE:**");
-//                    stepLogger.info(MarkupHelper.createCodeBlock(resp.toString(), CodeLanguage.JSON));
-//                }
-//
-//                stepLogger.pass("✅ Passed: " + col + " (" + caseId + ")");
-//
-//            } catch (AssertionError ae) {
-//                flowLogger.fail("❌ Assertion failed at step: " + col + " → " + ae.getMessage());
-//                throw ae;
-//            } catch (Exception ex) {
-//                flowLogger.fail("💥 Exception at step: " + col + " → " + ex.getMessage());
-//                throw ex;
-//            }
-
 // ⚡ CHỈNH SỬA: Di chuyển log REQUEST/RESPONSE vào finally để đảm bảo luôn hiển thị
             ExtentTest stepLogger = flowLogger.createNode(col + " - " + caseId);
 
@@ -152,16 +122,16 @@ public class IntegrationFlowTestNew {
 
                 // ⚡ step FAIL
                 if (stepLogger != null)
-                    stepLogger.fail("❌ Assertion failed: " + ae.getMessage());
-
+                    stepLogger.fail("❌ Assertion failed: " + col + " (" + caseId + ") " + ae.getMessage());
+                    flowLogger.assignCategory("FAIL");
                 throw ae;  // giữ nguyên cơ chế dừng flow
 
             } catch (Exception ex) {
 
                 // ⚡ lỗi khác
                 if (stepLogger != null)
-                    stepLogger.fail("💥 Exception: " + ex.getMessage());
-
+                    stepLogger.fail("💥 Exception: " + col + " (" + caseId + ") " + ex.getMessage());
+                    flowLogger.assignCategory("FAIL");
                 throw ex;
 
             } finally {
@@ -188,6 +158,7 @@ public class IntegrationFlowTestNew {
                 }
             }
         }
+        flowLogger.assignCategory("PASS");
         flowLogger.pass("🎯 Flow " + flowId + " completed successfully!");
         ReportHelper.logContext(flowLogger, ctx);
     }

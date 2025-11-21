@@ -31,6 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 
+import static common.utilities.Constants.LOGIN_ENDPOINT;
 import static io.restassured.RestAssured.given;
 
 public class LoginTest extends TestConfig implements FlowRunnable {
@@ -79,14 +80,14 @@ public class LoginTest extends TestConfig implements FlowRunnable {
                 .filter(new RequestLoggingFilter(LogDetail.ALL, true, reqCapture))
 //                .filter(new RequestLogger(reqCapture))
                 .when()
-                .post(BASE_URL + "/golf-cms/api/user/login-plain")
+                .post(BASE_URL + LOGIN_ENDPOINT)
                 .then()
                 .extract().response();
 
         String respJson = resp.asString();
 
         // ===== Step 4: Gắn log request/response vào Flow =====
-        String url = BASE_URL + "/golf-cms/api/booking/checkout-group";
+        String url = BASE_URL + LOGIN_ENDPOINT;
 
 // log chung cho POST
         String requestLog = RequestLogHelper.buildRequestLog(

@@ -2,7 +2,7 @@ package common.utilities;
 
 public class Constants {
 //    user
-    public static final String LOGIN_ENDPOINT = "/golf-cms/api/user/login";
+    public static final String LOGIN_ENDPOINT = "/golf-cms/api/user/login-plain";
 
 //    Booking
     public static final String BOOKING_PRICE_ENDPOINT = "/golf-cms/api/booking/booking-price";

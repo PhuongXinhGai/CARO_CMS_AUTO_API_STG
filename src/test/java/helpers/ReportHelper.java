@@ -30,8 +30,6 @@ public class ReportHelper {
 
             // 🔹 1 dòng duy nhất: title + desc
             ExtentTest flowNode = extent.createTest("🌊 " + flowId + " – " + flowDesc);
-            flowNode.assignCategory(flowId);
-//            flowNode.info("🚀 Bắt đầu Flow: " + flowId);
 
             // Lưu lại để các class khác có thể lấy lại
             FlowTestListener.getExtentTestMap().put(flowId, flowNode);
@@ -95,7 +93,6 @@ public class ReportHelper {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-
     // Log tất cả dữ liệu context lên ExtentReports
     public static void logAllContext(ITestContext ctx) {
         ExtentTest testLogger = TestListener.getExtentTest();
@@ -118,7 +115,6 @@ public class ReportHelper {
             testLogger.info("===== ✅ Tổng số key trong context: " + count + " =====");
         }
     }
-
 
     private static boolean looksLikeJson(String s) {
         s = s.trim();
