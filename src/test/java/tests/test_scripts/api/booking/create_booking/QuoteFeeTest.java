@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import common.utilities.AssertionHelper;
 import common.utilities.ExcelUtils;
+import common.utilities.RequestLogHelper;
 import common.utilities.StringUtils;
 import framework.core.FlowRunnable;
 import helpers.ReportHelper;
@@ -29,6 +30,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 
+import static common.utilities.Constants.CREATE_BOOKING_BATCH_ENDPOINT;
+import static common.utilities.Constants.QUOTE_FEE_ENDPOINT;
 import static io.restassured.RestAssured.given;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
@@ -65,12 +68,8 @@ public class QuoteFeeTest extends TestConfig implements FlowRunnable {
         final String tcId = row.getOrDefault("tc_id", "NO_ID");
         final String desc = row.getOrDefault("tc_description", "Create booking batch");
 
+        // ===== Step 1: In ra testcase được run =====
         System.out.println("Running: " + tcId + " - " + desc);
-
-        // ===== Step 1: Chuẩn bị log =====
-        StringWriter reqWriter = new StringWriter();
-        PrintStream reqCapture = new PrintStream(new WriterOutputStream(reqWriter), true);
-
         // ===== Step 2: Build request =====
         // Excel cột 'input_placeholders' trỏ tới file request (vd: create_booking_batch_request.json)
         String reqFileName = row.getOrDefault("input_placeholders", "quote_fee_request.json");
@@ -89,22 +88,24 @@ public class QuoteFeeTest extends TestConfig implements FlowRunnable {
                 .header("Accept", "application/json")
                 .header("Authorization", bearer != null ? bearer : "")
                 .body(requestBody)
-                .filter(new RequestLoggingFilter(LogDetail.ALL, true, reqCapture))
                 .when()
-                .post(BASE_URL + "/golf-cms/api/booking/quote-fee")
+                .post(BASE_URL + QUOTE_FEE_ENDPOINT)
                 .then()
                 .extract().response();
 
         String respJson = resp.asString();
 
-        // ===== Step 4: Gắn log request/response vào report =====
-        reqCapture.flush();
-        ITestResult tr = Reporter.getCurrentTestResult();
-        tr.setAttribute("requestLog", reqWriter.toString());
-        tr.setAttribute("responseLog", resp.getBody().prettyPrint());
-        ctx.setAttribute("LAST_REQUEST_LOG", reqWriter.toString());
-        ctx.setAttribute("LAST_RESPONSE_LOG", resp.getBody().prettyPrint());
+        // ===== Step 4: Gắn log request/response vào Flow =====
+        String url = BASE_URL + QUOTE_FEE_ENDPOINT;
+        String requestLog = RequestLogHelper.buildRequestLog(
+                "POST",
+                url,
+                null,          // POST này không có query
+                requestBody    // body JSON string
+        );
 
+        ctx.setAttribute("LAST_REQUEST_LOG", requestLog);
+        ctx.setAttribute("LAST_RESPONSE_LOG", respJson);
 
         // ===== Step 5: Load expect JSON =====
         // Excel cột 'expected_validation_data' trỏ tới file expect (vd: create_booking_batch_expect.json)

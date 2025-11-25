@@ -61,12 +61,8 @@ public class GetBookingByBagPlayer4Test extends TestConfig implements FlowRunnab
         final String tcId = row.getOrDefault("tc_id", "NO_ID");
         final String desc = row.getOrDefault("tc_description", "Get Booking Price");
 
+        // ===== Step 1: In ra testcase được run =====
         System.out.println("Running: " + tcId + " - " + desc);
-
-        // ===== Step 1: Chuẩn bị log =====
-        StringWriter reqWriter = new StringWriter();
-        PrintStream reqCapture = new PrintStream(new WriterOutputStream(reqWriter), true);
-
         // ===== Step 2: Build request (query) =====
 // Lấy từ context
         String tokenFromCtx = (String) ctx.getAttribute("AUTH_TOKEN");
@@ -96,7 +92,6 @@ public class GetBookingByBagPlayer4Test extends TestConfig implements FlowRunnab
                 .contentType(ContentType.JSON)
                 .header("Authorization", bearer)
                 .queryParams(q)
-                .filter(new RequestLoggingFilter(LogDetail.ALL, true, reqCapture))
                 .when()
                 .get(BASE_URL + "/golf-cms/api/booking/by-bag")
                 .then()

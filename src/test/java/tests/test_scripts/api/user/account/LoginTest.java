@@ -60,11 +60,8 @@ public class LoginTest extends TestConfig implements FlowRunnable {
         final String tcId = row.getOrDefault("tc_id", "NO_ID");
         final String desc = row.getOrDefault("tc_description", "Create booking batch");
 
+        // ===== Step 1: In ra testcase được run =====
         System.out.println("Running: " + tcId + " - " + desc);
-
-        // ===== Step 1: Chuẩn bị log =====
-        StringWriter reqWriter = new StringWriter();
-        PrintStream  reqCapture = new PrintStream(new WriterOutputStream(reqWriter), true);
 
         // ===== Step 2: Build request =====
         String reqFileName = row.getOrDefault("input_placeholders", "");
@@ -77,8 +74,6 @@ public class LoginTest extends TestConfig implements FlowRunnable {
         Response resp = given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
-                .filter(new RequestLoggingFilter(LogDetail.ALL, true, reqCapture))
-//                .filter(new RequestLogger(reqCapture))
                 .when()
                 .post(BASE_URL + LOGIN_ENDPOINT)
                 .then()
@@ -88,8 +83,6 @@ public class LoginTest extends TestConfig implements FlowRunnable {
 
         // ===== Step 4: Gắn log request/response vào Flow =====
         String url = BASE_URL + LOGIN_ENDPOINT;
-
-// log chung cho POST
         String requestLog = RequestLogHelper.buildRequestLog(
                 "POST",
                 url,
@@ -99,7 +92,6 @@ public class LoginTest extends TestConfig implements FlowRunnable {
 
         ctx.setAttribute("LAST_REQUEST_LOG", requestLog);
         ctx.setAttribute("LAST_RESPONSE_LOG", respJson);
-
 
         // ===== Step 5: Load expect JSON =====
         String expectFileName = row.getOrDefault("expected_validation_data", "");

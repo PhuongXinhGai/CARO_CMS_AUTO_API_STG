@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static common.utilities.Constants.BOOKING_PRICE_ENDPOINT;
 import static io.restassured.RestAssured.given;
 
 public class GetBookingPricePlayer1Test extends TestConfig implements FlowRunnable {
@@ -63,12 +64,8 @@ public class GetBookingPricePlayer1Test extends TestConfig implements FlowRunnab
         final String tcId = row.getOrDefault("tc_id", "NO_ID");
         final String desc = row.getOrDefault("tc_description", "Get Booking Price");
 
+        // ===== Step 1: In ra testcase được run =====
         System.out.println("Running: " + tcId + " - " + desc);
-
-        // ===== Step 1: Chuẩn bị log =====
-        StringWriter reqWriter = new StringWriter();
-        PrintStream reqCapture = new PrintStream(new WriterOutputStream(reqWriter), true);
-
         // ===== Step 2: Build request (query) =====
 // Lấy từ context
         String tokenFromCtx = (String) ctx.getAttribute("AUTH_TOKEN");
@@ -90,14 +87,13 @@ public class GetBookingPricePlayer1Test extends TestConfig implements FlowRunnab
 
         System.out.println("🧩 Request body sau replace:\n" + q);
 
-// ===== Step 3: Call API =====
+        // ===== Step 3: Call API =====
         Response resp = given()
                 .contentType(ContentType.JSON)
                 .header("Authorization", bearer)
                 .queryParams(q)
-                .filter(new RequestLoggingFilter(LogDetail.ALL, true, reqCapture))
                 .when()
-                .get(BASE_URL + "/golf-cms/api/booking/booking-price")
+                .get(BASE_URL + BOOKING_PRICE_ENDPOINT)
                 .then()
                 .extract()
                 .response();
@@ -106,7 +102,7 @@ public class GetBookingPricePlayer1Test extends TestConfig implements FlowRunnab
 
 
         // ===== Step 4: Gắn log request/response vào Flow =====
-        String url = BASE_URL + "/golf-cms/api/booking/booking-price";
+        String url = BASE_URL + BOOKING_PRICE_ENDPOINT;
 
         String requestLog = RequestLogHelper.buildRequestLog(
                 "GET",

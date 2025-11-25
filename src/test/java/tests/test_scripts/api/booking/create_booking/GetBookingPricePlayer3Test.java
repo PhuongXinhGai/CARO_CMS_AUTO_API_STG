@@ -29,6 +29,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static common.utilities.Constants.BOOKING_PRICE_ENDPOINT;
 import static io.restassured.RestAssured.given;
 
 public class GetBookingPricePlayer3Test extends TestConfig implements FlowRunnable {
@@ -62,12 +63,8 @@ public class GetBookingPricePlayer3Test extends TestConfig implements FlowRunnab
         final String tcId = row.getOrDefault("tc_id", "NO_ID");
         final String desc = row.getOrDefault("tc_description", "Get Booking Price");
 
+        // ===== Step 1: In ra testcase được run =====
         System.out.println("Running: " + tcId + " - " + desc);
-
-        // ===== Step 1: Chuẩn bị log =====
-        StringWriter reqWriter = new StringWriter();
-        PrintStream reqCapture = new PrintStream(new WriterOutputStream(reqWriter), true);
-
         // ===== Step 2: Build request (query) =====
 // Lấy từ context
         String tokenFromCtx = (String) ctx.getAttribute("AUTH_TOKEN");
@@ -89,14 +86,13 @@ public class GetBookingPricePlayer3Test extends TestConfig implements FlowRunnab
 
         System.out.println("🧩 Request body sau replace:\n" + q);
 
-// ===== Step 3: Call API =====
+        // ===== Step 3: Call API =====
         Response resp = given()
                 .contentType(ContentType.JSON)
                 .header("Authorization", bearer)
                 .queryParams(q)
-                .filter(new RequestLoggingFilter(LogDetail.ALL, true, reqCapture))
                 .when()
-                .get(BASE_URL + "/golf-cms/api/booking/booking-price")
+                .get(BASE_URL + BOOKING_PRICE_ENDPOINT)
                 .then()
                 .extract()
                 .response();
@@ -104,8 +100,8 @@ public class GetBookingPricePlayer3Test extends TestConfig implements FlowRunnab
         String respJson = resp.asString();
 
 
-        // ===== Step 4: Gắn log request/response vào report =====
-        String url = BASE_URL + "/golf-cms/api/booking/booking-price";
+        // ===== Step 4: Gắn log request/response vào Flow =====
+        String url = BASE_URL + BOOKING_PRICE_ENDPOINT;
 
         String requestLog = RequestLogHelper.buildRequestLog(
                 "GET",
@@ -116,6 +112,7 @@ public class GetBookingPricePlayer3Test extends TestConfig implements FlowRunnab
 
         ctx.setAttribute("LAST_REQUEST_LOG", requestLog);
         ctx.setAttribute("LAST_RESPONSE_LOG", respJson);
+
         // ===== Step 5: Load expect JSON =====
         // Excel cột 'expected_validation_data' trỏ tới file expect (vd: create_booking_batch_expect.json)
         String expectFileName = row.getOrDefault("expected_validation_data", "get_booking_price_expect.json");

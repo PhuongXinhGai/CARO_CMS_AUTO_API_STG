@@ -27,6 +27,7 @@ import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static common.utilities.Constants.BOOKING_LIST_SELECT_ENDPOINT;
 import static io.restassured.RestAssured.given;
 
 import tests.test_config.TestConfig;
@@ -62,11 +63,8 @@ public class GetBookingListSelectTest extends TestConfig implements FlowRunnable
         final String tcId = row.getOrDefault("tc_id", "NO_ID");
         final String desc = row.getOrDefault("tc_description", "Create booking batch");
 
+        // ===== Step 1: In ra testcase được run =====
         System.out.println("Running: " + tcId + " - " + desc);
-
-        // ===== Step 1: Chuẩn bị log =====
-        StringWriter reqWriter = new StringWriter();
-        PrintStream reqCapture = new PrintStream(new WriterOutputStream(reqWriter), true);
 
         // ===== Step 2: Build request (query) =====
 // Lấy từ context
@@ -99,18 +97,16 @@ public class GetBookingListSelectTest extends TestConfig implements FlowRunnable
                 .contentType(ContentType.JSON)
                 .header("Authorization", bearer)
                 .queryParams(q)
-                .filter(new RequestLoggingFilter(LogDetail.ALL, true, reqCapture))
                 .when()
-                .get(BASE_URL + "/golf-cms/api/booking/list/select")
+                .get(BASE_URL + BOOKING_LIST_SELECT_ENDPOINT)
                 .then()
                 .extract()
                 .response();
 
         String respJson = resp.asString();
 
-
         // ===== Step 4: Gắn log request/response vào report =====
-        String url = BASE_URL + "/golf-cms/api/booking/list/select";
+        String url = BASE_URL + BOOKING_LIST_SELECT_ENDPOINT;
 
         String requestLog = RequestLogHelper.buildRequestLog(
                 "GET",
