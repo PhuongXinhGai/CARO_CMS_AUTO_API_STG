@@ -3,10 +3,7 @@ package tests.test_scripts.api.pos.kiosk;
 import com.aventstack.extentreports.ExtentTest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import common.utilities.AssertionHelper;
-import common.utilities.ExcelUtils;
-import common.utilities.StringUtils;
-import common.utilities.WaitHelper;
+import common.utilities.*;
 import framework.core.FlowRunnable;
 import helpers.ReportHelper;
 import io.restassured.filter.log.LogDetail;
@@ -31,6 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 
+import static common.utilities.Constants.SERVICE_CART_ADD_ENDPOINT;
 import static io.restassured.RestAssured.given;
 
 public class KioskCreateBillPlayer3Test extends TestConfig implements FlowRunnable {
@@ -51,7 +49,7 @@ public class KioskCreateBillPlayer3Test extends TestConfig implements FlowRunnab
 
     /**
      * 8 STEP:
-     * 1) Chuẩn bị log
+     * 1) In ra testcase được run
      * 2) Build request (đọc template + replace placeholder)
      * 3) Call API
      * 4) Gắn log request/response vào report
@@ -86,14 +84,14 @@ public class KioskCreateBillPlayer3Test extends TestConfig implements FlowRunnab
                 .header("Authorization", bearer != null ? bearer : "")
                 .body(requestBody)
                 .when()
-                .post(BASE_URL + "/golf-cms/api/service-cart/add")
+                .post(BASE_URL + SERVICE_CART_ADD_ENDPOINT)
                 .then()
                 .extract().response();
 
         String respJson = resp.asString();
 
         // ===== Step 4: Gắn log request/response vào Flow =====
-        String url = BASE_URL + LOGIN_ENDPOINT;
+        String url = BASE_URL + SERVICE_CART_ADD_ENDPOINT;
         String requestLog = RequestLogHelper.buildRequestLog(
                 "POST",
                 url,
@@ -131,7 +129,7 @@ public class KioskCreateBillPlayer3Test extends TestConfig implements FlowRunnab
     @Override
     public void runCase(String caseId, ITestContext ctx, ExtentTest logger) throws Exception {
         Map<String, String> row = findRowByCaseId(EXCEL_FILE, SHEET_NAME, caseId);
-        logger.info("▶️ Running Login case: " + caseId);
+        logger.info("▶️ Running case: " + caseId);
         testCreateBill(row, ctx);   // chỉ gọi lại hàm test cũ
     }
 

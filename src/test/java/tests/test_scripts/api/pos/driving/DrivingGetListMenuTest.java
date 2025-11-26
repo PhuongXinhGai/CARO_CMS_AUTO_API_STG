@@ -3,10 +3,7 @@ package tests.test_scripts.api.pos.driving;
 import com.aventstack.extentreports.ExtentTest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import common.utilities.AssertionHelper;
-import common.utilities.ExcelUtils;
-import common.utilities.RequestLogHelper;
-import common.utilities.StringUtils;
+import common.utilities.*;
 import framework.core.FlowRunnable;
 import helpers.ReportHelper;
 import io.restassured.filter.log.LogDetail;
@@ -32,6 +29,7 @@ import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static common.utilities.Constants.RENTAL_GOLF_CLUB_ENDPOINT;
 import static io.restassured.RestAssured.given;
 
 public class DrivingGetListMenuTest extends TestConfig implements FlowRunnable {
@@ -51,7 +49,7 @@ public class DrivingGetListMenuTest extends TestConfig implements FlowRunnable {
 
     /**
      * 8 STEP:
-     * 1) Chuẩn bị log
+     * 1) In ra testcase được run
      * 2) Build request (đọc template + replace placeholder)
      * 3) Call API
      * 4) Gắn log request/response vào report
@@ -73,29 +71,16 @@ public class DrivingGetListMenuTest extends TestConfig implements FlowRunnable {
         String tokenFromExcel = row.get("auth_token"); // optional in Excel
         String bearer = tokenFromCtx != null ? tokenFromCtx : tokenFromExcel;
 
-        String partnerCtx = (String) ctx.getAttribute("PARTNER_UID");
-        String courseCtx  = (String) ctx.getAttribute("COURSE_UID");
-        String guestStyleCtx  = (String) ctx.getAttribute("GUEST_STYLE_0");
+        Map<String, Object> q = QueryParamHelper.build(row, ctx);
+        System.out.println("🧩 Query Params:\n" + q);
 
-
-// Query params: context + excel
-        Map<String, Object> q = new LinkedHashMap<>();
-        q.put("course_uid",  courseCtx);
-        q.put("partner_uid", partnerCtx);
-        q.put("service_id", row.get("service_id"));
-        q.put("status", row.get("status"));
-        q.put("is_driving", row.get("is_driving"));
-        q.put("guestStyleCtx", guestStyleCtx);
-
-        System.out.println("🧩 Request body sau replace:\n" + q);
-
-// ===== Step 3: Call API =====
+        // ===== Step 3: Call API =====
         Response resp = given()
                 .contentType(ContentType.JSON)
                 .header("Authorization", bearer)
                 .queryParams(q)
                 .when()
-                .get(BASE_URL + "/golf-cms/api/rental/golf-club")
+                .get(BASE_URL + RENTAL_GOLF_CLUB_ENDPOINT)
                 .then()
                 .extract()
                 .response();
@@ -104,8 +89,7 @@ public class DrivingGetListMenuTest extends TestConfig implements FlowRunnable {
 
 
         // ===== Step 4: Gắn log request/response vào report =====
-        String url = BASE_URL + "/golf-cms/api/rental/golf-club";
-
+        String url = BASE_URL + RENTAL_GOLF_CLUB_ENDPOINT;
         String requestLog = RequestLogHelper.buildRequestLog(
                 "GET",
                 url,
@@ -152,7 +136,7 @@ public class DrivingGetListMenuTest extends TestConfig implements FlowRunnable {
     @Override
     public void runCase(String caseId, ITestContext ctx, ExtentTest logger) throws Exception {
         Map<String, String> row = findRowByCaseId(EXCEL_FILE, SHEET_NAME, caseId);
-        logger.info("▶️ Running Login case: " + caseId);
+        logger.info("▶️ Running case: " + caseId);
         testGetListMenu(row, ctx);   // chỉ gọi lại hàm test cũ
     }
 

@@ -3,10 +3,7 @@ package tests.test_scripts.api.invoice;
 import com.aventstack.extentreports.ExtentTest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import common.utilities.AssertionHelper;
-import common.utilities.ExcelUtils;
-import common.utilities.StringUtils;
-import common.utilities.WaitHelper;
+import common.utilities.*;
 import framework.core.FlowRunnable;
 import helpers.ReportHelper;
 import io.restassured.filter.log.LogDetail;
@@ -30,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 
+import static common.utilities.Constants.INVOICE_DETAIL_AGENCY_PAID_ENDPOINT;
 import static io.restassured.RestAssured.given;
 
 public class InvoiceDetailAgencyPaidTest extends TestConfig implements FlowRunnable {
@@ -50,7 +48,7 @@ public class InvoiceDetailAgencyPaidTest extends TestConfig implements FlowRunna
 
     /**
      * 8 STEP:
-     * 1) Chuẩn bị log
+     * 1) In ra testcase được run
      * 2) Build request (đọc template + replace placeholder)
      * 3) Call API
      * 4) Gắn log request/response vào report
@@ -84,14 +82,14 @@ public class InvoiceDetailAgencyPaidTest extends TestConfig implements FlowRunna
                 .header("Authorization", bearer != null ? bearer : "")
                 .body(requestBody)
                 .when()
-                .post(BASE_URL + "/golf-cms/api/e-invoice/invoice/detail-agency-paid")
+                .post(BASE_URL + INVOICE_DETAIL_AGENCY_PAID_ENDPOINT)
                 .then()
                 .extract().response();
 
         String respJson = resp.asString();
 
         // ===== Step 4: Gắn log request/response vào Flow =====
-        String url = BASE_URL + LOGIN_ENDPOINT;
+        String url = BASE_URL + INVOICE_DETAIL_AGENCY_PAID_ENDPOINT;
         String requestLog = RequestLogHelper.buildRequestLog(
                 "POST",
                 url,
@@ -125,7 +123,7 @@ public class InvoiceDetailAgencyPaidTest extends TestConfig implements FlowRunna
     @Override
     public void runCase(String caseId, ITestContext ctx, ExtentTest logger) throws Exception {
         Map<String, String> row = findRowByCaseId(EXCEL_FILE, SHEET_NAME, caseId);
-        logger.info("▶️ Running Login case: " + caseId);
+        logger.info("▶️ Running case: " + caseId);
         testInvoiceDetailAgencyPaid(row, ctx);   // chỉ gọi lại hàm test cũ
     }
 

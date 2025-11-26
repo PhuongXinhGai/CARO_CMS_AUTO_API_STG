@@ -8,15 +8,10 @@ import common.utilities.ExcelUtils;
 import common.utilities.RequestLogHelper;
 import common.utilities.StringUtils;
 import helpers.ReportHelper;
-import io.restassured.filter.log.LogDetail;
-import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import org.apache.commons.io.output.WriterOutputStream;
 import org.testng.ITestContext;
-import org.testng.ITestResult;
-import org.testng.Reporter;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -24,8 +19,6 @@ import tests.test_config.TestConfig;
 import framework.core.FlowRunnable;
 
 import java.io.IOException;
-import java.io.PrintStream;
-import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -131,7 +124,7 @@ public class LoginTest extends TestConfig implements FlowRunnable {
     @Override
     public void runCase(String caseId, ITestContext ctx, ExtentTest logger) throws Exception {
         Map<String, String> row = findRowByCaseId(EXCEL_FILE, SHEET_NAME, caseId);
-        logger.info("▶️ Running Login case: " + caseId);
+        logger.info("▶️ Running case: " + caseId);
         testLogin(row, ctx);   // chỉ gọi lại hàm test cũ
     }
 

@@ -3,10 +3,7 @@ package tests.test_scripts.api.pos.proshop;
 import com.aventstack.extentreports.ExtentTest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import common.utilities.AssertionHelper;
-import common.utilities.ExcelUtils;
-import common.utilities.RequestLogHelper;
-import common.utilities.StringUtils;
+import common.utilities.*;
 import framework.core.FlowRunnable;
 import helpers.ReportHelper;
 import io.restassured.filter.log.LogDetail;
@@ -32,6 +29,7 @@ import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static common.utilities.Constants.KIOSK_INVENTORY_LIST_ENDPOINT;
 import static io.restassured.RestAssured.given;
 
 public class ProshopGetListMenuTest extends TestConfig implements FlowRunnable {
@@ -51,7 +49,7 @@ public class ProshopGetListMenuTest extends TestConfig implements FlowRunnable {
 
     /**
      * 8 STEP:
-     * 1) Chuẩn bị log
+     * 1) In ra testcase được run
      * 2) Build request (đọc template + replace placeholder)
      * 3) Call API
      * 4) Gắn log request/response vào report
@@ -73,28 +71,8 @@ public class ProshopGetListMenuTest extends TestConfig implements FlowRunnable {
         String tokenFromExcel = row.get("auth_token"); // optional in Excel
         String bearer = tokenFromCtx != null ? tokenFromCtx : tokenFromExcel;
 
-        String partnerCtx = (String) ctx.getAttribute("PARTNER_UID");
-        String courseCtx  = (String) ctx.getAttribute("COURSE_UID");
-        String guestStyleCtx  = (String) ctx.getAttribute("GUEST_STYLE_0");
-
-// Query params: context + excel
-        Map<String, Object> q = new LinkedHashMap<>();
-        q.put("limit", row.get("limit"));
-        q.put("page",   row.get("page"));
-        q.put("sort_by",     row.get("sort_by"));
-        q.put("sort_dir",    row.get("sort_dir"));
-        q.put("course_uid",  courseCtx);
-        q.put("partner_uid", partnerCtx);
-        q.put("item_code", row.get("item_code"));
-        q.put("product_name", row.get("product_name"));
-        q.put("type", row.get("type"));
-        q.put("service_id", row.get("service_id"));
-        q.put("status", row.get("status"));
-        q.put("group_code", row.get("group_code"));
-        q.put("guestStyleCtx", guestStyleCtx);
-
-
-        System.out.println("🧩 Request body sau replace:\n" + q);
+        Map<String, Object> q = QueryParamHelper.build(row, ctx);
+        System.out.println("🧩 Query Params:\n" + q);
 
 // ===== Step 3: Call API =====
         Response resp = given()
@@ -102,7 +80,7 @@ public class ProshopGetListMenuTest extends TestConfig implements FlowRunnable {
                 .header("Authorization", bearer)
                 .queryParams(q)
                 .when()
-                .get(BASE_URL + "/golf-cms/api/kiosk-inventory/list")
+                .get(BASE_URL + KIOSK_INVENTORY_LIST_ENDPOINT)
                 .then()
                 .extract()
                 .response();
@@ -111,7 +89,7 @@ public class ProshopGetListMenuTest extends TestConfig implements FlowRunnable {
 
 
         // ===== Step 4: Gắn log request/response vào report =====
-        String url = BASE_URL + "/golf-cms/api/kiosk-inventory/list";
+        String url = BASE_URL + KIOSK_INVENTORY_LIST_ENDPOINT;
 
         String requestLog = RequestLogHelper.buildRequestLog(
                 "GET",
@@ -159,7 +137,7 @@ public class ProshopGetListMenuTest extends TestConfig implements FlowRunnable {
     @Override
     public void runCase(String caseId, ITestContext ctx, ExtentTest logger) throws Exception {
         Map<String, String> row = findRowByCaseId(EXCEL_FILE, SHEET_NAME, caseId);
-        logger.info("▶️ Running Login case: " + caseId);
+        logger.info("▶️ Running case: " + caseId);
         testGetListMenu(row, ctx);   // chỉ gọi lại hàm test cũ
     }
 

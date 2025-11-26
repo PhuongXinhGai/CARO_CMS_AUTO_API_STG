@@ -28,6 +28,7 @@ import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static common.utilities.Constants.REVENUE_DETAIL_REPORT_ENDPOINT;
 import static io.restassured.RestAssured.given;
 
 public class RevenueDetailReportTest extends TestConfig implements FlowRunnable {
@@ -47,7 +48,7 @@ public class RevenueDetailReportTest extends TestConfig implements FlowRunnable 
 
     /**
      * 8 STEP:
-     * 1) Chuẩn bị log
+     * 1) In ra testcase được run
      * 2) Build request (đọc template + replace placeholder)
      * 3) Call API
      * 4) Gắn log request/response vào report
@@ -69,40 +70,16 @@ public class RevenueDetailReportTest extends TestConfig implements FlowRunnable 
         String tokenFromExcel = row.get("auth_token"); // optional in Excel
         String bearer = tokenFromCtx != null ? tokenFromCtx : tokenFromExcel;
 
-        String partnerCtx = (String) ctx.getAttribute("PARTNER_UID");
-        String courseCtx  = (String) ctx.getAttribute("COURSE_UID");
+        Map<String, Object> q = QueryParamHelper.build(row, ctx);
+        System.out.println("🧩 Query Params:\n" + q);
 
-// Xử lý placeholder cho booking_date
-        String dateFromRaw = row.getOrDefault("date_from", "");
-        String resolvedDateFrom = DynamicDataHelper.resolveDynamicValue(dateFromRaw);
-
-        String dateToRaw = row.getOrDefault("date_to", "");
-        String resolvedDateTo = DynamicDataHelper.resolveDynamicValue(dateToRaw);
-
-// Query params: context + excel
-        Map<String, Object> q = new LinkedHashMap<>();
-        q.put("partner_uid", partnerCtx);
-        q.put("course_uid",  courseCtx);
-        q.put("date_from", resolvedDateFrom);
-        q.put("date_to", resolvedDateTo);
-        q.put("guest_style", row.get("guest_style"));
-        q.put("bag", row.get("bag"));
-        q.put("transaction_code", row.get("transaction_code"));
-        q.put("revenue_type", row.get("revenue_type"));
-        q.put("limit", row.get("limit"));
-        q.put("page", row.get("page"));
-        q.put("sort_by", row.get("sort_by"));
-        q.put("sort_dir", row.get("sort_dir"));
-
-        System.out.println("🧩 Request body sau replace:\n" + q);
-
-// ===== Step 3: Call API =====
+        // ===== Step 3: Call API =====
         Response resp = given()
                 .contentType(ContentType.JSON)
                 .header("Authorization", bearer)
                 .queryParams(q)
                 .when()
-                .get(BASE_URL + "/golf-cms/api/report/revenue/report-booking-detail")
+                .get(BASE_URL + REVENUE_DETAIL_REPORT_ENDPOINT)
                 .then()
                 .extract()
                 .response();
@@ -111,8 +88,7 @@ public class RevenueDetailReportTest extends TestConfig implements FlowRunnable 
 
 
         // ===== Step 4: Gắn log request/response vào report =====
-        String url = BASE_URL + "/golf-cms/api/report/revenue/report-booking-detail";
-
+        String url = BASE_URL + REVENUE_DETAIL_REPORT_ENDPOINT;
         String requestLog = RequestLogHelper.buildRequestLog(
                 "GET",
                 url,
@@ -146,7 +122,7 @@ public class RevenueDetailReportTest extends TestConfig implements FlowRunnable 
     @Override
     public void runCase(String caseId, ITestContext ctx, ExtentTest logger) throws Exception {
         Map<String, String> row = findRowByCaseId(EXCEL_FILE, SHEET_NAME, caseId);
-        logger.info("▶️ Running Login case: " + caseId);
+        logger.info("▶️ Running case: " + caseId);
         testRevenueDetailReport(row, ctx);   // chỉ gọi lại hàm test cũ
     }
 

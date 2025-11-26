@@ -54,7 +54,7 @@ public class QuoteFeeTest extends TestConfig implements FlowRunnable {
 
     /**
      * 8 STEP:
-     * 1) Chuẩn bị log
+     * 1) In ra testcase được run
      * 2) Build request (đọc template + replace placeholder)
      * 3) Call API
      * 4) Gắn log request/response vào report
@@ -130,7 +130,7 @@ public class QuoteFeeTest extends TestConfig implements FlowRunnable {
     @Override
     public void runCase(String caseId, ITestContext ctx, ExtentTest logger) throws Exception {
         Map<String, String> row = findRowByCaseId(EXCEL_FILE, SHEET_NAME, caseId);
-        logger.info("▶️ Running Login case: " + caseId);
+        logger.info("▶️ Running case: " + caseId);
         testQuoteFee(row, ctx);   // chỉ gọi lại hàm test cũ
     }
 

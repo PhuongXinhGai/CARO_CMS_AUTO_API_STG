@@ -3,33 +3,24 @@ package tests.test_scripts.api.cico;
 import com.aventstack.extentreports.ExtentTest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import common.utilities.AssertionHelper;
-import common.utilities.ExcelUtils;
-import common.utilities.StringUtils;
-import common.utilities.WaitHelper;
+import common.utilities.*;
 import framework.core.FlowRunnable;
 import helpers.ReportHelper;
-import io.restassured.filter.log.LogDetail;
-import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import org.apache.commons.io.output.WriterOutputStream;
 import org.testng.ITestContext;
-import org.testng.ITestResult;
-import org.testng.Reporter;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import tests.test_config.TestConfig;
 
 import java.io.IOException;
-import java.io.PrintStream;
-import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 
+import static common.utilities.Constants.ADD_SUB_BAG_ENDPOINT;
 import static io.restassured.RestAssured.given;
 
 public class AddSubBagTest extends TestConfig implements FlowRunnable {
@@ -50,7 +41,7 @@ public class AddSubBagTest extends TestConfig implements FlowRunnable {
 
     /**
      * 8 STEP:
-     * 1) Chuẩn bị log
+     * 1) In ra testcase được run
      * 2) Build request (đọc template + replace placeholder)
      * 3) Call API
      * 4) Gắn log request/response vào report
@@ -62,7 +53,7 @@ public class AddSubBagTest extends TestConfig implements FlowRunnable {
     @Test(dataProvider = "addSubBagData")
     public void testAddSubBag(Map<String, String> row, ITestContext ctx) throws IOException {
         final String tcId = row.getOrDefault("tc_id", "NO_ID");
-        final String desc = row.getOrDefault("tc_description", "Create booking batch");
+        final String desc = row.getOrDefault("tc_description", "");
 
         // ===== Step 1: In ra testcase được run =====
         System.out.println("Running: " + tcId + " - " + desc);        WaitHelper.waitSeconds(2);
@@ -85,14 +76,14 @@ public class AddSubBagTest extends TestConfig implements FlowRunnable {
                 .header("Authorization", bearer != null ? bearer : "")
                 .body(requestBody)
                 .when()
-                .post(BASE_URL + "/golf-cms/api/booking/sub-bag/add")
+                .post(BASE_URL + ADD_SUB_BAG_ENDPOINT)
                 .then()
                 .extract().response();
 
         String respJson = resp.asString();
 
         // ===== Step 4: Gắn log request/response vào Flow =====
-        String url = BASE_URL + LOGIN_ENDPOINT;
+        String url = BASE_URL + ADD_SUB_BAG_ENDPOINT;
         String requestLog = RequestLogHelper.buildRequestLog(
                 "POST",
                 url,
@@ -104,12 +95,10 @@ public class AddSubBagTest extends TestConfig implements FlowRunnable {
         ctx.setAttribute("LAST_RESPONSE_LOG", respJson);
 
         // ===== Step 5: Load expect JSON =====
-        // Excel cột 'expected_validation_data' trỏ tới file expect (vd: create_booking_batch_expect.json)
         String expectFileName = row.getOrDefault("expected_validation_data", "");
         String expectRaw = Files.readString(Paths.get(JSON_DIR + expectFileName));
 
         // ===== Step 6: Replace placeholder trong expect =====
-        // Lưu ý: với boolean (true/false) hãy KHÔNG đặt dấu nháy quanh placeholder trong file expect.
         String expectResolved = StringUtils.replacePlaceholdersInString(expectRaw, row);
         Gson gson = new Gson();
         Type mapType = new TypeToken<Map<String, Object>>() {}.getType();
@@ -126,7 +115,7 @@ public class AddSubBagTest extends TestConfig implements FlowRunnable {
     @Override
     public void runCase(String caseId, ITestContext ctx, ExtentTest logger) throws Exception {
         Map<String, String> row = findRowByCaseId(EXCEL_FILE, SHEET_NAME, caseId);
-        logger.info("▶️ Running Login case: " + caseId);
+
         testAddSubBag(row, ctx);   // chỉ gọi lại hàm test cũ
     }
 

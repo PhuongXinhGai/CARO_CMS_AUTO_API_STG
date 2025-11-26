@@ -28,6 +28,7 @@ import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static common.utilities.Constants.GET_BOOKING_BY_BAG_ENDPOINT;
 import static io.restassured.RestAssured.given;
 
 public class GetBookingByBagPlayer3Test extends TestConfig implements FlowRunnable {
@@ -47,7 +48,7 @@ public class GetBookingByBagPlayer3Test extends TestConfig implements FlowRunnab
 
     /**
      * 8 STEP:
-     * 1) Chuẩn bị log
+     * 1) In ra testcase được run
      * 2) Build request (đọc template + replace placeholder)
      * 3) Call API
      * 4) Gắn log request/response vào report
@@ -69,40 +70,24 @@ public class GetBookingByBagPlayer3Test extends TestConfig implements FlowRunnab
         String tokenFromExcel = row.get("auth_token"); // optional in Excel
         String bearer = tokenFromCtx != null ? tokenFromCtx : tokenFromExcel;
 
-        String partnerCtx = (String) ctx.getAttribute("PARTNER_UID");
-        String courseCtx  = (String) ctx.getAttribute("COURSE_UID");
-        String bagCtx  = (String) ctx.getAttribute("BAG_2");
+        Map<String, Object> q = QueryParamHelper.build(row, ctx);
+        System.out.println("🧩 Query Params:\n" + q);
 
-// Xử lý placeholder cho booking_date
-        String bookingDateRaw = row.getOrDefault("booking_date", "");
-        String resolvedBookingDate = DynamicDataHelper.resolveDynamicValue(bookingDateRaw);
-
-// Query params: context + excel
-        Map<String, Object> q = new LinkedHashMap<>();
-        q.put("partner_uid", partnerCtx);
-        q.put("course_uid",  courseCtx);
-        q.put("bag",  bagCtx);
-        q.put("booking_date", resolvedBookingDate);
-        q.put("version", row.get("version"));
-
-        System.out.println("🧩 Request body sau replace:\n" + q);
-
-// ===== Step 3: Call API =====
+        // ===== Step 3: Call API =====
         Response resp = given()
                 .contentType(ContentType.JSON)
                 .header("Authorization", bearer)
                 .queryParams(q)
                 .when()
-                .get(BASE_URL + "/golf-cms/api/booking/by-bag")
+                .get(BASE_URL + GET_BOOKING_BY_BAG_ENDPOINT)
                 .then()
                 .extract()
                 .response();
 
         String respJson = resp.asString();
 
-
         // ===== Step 4: Gắn log request/response vào report =====
-        String url = BASE_URL + "/golf-cms/api/booking/by-bag";
+        String url = BASE_URL + GET_BOOKING_BY_BAG_ENDPOINT;
 
         String requestLog = RequestLogHelper.buildRequestLog(
                 "GET",
@@ -137,7 +122,7 @@ public class GetBookingByBagPlayer3Test extends TestConfig implements FlowRunnab
     @Override
     public void runCase(String caseId, ITestContext ctx, ExtentTest logger) throws Exception {
         Map<String, String> row = findRowByCaseId(EXCEL_FILE, SHEET_NAME, caseId);
-        logger.info("▶️ Running Login case: " + caseId);
+        logger.info("▶️ Running case: " + caseId);
         testGetBookingByBag(row, ctx);   // chỉ gọi lại hàm test cũ
     }
 

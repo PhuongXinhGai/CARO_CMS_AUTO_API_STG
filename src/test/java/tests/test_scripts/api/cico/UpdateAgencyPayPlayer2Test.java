@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import common.utilities.AssertionHelper;
 import common.utilities.ExcelUtils;
+import common.utilities.RequestLogHelper;
 import common.utilities.StringUtils;
 import framework.core.FlowRunnable;
 import helpers.ReportHelper;
@@ -29,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 
+import static common.utilities.Constants.UPDATE_AGENCY_PAY_ENDPOINT;
 import static io.restassured.RestAssured.given;
 
 public class UpdateAgencyPayPlayer2Test extends TestConfig implements FlowRunnable {
@@ -48,7 +50,7 @@ public class UpdateAgencyPayPlayer2Test extends TestConfig implements FlowRunnab
 
     /**
      * 8 STEP:
-     * 1) Chuẩn bị log
+     * 1) In ra testcase được run
      * 2) Build request (đọc template + replace placeholder)
      * 3) Call API
      * 4) Gắn log request/response vào report
@@ -76,8 +78,7 @@ public class UpdateAgencyPayPlayer2Test extends TestConfig implements FlowRunnab
         String tokenFromExcel = row.get("auth_token"); // optional in Excel
         String bearer = tokenFromCtx != null ? tokenFromCtx : tokenFromExcel;
 
-        String booking_uid = (String) ctx.getAttribute("BOOKING_UID_1");
-
+        String booking_uid = (String) ctx.getAttribute("BOOKING_UID_0");
 
         Response resp = given()
                 .contentType(ContentType.JSON)
@@ -85,14 +86,14 @@ public class UpdateAgencyPayPlayer2Test extends TestConfig implements FlowRunnab
                 .header("Authorization", bearer != null ? bearer : "")
                 .body(requestBody)
                 .when()
-                .put(BASE_URL + "/golf-cms/api/booking/" + booking_uid)
+                .put(BASE_URL + UPDATE_AGENCY_PAY_ENDPOINT + booking_uid)
                 .then()
                 .extract().response();
 
         String respJson = resp.asString();
 
         // ===== Step 4: Gắn log request/response vào Flow =====
-        String url = BASE_URL + LOGIN_ENDPOINT;
+        String url = BASE_URL + UPDATE_AGENCY_PAY_ENDPOINT;
         String requestLog = RequestLogHelper.buildRequestLog(
                 "POST",
                 url,
@@ -146,7 +147,7 @@ public class UpdateAgencyPayPlayer2Test extends TestConfig implements FlowRunnab
     @Override
     public void runCase(String caseId, ITestContext ctx, ExtentTest logger) throws Exception {
         Map<String, String> row = findRowByCaseId(EXCEL_FILE, SHEET_NAME, caseId);
-        logger.info("▶️ Running Login case: " + caseId);
+        logger.info("▶️ Running case: " + caseId);
         testUpdateAgencyPay(row, ctx);   // chỉ gọi lại hàm test cũ
     }
 

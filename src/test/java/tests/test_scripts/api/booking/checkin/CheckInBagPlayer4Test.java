@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import common.utilities.AssertionHelper;
 import common.utilities.ExcelUtils;
+import common.utilities.RequestLogHelper;
 import common.utilities.StringUtils;
 import framework.core.FlowRunnable;
 import helpers.ReportHelper;
@@ -30,6 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 
+import static common.utilities.Constants.CHECKIN_ENDPOINT;
 import static io.restassured.RestAssured.given;
 
 public class CheckInBagPlayer4Test extends TestConfig implements FlowRunnable {
@@ -50,7 +52,7 @@ public class CheckInBagPlayer4Test extends TestConfig implements FlowRunnable {
 
     /**
      * 8 STEP:
-     * 1) Chuẩn bị log
+     * 1) In ra testcase được run
      * 2) Build request (đọc template + replace placeholder)
      * 3) Call API
      * 4) Gắn log request/response vào report
@@ -65,7 +67,7 @@ public class CheckInBagPlayer4Test extends TestConfig implements FlowRunnable {
         final String desc = row.getOrDefault("tc_description", "Create booking batch");
 
         // ===== Step 1: In ra testcase được run =====
-
+        System.out.println("Running: " + tcId + " - " + desc);
         // ===== Step 2: Build request =====
         String reqFileName = row.getOrDefault("input_placeholders", "");
         String reqTpl = Files.readString(Paths.get(JSON_DIR + reqFileName));
@@ -84,14 +86,14 @@ public class CheckInBagPlayer4Test extends TestConfig implements FlowRunnable {
                 .header("Authorization", bearer != null ? bearer : "")
                 .body(requestBody)
                 .when()
-                .post(BASE_URL + "/golf-cms/api/booking/check-in")
+                .post(BASE_URL + CHECKIN_ENDPOINT)
                 .then()
                 .extract().response();
 
         String respJson = resp.asString();
 
         // ===== Step 4: Gắn log request/response vào Flow =====
-        String url = BASE_URL + LOGIN_ENDPOINT;
+        String url = BASE_URL + CHECKIN_ENDPOINT;
         String requestLog = RequestLogHelper.buildRequestLog(
                 "POST",
                 url,
@@ -132,7 +134,6 @@ public class CheckInBagPlayer4Test extends TestConfig implements FlowRunnable {
     @Override
     public void runCase(String caseId, ITestContext ctx, ExtentTest logger) throws Exception {
         Map<String, String> row = findRowByCaseId(EXCEL_FILE, SHEET_NAME, caseId);
-        logger.info("▶️ Running Login case: " + caseId);
         testCheckInBag(row, ctx);   // chỉ gọi lại hàm test cũ
     }
 

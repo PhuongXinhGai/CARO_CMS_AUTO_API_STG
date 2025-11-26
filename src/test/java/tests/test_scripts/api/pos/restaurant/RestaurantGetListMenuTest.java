@@ -29,6 +29,7 @@ import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static common.utilities.Constants.KIOSK_INVENTORY_LIST_ENDPOINT;
 import static io.restassured.RestAssured.given;
 
 public class RestaurantGetListMenuTest extends TestConfig implements FlowRunnable {
@@ -48,7 +49,7 @@ public class RestaurantGetListMenuTest extends TestConfig implements FlowRunnabl
 
     /**
      * 8 STEP:
-     * 1) Chuẩn bị log
+     * 1) In ra testcase được run
      * 2) Build request (đọc template + replace placeholder)
      * 3) Call API
      * 4) Gắn log request/response vào report
@@ -70,26 +71,8 @@ public class RestaurantGetListMenuTest extends TestConfig implements FlowRunnabl
         String tokenFromExcel = row.get("auth_token"); // optional in Excel
         String bearer = tokenFromCtx != null ? tokenFromCtx : tokenFromExcel;
 
-        String partnerCtx = (String) ctx.getAttribute("PARTNER_UID");
-        String courseCtx  = (String) ctx.getAttribute("COURSE_UID");
-
-// Query params: context + excel
-        Map<String, Object> q = new LinkedHashMap<>();
-        q.put("limit", row.get("limit"));
-        q.put("page",   row.get("page"));
-        q.put("sort_by",     row.get("sort_by"));
-        q.put("sort_dir",    row.get("sort_dir"));
-        q.put("course_uid",  courseCtx);
-        q.put("partner_uid", partnerCtx);
-        q.put("item_code", row.get("item_code"));
-        q.put("product_name", row.get("product_name"));
-        q.put("code_or_name", row.get("code_or_name"));
-        q.put("type", row.get("type"));
-        q.put("service_id", row.get("service_id"));
-        q.put("status", row.get("status"));
-        q.put("group_code", row.get("group_code"));
-
-        System.out.println("🧩 Request body sau replace:\n" + q);
+        Map<String, Object> q = QueryParamHelper.build(row, ctx);
+        System.out.println("🧩 Query Params:\n" + q);
 
 // ===== Step 3: Call API =====
         Response resp = given()
@@ -97,7 +80,7 @@ public class RestaurantGetListMenuTest extends TestConfig implements FlowRunnabl
                 .header("Authorization", bearer)
                 .queryParams(q)
                 .when()
-                .get(BASE_URL + "/golf-cms/api/kiosk-inventory/list")
+                .get(BASE_URL + KIOSK_INVENTORY_LIST_ENDPOINT)
                 .then()
                 .extract()
                 .response();
@@ -105,8 +88,7 @@ public class RestaurantGetListMenuTest extends TestConfig implements FlowRunnabl
         String respJson = resp.asString();
 
         // ===== Step 4: Gắn log request/response vào report =====
-        String url = BASE_URL + "/golf-cms/api/kiosk-inventory/list";
-
+        String url = BASE_URL + KIOSK_INVENTORY_LIST_ENDPOINT;
         String requestLog = RequestLogHelper.buildRequestLog(
                 "GET",
                 url,
@@ -153,7 +135,7 @@ public class RestaurantGetListMenuTest extends TestConfig implements FlowRunnabl
     @Override
     public void runCase(String caseId, ITestContext ctx, ExtentTest logger) throws Exception {
         Map<String, String> row = findRowByCaseId(EXCEL_FILE, SHEET_NAME, caseId);
-        logger.info("▶️ Running Login case: " + caseId);
+        logger.info("▶️ Running case: " + caseId);
         testGetListMenu(row, ctx);   // chỉ gọi lại hàm test cũ
     }
 
