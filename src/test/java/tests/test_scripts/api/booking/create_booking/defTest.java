@@ -1,4 +1,4 @@
-package tests.test_scripts.api.@@module@@;
+package tests.test_scripts.api.booking.create_booking;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.google.gson.Gson;
@@ -24,18 +24,18 @@ import static io.restassured.RestAssured.given;
 
 import tests.test_config.TestConfig;
 
-public class  @@ClassName@@ extends TestConfig implements FlowRunnable {
+public class  defTest extends TestConfig implements FlowRunnable {
     // ==== ĐƯỜNG DẪN — chỉnh cho khớp project của bạn ====
     private static final String EXCEL_FILE = System.getProperty("user.dir")
-            + "/src/main/resources/@@ExcelFile@@";
-    private static final String SHEET_NAME = "@@SheetName@@";
+            + "/src/main/resources/input_excel_file/booking/def.xlsx";
+    private static final String SHEET_NAME = "def";
     // Thư mục chứa JSON request/expect cho API này
     private static final String JSON_DIR = System.getProperty("user.dir")
-            + "/src/main/resources/@@JsonTemplate@@";
+            + "/src/main/resources/input_json_file/booking/def/";
 
     // ======================= DataProvider =======================
-    @DataProvider(name = "@@DataProviderName@@")
-    public Object[][] @@DataProviderName@@() throws IOException {
+    @DataProvider(name = "defData")
+    public Object[][] defData() throws IOException {
         return ExcelUtils.readSheetAsMaps(EXCEL_FILE, SHEET_NAME);
     }
 
@@ -50,8 +50,8 @@ public class  @@ClassName@@ extends TestConfig implements FlowRunnable {
      * 7) So sánh actual vs expect (AssertionHelper)
      * 8) Extract và lưu biến cho step sau (nếu cần)
      */
-    @Test(dataProvider = "@@DataProviderName@@")
-    public void @@TestMethodName@@(Map<String, String> row, ITestContext ctx) throws IOException {
+    @Test(dataProvider = "defData")
+    public void testdef(Map<String, String> row, ITestContext ctx) throws IOException {
         final String tcId = row.getOrDefault("tc_id", "NO_ID");
         final String desc = row.getOrDefault("tc_description", "");
 
@@ -59,7 +59,10 @@ public class  @@ClassName@@ extends TestConfig implements FlowRunnable {
         System.out.println("Running: " + tcId + " - " + desc);
 
         // ===== Step 2: Build request (query) =====
-		@@RequestBuildBlock@@
+		String reqFileName = row.getOrDefault("input_placeholders", "");
+        String reqTpl = Files.readString(Paths.get(JSON_DIR + reqFileName));
+        String requestBody = StringUtils.replacePlaceholdersAdvanced(reqTpl, row, ctx);
+        System.out.println("🧩 Request JSON sau replace:\n" + requestBody);
 
 		// ===== Step 3: Call API =====
         String tokenFromCtx = (String) ctx.getAttribute("AUTH_TOKEN");
@@ -70,17 +73,22 @@ public class  @@ClassName@@ extends TestConfig implements FlowRunnable {
                         .contentType(ContentType.JSON)
                         .header("Accept", "application/json")
                         .header("Authorization", bearer != null ? bearer : "")
-                        .@@Request@@
+                        .body(requestBody)
                         .when()
-                        .@@HttpMethod@@(@@BaseUrl@@ + @@EndPoint@@)
+                        .post(BASE_URL + /golf-cms/api/booking/def)
                         .then()
                         .extract().response();
 
         String respJson = resp.asString();
 
         // ===== Step 4: Gắn log request/response vào report =====
-        String url = @@BaseUrl@@ + @@EndPoint@@;
-        @@RequestLogBlock@@
+        String url = BASE_URL + /golf-cms/api/booking/def;
+        String requestLog = RequestLogHelper.buildRequestLog(
+        "POST",
+        url,
+        null,
+        requestBody
+);
 
         ctx.setAttribute("LAST_REQUEST_LOG", requestLog);
         ctx.setAttribute("LAST_RESPONSE_LOG", respJson);
@@ -107,7 +115,7 @@ public class  @@ClassName@@ extends TestConfig implements FlowRunnable {
     public void runCase(String caseId, ITestContext ctx, ExtentTest logger) throws Exception {
         Map<String, String> row = findRowByCaseId(EXCEL_FILE, SHEET_NAME, caseId);
         logger.info("▶️ Running case: " + caseId);
-        @@TestMethodName@@(row, ctx);   // chỉ gọi lại hàm test cũ
+        testdef(row, ctx);   // chỉ gọi lại hàm test cũ
     }
 
     @AfterMethod(alwaysRun = true)

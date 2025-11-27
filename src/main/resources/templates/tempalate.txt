@@ -79,7 +79,6 @@ public class  @@ClassName@@ extends TestConfig implements FlowRunnable {
         String respJson = resp.asString();
 
         // ===== Step 4: Gắn log request/response vào report =====
-        String url = @@BaseUrl@@ + @@EndPoint@@;
         @@RequestLogBlock@@
 
         ctx.setAttribute("LAST_REQUEST_LOG", requestLog);

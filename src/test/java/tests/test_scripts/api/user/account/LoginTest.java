@@ -59,8 +59,8 @@ public class LoginTest extends TestConfig implements FlowRunnable {
         // ===== Step 2: Build request =====
         String reqFileName = row.getOrDefault("input_placeholders", "");
         String reqTpl = Files.readString(Paths.get(JSON_DIR + reqFileName));
-        String requestBody = StringUtils.replacePlaceholdersInString(reqTpl, row); // thay tất cả ${colName}
 
+        String requestBody = StringUtils.replacePlaceholdersInString(reqTpl, row); // thay tất cả ${colName}
         System.out.println("🧩 Request body sau replace:\n" + requestBody);
 
         // ===== Step 3: Call API =====
