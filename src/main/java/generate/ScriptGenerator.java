@@ -5,7 +5,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
 import java.nio.file.*;
-import java.util.*;
 
 public class ScriptGenerator {
 
@@ -90,6 +89,9 @@ public class ScriptGenerator {
         // Convert module path ("booking/create_booking") thành package ("booking.create_booking")
         String moduleForPackage = module.replace("/", ".");
 
+        // Auto tạo constant cho endpoint
+        String constantName = ConstantsGenerator.getOrCreateConstant(endpoint);
+
         // Replace template
         String content = tpl
                 .replace("@@module@@", moduleForPackage)
@@ -100,7 +102,7 @@ public class ScriptGenerator {
                 .replace("@@SheetName@@", sheetName)
                 .replace("@@JsonTemplate@@", jsonTemplate)
                 .replace("@@BaseUrl@@", baseUrlKey)
-                .replace("@@EndPoint@@", endpoint)
+                .replace("@@EndPoint@@", constantName)
                 .replace("@@HttpMethod@@", httpMethod.toLowerCase())
                 .replace("@@RequestBuildBlock@@", requestBuildBlock)
                 .replace("@@Request@@", requestCallBlock)

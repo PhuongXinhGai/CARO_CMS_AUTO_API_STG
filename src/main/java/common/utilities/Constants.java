@@ -11,7 +11,6 @@ public class Constants {
 
     public static final String CREATE_BOOKING_BATCH_ENDPOINT = "/golf-cms/api/booking/batch";
     public static final String BOOKING_AT_TEE_TIME_ENDPOINT = "/golf-cms/api/booking";
-    public static final String  REPORT_BOOKING_STATISTIC_ENDPOINT = "/golf-cms/api/report/booking-statistic";
 // Edit booking
     public static final String  BOOKING_UPDATE_ENDPOINT = "/golf-cms/api/booking/update";
     public static final String  BOOKING_UPDATE_AT_TEE_TIME_ENDPOINT = "/golf-cms/api/booking/";
@@ -64,6 +63,5 @@ public class Constants {
     public static final String HEADER_ACCEPT = "Accept";
     public static final String HEADER_AUTHORIZATION = "Authorization";
     public static final String APPLICATION_JSON = "application/json";
-
 
 }
