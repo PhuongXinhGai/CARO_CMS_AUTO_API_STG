@@ -64,4 +64,9 @@ public class Constants {
     public static final String HEADER_AUTHORIZATION = "Authorization";
     public static final String APPLICATION_JSON = "application/json";
 
+    // e-invoice
+    public static final String ABC_ENDPOINT = "/golf-cms/api/e-invoice/abc";
+
+    // booking
+    public static final String DEF_ENDPOINT = "/golf-cms/api/booking/def";
 }

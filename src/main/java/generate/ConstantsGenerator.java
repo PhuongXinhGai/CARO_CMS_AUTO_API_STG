@@ -1,174 +1,161 @@
 package generate;
 
-import java.io.*;
+import java.io.IOException;
 import java.nio.file.*;
 import java.util.*;
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ConstantsGenerator {
 
     private static final String CONSTANTS_FILE =
             System.getProperty("user.dir") + "/src/main/java/common/utilities/Constants.java";
 
-    // Regex lấy dòng kiểu: public static final String ABC_ENDPOINT = "/golf-cms/api/...";
+    // public static final String QUOTE_FEE_ENDPOINT = "/golf-cms/api/booking/quote-fee";
     private static final Pattern CONST_PATTERN = Pattern.compile(
-            "public static final String ([A-Z0-9_]+)\\s*=\\s*\"([^\"]+)\"");
+            "public\\s+static\\s+final\\s+String\\s+([A-Z0-9_]+)\\s*=\\s*\"([^\"]+)\"\\s*;");
 
-    // ============================================================
-    // == 1. TẢI TOÀN BỘ CONSTANT HIỆN CÓ LÊN MAP
-    // ============================================================
-    public static Map<String, String> loadExistingConstants() throws Exception {
-        Map<String, String> valueToName = new HashMap<>();
+    // ================== API chính dùng cho ScriptGenerator ==================
 
+    /**
+     * Đảm bảo endpoint có constant trong Constants.java.
+     * - Nếu đã có: trả về tên constant cũ.
+     * - Nếu chưa có: tạo mới, chèn vào đúng group, rồi trả về tên constant mới.
+     */
+    public static String getOrCreateConstant(String endpoint) throws IOException {
         List<String> lines = Files.readAllLines(Paths.get(CONSTANTS_FILE));
 
+        // 1) Build map: endpoint value -> constant name
+        Map<String, String> valueToName = new HashMap<>();
         for (String line : lines) {
             Matcher m = CONST_PATTERN.matcher(line.trim());
             if (m.find()) {
-                String name = m.group(1).trim();
+                String name  = m.group(1).trim();
                 String value = m.group(2).trim();
                 valueToName.put(value, name);
             }
         }
 
-        return valueToName;
-    }
-
-    // ============================================================
-    // == 2. TẠO HOẶC LẤY CONSTANT NAME CHO ENDPOINT
-    // ============================================================
-    public static String getOrCreateConstant(String endpoint) throws Exception {
-
-        Map<String, String> existing = loadExistingConstants();
-
-        // ---- A. Nếu endpoint đã tồn tại → dùng lại
-        if (existing.containsKey(endpoint)) {
-            return existing.get(endpoint);
+        // 2) Nếu endpoint đã được khai báo -> dùng luôn
+        if (valueToName.containsKey(endpoint)) {
+            return valueToName.get(endpoint);
         }
 
-        // ---- B. Sinh constant mới
-        String constantName = buildConstantName(endpoint);
+        // 3) Chưa có -> tạo mới
+        String constName = buildConstantName(endpoint);
+        insertConstant(lines, constName, endpoint);
 
-        // ---- C. Append vào file Constants.java
-        appendConstantToFile(constantName, endpoint);
+        // 4) Ghi lại file
+        Files.write(Paths.get(CONSTANTS_FILE), lines);
 
-        return constantName;
+        return constName;
     }
 
-    // ============================================================
-    // == 3. RULE TẠO TÊN CONSTANT
-    // ============================================================
+    // ================== Helpers ==================
+
+    /**
+     * Rule: bỏ prefix /golf-xxx/api/, phần còn lại:
+     *  - group = segment đầu tiên
+     *  - phần sau -> SNAKE_CASE + _ENDPOINT
+     *
+     *  vd: /golf-cms/api/booking/list/select
+     *      -> booking/list/select
+     *      -> group = booking
+     *      -> name  = LIST_SELECT_ENDPOINT
+     */
     private static String buildConstantName(String endpoint) {
+        String noPrefix = endpoint.replaceFirst("^/golf-[a-zA-Z0-9_-]+/api/", "");
+        String[] parts  = noPrefix.split("/");
 
-        String cleaned = endpoint;
-
-        // Bỏ prefix cms & maintenance
-        if (cleaned.startsWith("/golf-cms/api/")) {
-            cleaned = cleaned.replace("/golf-cms/api/", "");
-        } else if (cleaned.startsWith("/golf-maintenance/api/")) {
-            cleaned = cleaned.replace("/golf-maintenance/api/", "");
+        if (parts.length <= 1) {
+            // fallback: dùng full path
+            String snake = noPrefix
+                    .replaceAll("[^a-zA-Z0-9]", "_")
+                    .replaceAll("_+", "_")
+                    .toUpperCase();
+            return snake + "_ENDPOINT";
         }
 
-        // Xác định group (chức năng)
-        String[] parts = cleaned.split("/");
-        String group = parts[0]; // booking, payment, course-operating...
-
-        // Phần còn lại để tạo constant name
+        // bỏ group ở đầu, chỉ lấy phần sau group
         StringBuilder sb = new StringBuilder();
         for (int i = 1; i < parts.length; i++) {
+            if (i > 1) sb.append("_");
             sb.append(parts[i].toUpperCase().replace("-", "_"));
-            if (i < parts.length - 1) sb.append("_");
         }
-
-        return sb.toString() + "_ENDPOINT";
+        return sb + "_ENDPOINT";
     }
 
-    // ============================================================
-    // == 4. APPEND CONSTANT THEO NHÓM + SORT ALPHABET
-    // ============================================================
-    private static void appendConstantToFile(String constName, String endpoint) throws Exception {
-
-        List<String> lines = Files.readAllLines(Paths.get(CONSTANTS_FILE));
-
-        // Xác định group từ endpoint
-        String group = extractGroup(endpoint);
-
-        // Tìm vị trí nhóm trong file
-        int insertPos = findGroupInsertPosition(lines, group);
-
-        // Nếu nhóm chưa có → chèn header nhóm
-        if (insertPos == -1) {
-            lines.add("");
-            lines.add("    // " + group);
-            insertPos = lines.size();
-        }
-
-        // Thêm constant mới
-        lines.add(insertPos, "    public static final String " + constName + " = \"" + endpoint + "\";");
-
-        // Sort trong nhóm
-        sortGroup(lines, group);
-
-        // Ghi lại file
-        Files.write(Paths.get(CONSTANTS_FILE), lines);
-    }
-
-    // ============================================================
-    // == 5. PHÂN NHÓM THEO PREFIX SAU /api/
-    // ============================================================
+    /** Lấy group theo prefix sau /api/ (booking, payment, course-operating, ...) */
     private static String extractGroup(String endpoint) {
-        String cleaned = endpoint
-                .replace("/golf-cms/api/", "")
-                .replace("/golf-maintenance/api/", "");
-
-        return cleaned.split("/")[0]; // booking/payment/report...
+        String noPrefix = endpoint.replaceFirst("^/golf-[a-zA-Z0-9_-]+/api/", "");
+        String[] parts  = noPrefix.split("/");
+        return parts.length > 0 ? parts[0] : "misc";
     }
 
-    // ============================================================
-    // == 6. TÌM VỊ TRÍ CHÈN VÀO NHÓM
-    // ============================================================
-    private static int findGroupInsertPosition(List<String> lines, String group) {
-        String marker = "// " + group;
+    /**
+     * Chèn constant vào đúng group, sort alphabet F7, và luôn nằm TRƯỚC dấu } cuối.
+     * Format group: 1 dòng trống + comment // group
+     */
+    private static void insertConstant(List<String> lines, String constName, String endpoint) {
+        String group          = extractGroup(endpoint);      // booking, payment, ...
+        String groupHeader    = "    // " + group;
+        String constLine      = "    public static final String " + constName + " = \"" + endpoint + "\";";
 
-        for (int i = 0; i < lines.size(); i++) {
-            if (lines.get(i).trim().equals(marker)) {
-                return i + 1;
-            }
+        // 1) tìm vị trí dấu } cuối cùng (để biết giới hạn chèn)
+        int closingIndex = findClosingBraceIndex(lines);
+        if (closingIndex == -1) {
+            throw new RuntimeException("Không tìm thấy dấu '}' kết thúc class trong Constants.java");
         }
 
-        return -1;
-    }
-
-    // ============================================================
-    // == 7. SORT CONSTANT TRONG NHÓM
-    // ============================================================
-    private static void sortGroup(List<String> lines, String group) {
-
-        String marker = "// " + group;
-        int start = -1;
-
-        // Tìm nhóm
-        for (int i = 0; i < lines.size(); i++) {
-            if (lines.get(i).trim().equals(marker)) {
-                start = i + 1;
+        // 2) tìm header group nếu đã có
+        int groupHeaderIndex = -1;
+        for (int i = 0; i < closingIndex; i++) {
+            if (lines.get(i).trim().equals(groupHeader)) {
+                groupHeaderIndex = i;
                 break;
             }
         }
-        if (start == -1) return;
 
-        // Tìm block nhóm
-        int end = start;
-        while (end < lines.size() && lines.get(end).trim().startsWith("public static final")) {
-            end++;
+        if (groupHeaderIndex == -1) {
+            // 3) Nhóm chưa tồn tại -> tạo mới ngay TRƯỚC closingIndex
+            List<String> newBlock = new ArrayList<>();
+            newBlock.add("");                // dòng trống trước group
+            newBlock.add(groupHeader);
+            newBlock.add(constLine);
+
+            lines.addAll(closingIndex, newBlock);
+        } else {
+            // 4) Nhóm đã tồn tại -> thêm vào cuối nhóm rồi sort
+            int start = groupHeaderIndex + 1;
+            int end   = start;
+
+            // lướt qua các dòng constant trong group
+            while (end < closingIndex && lines.get(end).trim().startsWith("public static final String")) {
+                end++;
+            }
+
+            // lấy block constants trong group
+            List<String> groupConsts = new ArrayList<>(lines.subList(start, end));
+            groupConsts.add(constLine);
+
+            // sort alphabet
+            groupConsts.sort(Comparator.naturalOrder());
+
+            // ghi đè lại block đã sort
+            for (int i = 0; i < groupConsts.size(); i++) {
+                lines.set(start + i, groupConsts.get(i));
+            }
         }
+    }
 
-        // Sort
-        List<String> block = new ArrayList<>(lines.subList(start, end));
-        block.sort(Comparator.naturalOrder());
-
-        // Replace
-        for (int i = 0; i < block.size(); i++) {
-            lines.set(start + i, block.get(i));
+    /** Tìm index dấu } cuối cùng (đóng class) */
+    private static int findClosingBraceIndex(List<String> lines) {
+        for (int i = lines.size() - 1; i >= 0; i--) {
+            String t = lines.get(i).trim();
+            if ("}".equals(t)) {
+                return i;
+            }
         }
+        return -1;
     }
 }

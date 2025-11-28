@@ -89,8 +89,8 @@ public class ScriptGenerator {
         // Convert module path ("booking/create_booking") thành package ("booking.create_booking")
         String moduleForPackage = module.replace("/", ".");
 
-        // Auto tạo constant cho endpoint
-        String constantName = ConstantsGenerator.getOrCreateConstant(endpoint);
+        // 1) Lấy / tạo constant name cho endpoint
+        String endpointConst = ConstantsGenerator.getOrCreateConstant(endpoint);
 
         // Replace template
         String content = tpl
@@ -102,7 +102,7 @@ public class ScriptGenerator {
                 .replace("@@SheetName@@", sheetName)
                 .replace("@@JsonTemplate@@", jsonTemplate)
                 .replace("@@BaseUrl@@", baseUrlKey)
-                .replace("@@EndPoint@@", constantName)
+                .replace("@@EndPoint@@", endpointConst)
                 .replace("@@HttpMethod@@", httpMethod.toLowerCase())
                 .replace("@@RequestBuildBlock@@", requestBuildBlock)
                 .replace("@@Request@@", requestCallBlock)
