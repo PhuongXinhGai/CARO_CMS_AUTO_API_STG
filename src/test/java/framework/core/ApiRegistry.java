@@ -5,19 +5,15 @@ import java.util.*;
 public class ApiRegistry {
     /** Bản đồ ánh xạ giữa tên cột trong Excel và class thực thi test */
     private static final Map<String, String> MAP = new HashMap<>() {{
+
+        // ===== user.account =====
         put("login_case_id", "tests.test_scripts.api.user.account.LoginTest");
 
+        // ===== booking.create_booking =====
         put("quote_fee_case_id", "tests.test_scripts.api.booking.create_booking.QuoteFeeTest");
-
         put("create_booking_1_player_case_id", "tests.test_scripts.api.booking.create_booking.CreateBookingBatch1PlayerTest");
         put("create_booking_Voucher_1_Player_case_id", "tests.test_scripts.api.booking.create_booking.CreateBookingBatchVoucher1PlayerTest");
         put("create_booking_4_player_case_id", "tests.test_scripts.api.booking.create_booking.CreateBookingBatch4PlayerTest");
-
-        put("edit_booking_at_tee_time_player1_id", "tests.test_scripts.api.booking.edit_booking.EditBookingAtTeeTimePlayer1Test");
-        put("edit_booking_at_tee_time_player2_id", "tests.test_scripts.api.booking.edit_booking.EditBookingAtTeeTimePlayer2Test");
-        put("edit_booking_at_tee_time_player3_id", "tests.test_scripts.api.booking.edit_booking.EditBookingAtTeeTimePlayer3Test");
-        put("edit_booking_at_tee_time_player4_id", "tests.test_scripts.api.booking.edit_booking.EditBookingAtTeeTimePlayer4Test");
-        put("edit_booking_1_player_id", "tests.test_scripts.api.booking.edit_booking.EditBooking1PlayerTest");
 
         put("get_booking_list_case_id", "tests.test_scripts.api.booking.create_booking.GetBookingListSelectTest");
         put("get_booking_price_case_id", "tests.test_scripts.api.booking.create_booking.GetBookingPriceTest");
@@ -26,24 +22,39 @@ public class ApiRegistry {
         put("get_booking_price_player3_id", "tests.test_scripts.api.booking.create_booking.GetBookingPricePlayer3Test");
         put("get_booking_price_player4_id", "tests.test_scripts.api.booking.create_booking.GetBookingPricePlayer4Test");
 
+        put("abc_case_id", "tests.test_scripts.api.booking/create_booking.ABCTest");
+        put("def_id", "tests.test_scripts.api.booking/create_booking.defTest");
+        // ===== booking.edit_booking =====
+        put("edit_booking_at_tee_time_player1_id", "tests.test_scripts.api.booking.edit_booking.EditBookingAtTeeTimePlayer1Test");
+        put("edit_booking_at_tee_time_player2_id", "tests.test_scripts.api.booking.edit_booking.EditBookingAtTeeTimePlayer2Test");
+        put("edit_booking_at_tee_time_player3_id", "tests.test_scripts.api.booking.edit_booking.EditBookingAtTeeTimePlayer3Test");
+        put("edit_booking_at_tee_time_player4_id", "tests.test_scripts.api.booking.edit_booking.EditBookingAtTeeTimePlayer4Test");
+
+        put("edit_booking_1_player_id", "tests.test_scripts.api.booking.edit_booking.EditBooking1PlayerTest");
+
+        // ===== booking.checkin =====
         put("check_in_bag_player1_id", "tests.test_scripts.api.booking.checkin.CheckInBagPlayer1Test");
         put("check_in_bag_player2_id", "tests.test_scripts.api.booking.checkin.CheckInBagPlayer2Test");
         put("check_in_bag_player3_id", "tests.test_scripts.api.booking.checkin.CheckInBagPlayer3Test");
         put("check_in_bag_player4_id", "tests.test_scripts.api.booking.checkin.CheckInBagPlayer4Test");
+
         put("Check_In_Ekyc_Player1_id", "tests.test_scripts.api.booking.checkin.CheckInEkycPlayer1Test");
         put("Check_In_Ekyc_Player2_id", "tests.test_scripts.api.booking.checkin.CheckInEkycPlayer2Test");
         put("Check_In_Ekyc_Player3_id", "tests.test_scripts.api.booking.checkin.CheckInEkycPlayer3Test");
         put("Check_In_Ekyc_Player4_id", "tests.test_scripts.api.booking.checkin.CheckInEkycPlayer4Test");
+
         put("undo_check_in_bag_id", "tests.test_scripts.api.booking.checkin.UndoCheckInBagTest");
 
+        // ===== go_course_information =====
         put("create_flight_id", "tests.test_scripts.api.go_course_information.CreateFlightTest");
         put("add_bag_to_flight_id", "tests.test_scripts.api.go_course_information.AddBagToFlightTest");
-
         put("out_all_flight_id", "tests.test_scripts.api.go_course_information.OutAllFlightTest");
+
         put("simple_out_flight_player1_id", "tests.test_scripts.api.go_course_information.SimpleOutFlightPlayer1Test");
         put("simple_out_flight_player2_id", "tests.test_scripts.api.go_course_information.SimpleOutFlightPlayer2Test");
         put("simple_out_flight_player3_id", "tests.test_scripts.api.go_course_information.SimpleOutFlightPlayer3Test");
         put("simple_out_flight_player4_id", "tests.test_scripts.api.go_course_information.SimpleOutFlightPlayer4Test");
+
         put("undo_out_flight_player1_id", "tests.test_scripts.api.go_course_information.UndoOutFlightPlayer1Test");
         put("undo_out_flight_player2_id", "tests.test_scripts.api.go_course_information.UndoOutFlightPlayer2Test");
         put("undo_out_flight_player3_id", "tests.test_scripts.api.go_course_information.UndoOutFlightPlayer3Test");
@@ -56,66 +67,85 @@ public class ApiRegistry {
 
         put("add_round_player1_id", "tests.test_scripts.api.go_course_information.AddRoundPlayer1Test");
 
+        // ===== pos.restaurant =====
         put("restaurant_create_bill_player1_id", "tests.test_scripts.api.pos.restaurant.RestaurantCreateBillPlayer1Test");
         put("restaurant_create_bill_player2_id", "tests.test_scripts.api.pos.restaurant.RestaurantCreateBillPlayer2Test");
         put("restaurant_create_bill_player3_id", "tests.test_scripts.api.pos.restaurant.RestaurantCreateBillPlayer3Test");
         put("restaurant_create_bill_player4_id", "tests.test_scripts.api.pos.restaurant.RestaurantCreateBillPlayer4Test");
+
         put("restaurant_get_list_menu_id", "tests.test_scripts.api.pos.restaurant.RestaurantGetListMenuTest");
+
         put("restaurant_add_item_to_bill_player1_id", "tests.test_scripts.api.pos.restaurant.RestaurantAddItemToBillPlayer1Test");
         put("restaurant_add_item_to_bill_player2_id", "tests.test_scripts.api.pos.restaurant.RestaurantAddItemToBillPlayer2Test");
         put("restaurant_add_item_to_bill_player3_id", "tests.test_scripts.api.pos.restaurant.RestaurantAddItemToBillPlayer3Test");
         put("restaurant_add_item_to_bill_player4_id", "tests.test_scripts.api.pos.restaurant.RestaurantAddItemToBillPlayer4Test");
 
+        // ===== pos.kiosk =====
         put("kiosk_create_bill_player1_id", "tests.test_scripts.api.pos.kiosk.KioskCreateBillPlayer1Test");
         put("kiosk_create_bill_player2_id", "tests.test_scripts.api.pos.kiosk.KioskCreateBillPlayer2Test");
         put("kiosk_create_bill_player3_id", "tests.test_scripts.api.pos.kiosk.KioskCreateBillPlayer3Test");
         put("kiosk_create_bill_player4_id", "tests.test_scripts.api.pos.kiosk.KioskCreateBillPlayer4Test");
+
         put("kiosk_get_list_menu_id", "tests.test_scripts.api.pos.kiosk.KioskGetListMenuTest");
+
         put("kiosk_add_item_to_bill_player1_id", "tests.test_scripts.api.pos.kiosk.KioskAddItemToBillPlayer1Test");
         put("kiosk_add_item_to_bill_player2_id", "tests.test_scripts.api.pos.kiosk.KioskAddItemToBillPlayer2Test");
         put("kiosk_add_item_to_bill_player3_id", "tests.test_scripts.api.pos.kiosk.KioskAddItemToBillPlayer3Test");
         put("kiosk_add_item_to_bill_player4_id", "tests.test_scripts.api.pos.kiosk.KioskAddItemToBillPlayer4Test");
 
+        // ===== pos.mini_bar =====
         put("mini_bar_create_bill_player1_id", "tests.test_scripts.api.pos.mini_bar.MiniBarCreateBillPlayer1Test");
         put("mini_bar_create_bill_player2_id", "tests.test_scripts.api.pos.mini_bar.MiniBarCreateBillPlayer2Test");
         put("mini_bar_create_bill_player3_id", "tests.test_scripts.api.pos.mini_bar.MiniBarCreateBillPlayer3Test");
         put("mini_bar_create_bill_player4_id", "tests.test_scripts.api.pos.mini_bar.MiniBarCreateBillPlayer4Test");
+
         put("mini_bar_get_list_menu_id", "tests.test_scripts.api.pos.mini_bar.MiniBarGetListMenuTest");
+
         put("mini_bar_add_item_to_bill_player1_id", "tests.test_scripts.api.pos.mini_bar.MiniBarAddItemToBillPlayer1Test");
         put("mini_bar_add_item_to_bill_player2_id", "tests.test_scripts.api.pos.mini_bar.MiniBarAddItemToBillPlayer2Test");
         put("mini_bar_add_item_to_bill_player3_id", "tests.test_scripts.api.pos.mini_bar.MiniBarAddItemToBillPlayer3Test");
         put("mini_bar_add_item_to_bill_player4_id", "tests.test_scripts.api.pos.mini_bar.MiniBarAddItemToBillPlayer4Test");
 
+        // ===== pos.driving =====
         put("driving_create_bill_player1_id", "tests.test_scripts.api.pos.driving.DrivingCreateBillPlayer1Test");
         put("driving_create_bill_player2_id", "tests.test_scripts.api.pos.driving.DrivingCreateBillPlayer2Test");
         put("driving_create_bill_player3_id", "tests.test_scripts.api.pos.driving.DrivingCreateBillPlayer3Test");
         put("driving_create_bill_player4_id", "tests.test_scripts.api.pos.driving.DrivingCreateBillPlayer4Test");
+
         put("driving_get_list_menu_id", "tests.test_scripts.api.pos.driving.DrivingGetListMenuTest");
+
         put("driving_add_item_to_bill_player1_id", "tests.test_scripts.api.pos.driving.DrivingAddItemToBillPlayer1Test");
         put("driving_add_item_to_bill_player2_id", "tests.test_scripts.api.pos.driving.DrivingAddItemToBillPlayer2Test");
         put("driving_add_item_to_bill_player3_id", "tests.test_scripts.api.pos.driving.DrivingAddItemToBillPlayer3Test");
         put("driving_add_item_to_bill_player4_id", "tests.test_scripts.api.pos.driving.DrivingAddItemToBillPlayer4Test");
 
+        // ===== pos.rental =====
         put("rental_create_bill_player1_id", "tests.test_scripts.api.pos.rental.RentalCreateBillPlayer1Test");
         put("rental_create_bill_player2_id", "tests.test_scripts.api.pos.rental.RentalCreateBillPlayer2Test");
         put("rental_create_bill_player3_id", "tests.test_scripts.api.pos.rental.RentalCreateBillPlayer3Test");
         put("rental_create_bill_player4_id", "tests.test_scripts.api.pos.rental.RentalCreateBillPlayer4Test");
+
         put("rental_get_list_menu_id", "tests.test_scripts.api.pos.rental.RentalGetListMenuTest");
+
         put("rental_add_item_to_bill_player1_id", "tests.test_scripts.api.pos.rental.RentalAddItemToBillPlayer1Test");
         put("rental_add_item_to_bill_player2_id", "tests.test_scripts.api.pos.rental.RentalAddItemToBillPlayer2Test");
         put("rental_add_item_to_bill_player3_id", "tests.test_scripts.api.pos.rental.RentalAddItemToBillPlayer3Test");
         put("rental_add_item_to_bill_player4_id", "tests.test_scripts.api.pos.rental.RentalAddItemToBillPlayer4Test");
 
+        // ===== pos.proshop =====
         put("proshop_create_bill_player1_id", "tests.test_scripts.api.pos.proshop.ProshopCreateBillPlayer1Test");
         put("proshop_create_bill_player2_id", "tests.test_scripts.api.pos.proshop.ProshopCreateBillPlayer2Test");
         put("proshop_create_bill_player3_id", "tests.test_scripts.api.pos.proshop.ProshopCreateBillPlayer3Test");
         put("proshop_create_bill_player4_id", "tests.test_scripts.api.pos.proshop.ProshopCreateBillPlayer4Test");
+
         put("proshop_get_list_menu_id", "tests.test_scripts.api.pos.proshop.ProshopGetListMenuTest");
+
         put("proshop_add_item_to_bill_player1_id", "tests.test_scripts.api.pos.proshop.ProshopAddItemToBillPlayer1Test");
         put("proshop_add_item_to_bill_player2_id", "tests.test_scripts.api.pos.proshop.ProshopAddItemToBillPlayer2Test");
         put("proshop_add_item_to_bill_player3_id", "tests.test_scripts.api.pos.proshop.ProshopAddItemToBillPlayer3Test");
         put("proshop_add_item_to_bill_player4_id", "tests.test_scripts.api.pos.proshop.ProshopAddItemToBillPlayer4Test");
 
+        // ===== cico =====
         put("booking_by_bag_player1_id", "tests.test_scripts.api.cico.GetBookingByBagPlayer1Test");
         put("booking_by_bag_player2_id", "tests.test_scripts.api.cico.GetBookingByBagPlayer2Test");
         put("booking_by_bag_player3_id", "tests.test_scripts.api.cico.GetBookingByBagPlayer3Test");
@@ -123,6 +153,7 @@ public class ApiRegistry {
 
         put("add_sub_bag_id", "tests.test_scripts.api.cico.AddSubBagTest");
         put("detail_agency_pay_id", "tests.test_scripts.api.cico.DetailAgencyPayTest");
+
         put("update_agency_pay_player1_id", "tests.test_scripts.api.cico.UpdateAgencyPayPlayer1Test");
         put("update_agency_pay_player2_id", "tests.test_scripts.api.cico.UpdateAgencyPayPlayer2Test");
         put("update_agency_pay_player3_id", "tests.test_scripts.api.cico.UpdateAgencyPayPlayer3Test");
@@ -132,6 +163,7 @@ public class ApiRegistry {
         put("fee_of_bag_player2_id", "tests.test_scripts.api.cico.GetFeeOfBagPlayer2Test");
         put("fee_of_bag_player3_id", "tests.test_scripts.api.cico.GetFeeOfBagPlayer3Test");
         put("fee_of_bag_player4_id", "tests.test_scripts.api.cico.GetFeeOfBagPlayer4Test");
+
         put("fee_of_bag_bill_player1_id", "tests.test_scripts.api.cico.GetFeeOfBagBillPlayer1Test");
         put("fee_of_bag_bill_player2_id", "tests.test_scripts.api.cico.GetFeeOfBagBillPlayer2Test");
         put("fee_of_bag_bill_player3_id", "tests.test_scripts.api.cico.GetFeeOfBagBillPlayer3Test");
@@ -143,19 +175,24 @@ public class ApiRegistry {
         put("check_out_bag_id", "tests.test_scripts.api.cico.CheckOutBagTest");
         put("check_out_group_id", "tests.test_scripts.api.cico.CheckOutGroupTest");
 
+        // ===== invoice =====
         put("e_invoice_id", "tests.test_scripts.api.invoice.EInvoiceTest");
+
         put("e_invoice_payment_id_player1_id", "tests.test_scripts.api.invoice.EInvoicePaymentIdPlayer1Test");
         put("e_invoice_payment_id_player2_id", "tests.test_scripts.api.invoice.EInvoicePaymentIdPlayer2Test");
         put("e_invoice_payment_id_player3_id", "tests.test_scripts.api.invoice.EInvoicePaymentIdPlayer3Test");
         put("e_invoice_payment_id_player4_id", "tests.test_scripts.api.invoice.EInvoicePaymentIdPlayer4Test");
+
         put("invoice_detail_cost_id", "tests.test_scripts.api.invoice.InvoiceDetailCostTest");
         put("invoice_detail_agency_paid_id", "tests.test_scripts.api.invoice.InvoiceDetailAgencyPaidTest");
 
+        // ===== report =====
         put("revenue_detail_report_id", "tests.test_scripts.api.report.RevenueDetailReportTest");
         put("revenue_detail_report_player1_id", "tests.test_scripts.api.report.RevenueDetailReportPlayer1Test");
         put("revenue_detail_report_player2_id", "tests.test_scripts.api.report.RevenueDetailReportPlayer2Test");
         put("revenue_detail_report_player3_id", "tests.test_scripts.api.report.RevenueDetailReportPlayer3Test");
         put("revenue_detail_report_player4_id", "tests.test_scripts.api.report.RevenueDetailReportPlayer4Test");
+
 
     }};
 

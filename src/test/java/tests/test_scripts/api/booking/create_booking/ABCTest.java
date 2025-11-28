@@ -1,4 +1,4 @@
-package tests.test_scripts.api.@@module@@;
+package tests.test_scripts.api.booking.create_booking;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.google.gson.Gson;
@@ -24,18 +24,18 @@ import static io.restassured.RestAssured.given;
 
 import tests.test_config.TestConfig;
 
-public class  @@ClassName@@ extends TestConfig implements FlowRunnable {
+public class  ABCTest extends TestConfig implements FlowRunnable {
     // ==== ĐƯỜNG DẪN — chỉnh cho khớp project của bạn ====
     private static final String EXCEL_FILE = System.getProperty("user.dir")
-            + "/src/main/resources/@@ExcelFile@@";
-    private static final String SHEET_NAME = "@@SheetName@@";
+            + "/src/main/resources/input_excel_file/booking/ABC.xlsx";
+    private static final String SHEET_NAME = "ABC";
     // Thư mục chứa JSON request/expect cho API này
     private static final String JSON_DIR = System.getProperty("user.dir")
-            + "/src/main/resources/@@JsonTemplate@@";
+            + "/src/main/resources/input_json_file/booking/abc/";
 
     // ======================= DataProvider =======================
-    @DataProvider(name = "@@DataProviderName@@")
-    public Object[][] @@DataProviderName@@() throws IOException {
+    @DataProvider(name = "aBCData")
+    public Object[][] aBCData() throws IOException {
         return ExcelUtils.readSheetAsMaps(EXCEL_FILE, SHEET_NAME);
     }
 
@@ -50,8 +50,8 @@ public class  @@ClassName@@ extends TestConfig implements FlowRunnable {
      * 7) So sánh actual vs expect (AssertionHelper)
      * 8) Extract và lưu biến cho step sau (nếu cần)
      */
-    @Test(dataProvider = "@@DataProviderName@@")
-    public void @@TestMethodName@@(Map<String, String> row, ITestContext ctx) throws IOException {
+    @Test(dataProvider = "aBCData")
+    public void testABC(Map<String, String> row, ITestContext ctx) throws IOException {
         final String tcId = row.getOrDefault("tc_id", "NO_ID");
         final String desc = row.getOrDefault("tc_description", "");
 
@@ -59,7 +59,8 @@ public class  @@ClassName@@ extends TestConfig implements FlowRunnable {
         System.out.println("Running: " + tcId + " - " + desc);
 
         // ===== Step 2: Build request (query) =====
-		@@RequestBuildBlock@@
+		Map<String, Object> q = QueryParamHelper.build(row, ctx);
+        System.out.println("🧩 Query Params:\n" + q);
 
 		// ===== Step 3: Call API =====
         String tokenFromCtx = (String) ctx.getAttribute("AUTH_TOKEN");
@@ -70,16 +71,22 @@ public class  @@ClassName@@ extends TestConfig implements FlowRunnable {
                         .contentType(ContentType.JSON)
                         .header("Accept", "application/json")
                         .header("Authorization", bearer != null ? bearer : "")
-                        .@@Request@@
+                        .queryParams(q)
                         .when()
-                        .@@HttpMethod@@(@@BaseUrl@@ + @@EndPoint@@)
+                        .get(BASE_URL + ABC_ENDPOINT)
                         .then()
                         .extract().response();
 
         String respJson = resp.asString();
 
         // ===== Step 4: Gắn log request/response vào report =====
-        @@RequestLogBlock@@
+        String url = BASE_URL + ABC_ENDPOINT;
+        String requestLog = RequestLogHelper.buildRequestLog(
+        "GET",
+        url,
+        q,
+        null
+);
 
         ctx.setAttribute("LAST_REQUEST_LOG", requestLog);
         ctx.setAttribute("LAST_RESPONSE_LOG", respJson);
@@ -106,7 +113,7 @@ public class  @@ClassName@@ extends TestConfig implements FlowRunnable {
     public void runCase(String caseId, ITestContext ctx, ExtentTest logger) throws Exception {
         Map<String, String> row = findRowByCaseId(EXCEL_FILE, SHEET_NAME, caseId);
         logger.info("▶️ Running case: " + caseId);
-        @@TestMethodName@@(row, ctx);   // chỉ gọi lại hàm test cũ
+        testABC(row, ctx);   // chỉ gọi lại hàm test cũ
     }
 
     @AfterMethod(alwaysRun = true)

@@ -54,7 +54,7 @@ public class ScriptGenerator {
 
             generateOne(template, module, className, dataProvider,
                     baseUrlKey, endpoint, httpMethod, requestType,
-                    excelFile, sheetName, jsonTemplate, testMethod);
+                    excelFile, sheetName, jsonTemplate, testMethod, registryKey);
         }
 
         System.out.println("=== Script Generator Done! ===");
@@ -72,13 +72,21 @@ public class ScriptGenerator {
             String excelFile,
             String sheetName,
             String jsonTemplate,
-            String testMethod
+            String testMethod,
+            String registryKey
     ) throws Exception {
 
         // Validate module folder exists
         String modulePath = OUTPUT_SRC + module + "/";
         if (!Files.exists(Paths.get(modulePath))) {
             throw new RuntimeException("❌ Folder module không tồn tại: " + modulePath);
+        }
+
+        // ❗️ NEW: Nếu class đã tồn tại → skip hết
+        String classPath = modulePath + className + ".java";
+        if (Files.exists(Paths.get(classPath))) {
+            System.out.println("⚠️ Skip (class existed): " + classPath);
+            return;
         }
 
         // Build blocks
@@ -91,6 +99,7 @@ public class ScriptGenerator {
 
         // 1) Lấy / tạo constant name cho endpoint
         String endpointConst = ConstantsGenerator.getOrCreateConstant(endpoint);
+        System.out.println("✔ Added to Constant: " + endpointConst);
 
         // Replace template
         String content = tpl
@@ -113,6 +122,14 @@ public class ScriptGenerator {
         Files.writeString(Paths.get(filePath), content);
 
         System.out.println("✔ Generated: " + filePath);
+
+        // Auto append to ApiRegistry
+        if (registryKey != null && !registryKey.isEmpty()) {
+            ApiRegistryGenerator apiRegGen = new ApiRegistryGenerator();
+            apiRegGen.addRegistryEntry(module, className, registryKey);
+            System.out.println("✔ Added to ApiRegistry: " + registryKey);
+        }
+
     }
 
     private String buildRequestBuildBlock(String requestType) {

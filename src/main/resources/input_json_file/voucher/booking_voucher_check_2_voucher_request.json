@@ -1,0 +1,13 @@
+{
+  "partner_uid": "${partner_uid}",
+  "course_uid": "${course_uid}",
+  "voucher_codes": [
+    "${voucher_codes[0]}",
+    "${voucher_codes[1]}"
+  ],
+  "booking_date": "${booking_date}",
+  "booking_hole": ${booking_hole},
+"guest_type": "${guest_type}",
+"tee_time": "${tee_time}",
+"is_holiday": ${is_holiday}
+}

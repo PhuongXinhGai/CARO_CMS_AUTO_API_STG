@@ -1,0 +1,9 @@
+{
+  "partner_uid": "${partner_uid}",
+  "course_uid": "${course_uid}",
+  "voucher_codes": [
+    "${voucher_codes[0]}"
+  ],
+  "booking_date": "${booking_date}",
+  "booking_hole": ${booking_hole}
+}
