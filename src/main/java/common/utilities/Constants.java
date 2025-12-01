@@ -71,4 +71,10 @@ public class Constants {
 
     // booking
     public static final String DEF_ENDPOINT = "/golf-cms/api/booking/def";
+
+    // vouchers
+    public static final String CHECK_ENDPOINT = "/golf-maintenance/api/vouchers/check";
+
+    // vouchers
+    public static final String GOLF_FEE_APPLY_ENDPOINT = "/golf-cms/api/vouchers/golf-fee/apply";
 }

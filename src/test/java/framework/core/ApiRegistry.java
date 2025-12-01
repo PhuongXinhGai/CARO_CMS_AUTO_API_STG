@@ -193,7 +193,13 @@ public class ApiRegistry {
         put("revenue_detail_report_player3_id", "tests.test_scripts.api.report.RevenueDetailReportPlayer3Test");
         put("revenue_detail_report_player4_id", "tests.test_scripts.api.report.RevenueDetailReportPlayer4Test");
 
-
+        // ===== voucher =====
+        put("booking_voucher_check_case_id", "tests.test_scripts.api.voucher.BookingVoucherCheckTest");
+        put("cico_voucher_check_case_id", "tests.test_scripts.api.voucher.CicoVoucherCheckTest");
+        put("voucher_apply_player1_case_id", "tests.test_scripts.api.voucher.VoucherApplyPlayer1Test");
+        put("voucher_apply_player2_case_id", "tests.test_scripts.api.voucher.VoucherApplyPlayer2Test");
+        put("voucher_apply_player3_case_id", "tests.test_scripts.api.voucher.VoucherApplyPlayer3Test");
+        put("voucher_apply_player4_case_id", "tests.test_scripts.api.voucher.VoucherApplyPlayer4Test");
     }};
 
     /** Lấy class tương ứng với tên cột (VD: login_case_id -> tests.api.login.LoginTest) */
@@ -205,6 +211,9 @@ public class ApiRegistry {
     public static List<String> orderedColumns() {
         return List.of(
                 "login_case_id",
+
+                "voucher_check_case_id",
+
                 "quote_fee_case_id",
 
                 "create_booking_1_player_case_id",

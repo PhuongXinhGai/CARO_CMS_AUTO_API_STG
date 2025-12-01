@@ -127,8 +127,10 @@ public class CheckInBagPlayer4Test extends TestConfig implements FlowRunnable {
         // ctx.setAttribute("BOOKING_CODE_0", jp.getString("[0].booking_code"));
         JsonPath jp = resp.jsonPath();
         String bag      = jp.getString("bag");
-
         if (bag != null)      ctx.setAttribute("BAG_3", bag);
+
+        String round_id = jp.getString("round_id");
+        if (round_id != null)      ctx.setAttribute("ROUND_1_ID_3", bag);
     }
     //    Flow chạy tích hợp
     @Override
