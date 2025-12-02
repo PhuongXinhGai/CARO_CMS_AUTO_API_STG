@@ -1,0 +1,19 @@
+{
+  "data": [
+    {
+      "course_uid": "CHI-LINH-123",
+      "partner_uid": "CHI-LINH",
+      "booking_uid": "CHI-LINH-123-147805298153122",
+      "round_id": 133279,
+      "voucher_apply_old": [],
+      "voucher_apply": [
+        {
+          "voucher_code": "GREEN1",
+          "id": 61335
+        }
+      ],
+      "is_change_voucher": true,
+      "vouchers_to_remove": []
+    }
+  ]
+}

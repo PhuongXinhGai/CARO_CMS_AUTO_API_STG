@@ -26,6 +26,7 @@ import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static common.utilities.Constants.GET_FEE_OF_BAG_BILL_ENDPOINT;
@@ -116,6 +117,7 @@ public class GetFeeOfBagBillPlayer1Test extends TestConfig implements FlowRunnab
         AssertionHelper.assertFromJson(respJson, expectJson);
 
         // ===== Step 8: Extract lưu biến cho bước sau (nếu cần) =====
+        ExtractHelper.extractVoucherApplyUid(resp, ctx, 0);
 
     }
     //    Flow chạy tích hợp

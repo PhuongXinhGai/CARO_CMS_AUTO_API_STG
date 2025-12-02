@@ -132,6 +132,7 @@ public class CreateBookingBatchVoucher1PlayerTest extends TestConfig implements 
             String bill_code           = jp.getString("[" + i + "].bill_code");
             String guestStyle     = jp.getString("[" + i + "].guest_style");
             String guestStyleName = jp.getString("[" + i + "].guest_style_name");
+            String round_id = jp.getString("[" + i + "].round_id");
 
             String greenFee       = jp.getString("[" + i + "].list_golf_fee[0].green_fee");
             String caddieFee      = jp.getString("[" + i + "].list_golf_fee[0].caddie_fee");
@@ -167,6 +168,7 @@ public class CreateBookingBatchVoucher1PlayerTest extends TestConfig implements 
             if (bill_code != null)            ctx.setAttribute("BILL_CODE_" + i, bill_code);
             if (guestStyle != null)     ctx.setAttribute("GUEST_STYLE_" + i, guestStyle);
             if (guestStyleName != null) ctx.setAttribute("GUEST_STYLE_NAME_" + i, guestStyleName);
+            if (round_id != null) ctx.setAttribute("ROUND_ID_" + i, round_id);
 
             if (greenFee != null)       ctx.setAttribute("GREEN_FEE_" + i, greenFee);
             if (caddieFee != null)      ctx.setAttribute("CADDIE_FEE_" + i, caddieFee);

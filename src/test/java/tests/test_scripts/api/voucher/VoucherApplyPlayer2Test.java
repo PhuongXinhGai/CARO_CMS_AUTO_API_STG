@@ -108,6 +108,49 @@ public class  VoucherApplyPlayer2Test extends TestConfig implements FlowRunnable
         AssertionHelper.assertFromJson(respJson, expectJson);
 
         // ===== Step 8: Extract lưu biến cho bước sau (nếu cần) =====
+        // ===== Step 8.1: Extract & Save voucher codes and IDs to ctx =====
+        try {
+            Gson gson2 = new Gson();
+            Type reqType = new TypeToken<Map<String, Object>>() {}.getType();
+            Map<String, Object> reqMap = gson2.fromJson(requestBody, reqType);
+
+            Object voucherApplyObj = reqMap.get("voucher_apply");
+            if (voucherApplyObj instanceof Iterable<?>) {
+                Iterable<?> list = (Iterable<?>) voucherApplyObj;
+                for (Object item : list) {
+                    if (item instanceof Map<?, ?>) {
+                        Map<String, Object> m = (Map<String, Object>) item;
+
+                        // === voucher_code ===
+                        String voucherCode = String.valueOf(m.get("voucher_code"));
+
+                        // === id: xử lý bỏ .0 ===
+                        Object idObj = m.get("id");
+                        String id;
+
+                        if (idObj instanceof Number) {
+                            // Gson parse số thành Double -> convert về long để bỏ .0
+                            long idLong = ((Number) idObj).longValue();
+                            id = String.valueOf(idLong);
+                        } else {
+                            id = String.valueOf(idObj);
+                        }
+
+                        // === Key lưu lên ctx ===
+                        String codeKey = "VOUCHER_CODE_" + voucherCode;
+                        String idKey   = "VOUCHER_ID_" + voucherCode;
+
+                        ctx.setAttribute(codeKey, voucherCode);
+                        ctx.setAttribute(idKey, id);
+
+                        System.out.println("🔖 Saved to ctx: " + codeKey + "=" + voucherCode);
+                        System.out.println("🔖 Saved to ctx: " + idKey + "=" + id);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("⚠️ Cannot extract voucher_apply fields: " + e.getMessage());
+        }
 
     }
     //    Flow chạy tích hợp

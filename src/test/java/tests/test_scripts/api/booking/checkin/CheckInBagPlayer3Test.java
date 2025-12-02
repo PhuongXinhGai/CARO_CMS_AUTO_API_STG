@@ -130,7 +130,7 @@ public class CheckInBagPlayer3Test extends TestConfig implements FlowRunnable {
         if (bag != null)      ctx.setAttribute("BAG_2", bag);
 
         String round_id = jp.getString("round_id");
-        if (round_id != null)      ctx.setAttribute("ROUND_1_ID_2", bag);
+        if (round_id != null)      ctx.setAttribute("ROUND_ID_2", round_id);
 
     }
     //    Flow chạy tích hợp
