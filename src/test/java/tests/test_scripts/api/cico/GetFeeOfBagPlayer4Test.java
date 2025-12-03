@@ -117,6 +117,7 @@ public class GetFeeOfBagPlayer4Test extends TestConfig implements FlowRunnable {
         AssertionHelper.assertFromJson(respJson, expectJson);
 
         // ===== Step 8: Extract lưu biến cho bước sau (nếu cần) =====
+        ExtractHelper.extractVoucherApplyUid(resp, ctx, 3);
 
     }
     //    Flow chạy tích hợp

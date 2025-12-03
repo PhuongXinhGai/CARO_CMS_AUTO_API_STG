@@ -1,0 +1,10 @@
+{
+  "course_uid": "${course_uid}",
+  "partner_uid": "${partner_uid}",
+  "round_id": ${round_id},
+  "voucher_code": "${voucher_code}",
+  "id": ${id},
+  "voucher_index": ${voucher_index},
+  "booking_uid": "${booking_uid}",
+  "voucher_apply_uid": "${voucher_apply_uid}"
+}

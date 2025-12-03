@@ -63,7 +63,8 @@ public class OutAllFlightTest extends TestConfig implements FlowRunnable {
         final String desc = row.getOrDefault("tc_description", "Create booking batch");
 
         // ===== Step 1: In ra testcase được run =====
-        System.out.println("Running: " + tcId + " - " + desc);        WaitHelper.waitSeconds(2);
+        System.out.println("Running: " + tcId + " - " + desc);
+        WaitHelper.waitSeconds(2);
 
         // ===== Step 2: Build request =====
         String reqFileName = row.getOrDefault("input_placeholders", "");

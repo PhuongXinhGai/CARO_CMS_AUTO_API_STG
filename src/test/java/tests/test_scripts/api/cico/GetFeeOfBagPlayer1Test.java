@@ -117,13 +117,14 @@ public class GetFeeOfBagPlayer1Test extends TestConfig implements FlowRunnable {
         AssertionHelper.assertFromJson(respJson, expectJson);
 
         // ===== Step 8: Extract lưu biến cho bước sau (nếu cần) =====
+        ExtractHelper.extractVoucherApplyUid(resp, ctx, 0);
 
     }
     //    Flow chạy tích hợp
     @Override
     public void runCase(String caseId, ITestContext ctx, ExtentTest logger) throws Exception {
         Map<String, String> row = findRowByCaseId(EXCEL_FILE, SHEET_NAME, caseId);
-
+        logger.info("▶️ Running case: " + caseId);
         testGetFeeOfBag(row, ctx);   // chỉ gọi lại hàm test cũ
     }
 

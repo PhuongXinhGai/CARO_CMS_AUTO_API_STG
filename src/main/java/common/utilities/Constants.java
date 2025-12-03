@@ -77,4 +77,10 @@ public class Constants {
 
     // vouchers
     public static final String GOLF_FEE_APPLY_ENDPOINT = "/golf-cms/api/vouchers/golf-fee/apply";
+
+    // vouchers
+    public static final String GOLF_FEE_APPLY_BULK_ENDPOINT = "/golf-cms/api/vouchers/golf-fee/apply-bulk";
+
+    // vouchers
+    public static final String GOLF_FEE_REMOVE_ENDPOINT = "/golf-cms/api/vouchers/golf-fee/remove";
 }
