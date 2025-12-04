@@ -24,18 +24,18 @@ import static io.restassured.RestAssured.given;
 
 import tests.test_config.TestConfig;
 
-public class  ABCTest extends TestConfig implements FlowRunnable {
+public class  QuoteFeeVoucherTest extends TestConfig implements FlowRunnable {
     // ==== ĐƯỜNG DẪN — chỉnh cho khớp project của bạn ====
     private static final String EXCEL_FILE = System.getProperty("user.dir")
-            + "/src/main/resources/input_excel_file/booking/ABC.xlsx";
-    private static final String SHEET_NAME = "ABC";
+            + "/src/main/resources/input_excel_file/booking/Create_Booking_Batch.xlsx";
+    private static final String SHEET_NAME = "quote_fee_1_player_VC";
     // Thư mục chứa JSON request/expect cho API này
     private static final String JSON_DIR = System.getProperty("user.dir")
-            + "/src/main/resources/input_json_file/booking/abc/";
+            + "/src/main/resources/input_json_file/booking/quote_fee/";
 
     // ======================= DataProvider =======================
-    @DataProvider(name = "aBCData")
-    public Object[][] aBCData() throws IOException {
+    @DataProvider(name = "quoteFeeData")
+    public Object[][] quoteFeeData() throws IOException {
         return ExcelUtils.readSheetAsMaps(EXCEL_FILE, SHEET_NAME);
     }
 
@@ -50,8 +50,8 @@ public class  ABCTest extends TestConfig implements FlowRunnable {
      * 7) So sánh actual vs expect (AssertionHelper)
      * 8) Extract và lưu biến cho step sau (nếu cần)
      */
-    @Test(dataProvider = "aBCData")
-    public void testABC(Map<String, String> row, ITestContext ctx) throws IOException {
+    @Test(dataProvider = "quoteFeeData")
+    public void testQuoteFeeVoucher(Map<String, String> row, ITestContext ctx) throws IOException {
         final String tcId = row.getOrDefault("tc_id", "NO_ID");
         final String desc = row.getOrDefault("tc_description", "");
 
@@ -59,8 +59,10 @@ public class  ABCTest extends TestConfig implements FlowRunnable {
         System.out.println("Running: " + tcId + " - " + desc);
 
         // ===== Step 2: Build request (query) =====
-		Map<String, Object> q = QueryParamHelper.build(row, ctx);
-        System.out.println("🧩 Query Params:\n" + q);
+		String reqFileName = row.getOrDefault("input_placeholders", "");
+        String reqTpl = Files.readString(Paths.get(JSON_DIR + reqFileName));
+        String requestBody = StringUtils.replacePlaceholdersAdvanced(reqTpl, row, ctx);
+        System.out.println("🧩 Request JSON sau replace:\n" + requestBody);
 
 		// ===== Step 3: Call API =====
         String tokenFromCtx = (String) ctx.getAttribute("AUTH_TOKEN");
@@ -71,21 +73,21 @@ public class  ABCTest extends TestConfig implements FlowRunnable {
                         .contentType(ContentType.JSON)
                         .header("Accept", "application/json")
                         .header("Authorization", bearer != null ? bearer : "")
-                        .queryParams(q)
+                        .body(requestBody)
                         .when()
-                        .get(BASE_URL + ABC_ENDPOINT)
+                        .post(BASE_URL + QUOTE_FEE_ENDPOINT)
                         .then()
                         .extract().response();
 
         String respJson = resp.asString();
 
         // ===== Step 4: Gắn log request/response vào report =====
-        String url = BASE_URL + ABC_ENDPOINT;
+        String url = BASE_URL + QUOTE_FEE_ENDPOINT;
         String requestLog = RequestLogHelper.buildRequestLog(
-        "GET",
+        "POST",
         url,
-        q,
-        null
+        null,
+        requestBody
 );
 
         ctx.setAttribute("LAST_REQUEST_LOG", requestLog);
@@ -113,7 +115,7 @@ public class  ABCTest extends TestConfig implements FlowRunnable {
     public void runCase(String caseId, ITestContext ctx, ExtentTest logger) throws Exception {
         Map<String, String> row = findRowByCaseId(EXCEL_FILE, SHEET_NAME, caseId);
         logger.info("▶️ Running case: " + caseId);
-        testABC(row, ctx);   // chỉ gọi lại hàm test cũ
+        testQuoteFeeVoucher(row, ctx);   // chỉ gọi lại hàm test cũ
     }
 
     @AfterMethod(alwaysRun = true)

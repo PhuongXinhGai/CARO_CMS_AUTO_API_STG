@@ -1,0 +1,52 @@
+{
+  "booking_list": [
+    {
+      "cms_user": "${booking_list[0].cms_user}",
+      "partner_uid": "${booking_list[0].partner_uid}",
+      "course_uid": "${booking_list[0].course_uid}",
+      "hole_booking": ${booking_list[0].hole_booking},
+    "customer_booking_name": "${booking_list[0].customer_booking_name}",
+    "customer_booking_phone": "${booking_list[0].customer_booking_phone}",
+    "customer_booking_email": "${booking_list[0].customer_booking_email}",
+    "booking_restaurant": {
+      "enable": ${booking_list[0].booking_restaurant.enable},
+    "number_people": ${booking_list[0].booking_restaurant.number_people}
+  },
+    "booking_retal": {
+      "enable": ${booking_list[0].booking_retal.enable},
+    "golf_set_number": ${booking_list[0].booking_retal.golf_set_number},
+    "buggy_number": ${booking_list[0].booking_retal.buggy_number}
+  },
+    "note_of_booking": "${booking_list[0].note_of_booking}",
+    "sale_name": "${booking_list[0].sale_name}",
+    "sale_account": "${booking_list[0].sale_account}",
+    "customer_name": "${booking_list[0].customer_name}",
+    "caddie_code": "${booking_list[0].caddie_code}",
+    "caddie_booking": "${booking_list[0].caddie_booking}",
+    "tee_type": "${booking_list[0].tee_type}",
+    "course_type": "${booking_list[0].course_type}",
+    "tee_path": "${booking_list[0].tee_path}",
+    "turn_time": "${booking_list[0].turn_time}",
+    "tee_time": "${booking_list[0].tee_time}",
+    "row_index": ${booking_list[0].row_index},
+    "tee_time_after": "${booking_list[0].tee_time_after}",
+    "customer_nationality_id": ${booking_list[0].customer_nationality_id},
+    "gender": "${booking_list[0].gender}",
+    "guest_style": "${booking_list[0].guest_style}",
+    "hole": ${booking_list[0].hole},
+    "booking_date": "${booking_list[0].booking_date}",
+    "add_ons": ${booking_list[0].add_ons},
+    "customer_booking_uid": "${booking_list[0].customer_booking_uid}",
+    "customer_booking_member_card_uid": "${booking_list[0].customer_booking_member_card_uid}",
+    "customer_booking_card_id": "${booking_list[0].customer_booking_card_id}",
+    "member_uid_of_guest": "${booking_list[0].member_uid_of_guest}",
+    "member_card_uid": "${booking_list[0].member_card_uid}",
+    "voucher_apply": [
+      {
+        "id": ${booking_list[0].voucher_apply[0].id},
+        "voucher_code": "${booking_list[0].voucher_apply[0].voucher_code}"
+      }
+    ]
+  }
+  ]
+}

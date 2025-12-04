@@ -1,4 +1,6 @@
 {
+  "partner_uid": "${partner_uid}",
+  "course_uid": "${course_uid}",
   "cms_user": "${cms_user}",
   "booking_uid": "${booking_uid}",
   "bag": "${bag}",
@@ -17,6 +19,11 @@
   "sale_account": "${sale_account}",
   "member_uid_of_guest": "${member_uid_of_guest}",
   "member_card_uid": "${member_card_uid}",
-  "voucher_apply": ${voucher_apply},
-  "is_change_voucher": ${is_change_voucher}
+  "voucher_apply": [
+    {
+      "id": ${voucher_apply[0].id},
+      "voucher_code": "${voucher_apply[0].voucher_code}"
+    }
+  ],
+  "is_change_voucher": false
 }

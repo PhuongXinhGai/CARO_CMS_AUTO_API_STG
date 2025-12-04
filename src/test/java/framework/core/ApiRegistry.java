@@ -24,6 +24,7 @@ public class ApiRegistry {
 
         put("abc_case_id", "tests.test_scripts.api.booking/create_booking.ABCTest");
         put("def_id", "tests.test_scripts.api.booking/create_booking.defTest");
+        put("quote_fee_voucher_case_id", "tests.test_scripts.api.booking.create_booking.QuoteFeeVoucherTest");
         // ===== booking.edit_booking =====
         put("edit_booking_at_tee_time_player1_id", "tests.test_scripts.api.booking.edit_booking.EditBookingAtTeeTimePlayer1Test");
         put("edit_booking_at_tee_time_player2_id", "tests.test_scripts.api.booking.edit_booking.EditBookingAtTeeTimePlayer2Test");

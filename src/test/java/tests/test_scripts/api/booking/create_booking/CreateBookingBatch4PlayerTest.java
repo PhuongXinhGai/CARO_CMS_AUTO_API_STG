@@ -72,7 +72,7 @@ public class CreateBookingBatch4PlayerTest extends TestConfig implements FlowRun
         // Excel cột 'input_placeholders' trỏ tới file request (vd: create_booking_batch_request.json)
         String reqFileName = row.getOrDefault("input_placeholders", "create_booking_batch_request.json");
         String reqTpl = Files.readString(Paths.get(JSON_DIR + reqFileName));
-        String requestBody = StringUtils.replacePlaceholdersInString(reqTpl, row); // thay tất cả ${colName}
+        String requestBody = StringUtils.replacePlaceholdersAdvanced(reqTpl, row, ctx);
         System.out.println("🧩 Request body sau replace:\n" + requestBody);
 
         // ===== Step 3: Call API =====
