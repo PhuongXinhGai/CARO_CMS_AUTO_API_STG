@@ -21,9 +21,6 @@ public class ApiRegistry {
         put("get_booking_price_player2_id", "tests.test_scripts.api.booking.create_booking.GetBookingPricePlayer2Test");
         put("get_booking_price_player3_id", "tests.test_scripts.api.booking.create_booking.GetBookingPricePlayer3Test");
         put("get_booking_price_player4_id", "tests.test_scripts.api.booking.create_booking.GetBookingPricePlayer4Test");
-
-        put("abc_case_id", "tests.test_scripts.api.booking/create_booking.ABCTest");
-        put("def_id", "tests.test_scripts.api.booking/create_booking.defTest");
         put("quote_fee_voucher_case_id", "tests.test_scripts.api.booking.create_booking.QuoteFeeVoucherTest");
         // ===== booking.edit_booking =====
         put("edit_booking_at_tee_time_player1_id", "tests.test_scripts.api.booking.edit_booking.EditBookingAtTeeTimePlayer1Test");
@@ -33,6 +30,7 @@ public class ApiRegistry {
 
         put("edit_booking_1_player_id", "tests.test_scripts.api.booking.edit_booking.EditBooking1PlayerTest");
 
+        put("edit_booking_1player_voucher_case_id", "tests.test_scripts.api.booking.edit_booking.EditBooking1PlayerVoucherTest");
         // ===== booking.checkin =====
         put("check_in_bag_player1_id", "tests.test_scripts.api.booking.checkin.CheckInBagPlayer1Test");
         put("check_in_bag_player2_id", "tests.test_scripts.api.booking.checkin.CheckInBagPlayer2Test");
@@ -46,6 +44,7 @@ public class ApiRegistry {
 
         put("undo_check_in_bag_id", "tests.test_scripts.api.booking.checkin.UndoCheckInBagTest");
 
+        put("check_in_bag_player1_voucher_case_id", "tests.test_scripts.api.booking.checkin.CheckInBagPlayer1VoucherTest");
         // ===== go_course_information =====
         put("create_flight_id", "tests.test_scripts.api.go_course_information.CreateFlightTest");
         put("add_bag_to_flight_id", "tests.test_scripts.api.go_course_information.AddBagToFlightTest");

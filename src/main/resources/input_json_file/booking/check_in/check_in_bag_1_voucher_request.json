@@ -25,5 +25,5 @@
       "voucher_code": "${voucher_apply[0].voucher_code}"
     }
   ],
-  "is_change_voucher": false
+  "is_change_voucher": ${is_change_voucher}
 }

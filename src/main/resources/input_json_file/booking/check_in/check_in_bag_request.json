@@ -1,4 +1,6 @@
 {
+  "partner_uid": "${partner_uid}",
+  "course_uid": "${course_uid}",
   "cms_user": "${cms_user}",
   "booking_uid": "${booking_uid}",
   "bag": "${bag}",

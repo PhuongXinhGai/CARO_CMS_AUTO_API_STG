@@ -65,13 +65,6 @@ public class Constants {
     public static final String APPLICATION_JSON = "application/json";
 
 
-
-    // booking
-    public static final String ABC_ENDPOINT = "/golf-cms/api/booking/abc";
-
-    // booking
-    public static final String DEF_ENDPOINT = "/golf-cms/api/booking/def";
-
     // vouchers
     public static final String CHECK_ENDPOINT = "/golf-maintenance/api/vouchers/check";
 
