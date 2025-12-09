@@ -64,6 +64,8 @@ public class GetFeeOfBagPlayer3Test extends TestConfig implements FlowRunnable {
 
         // ===== Step 1: In ra testcase được run =====
         System.out.println("Running: " + tcId + " - " + desc);
+        WaitHelper.waitSeconds(2);
+
         // ===== Step 2: Build request (query) =====
 // Lấy từ context
         String tokenFromCtx = (String) ctx.getAttribute("AUTH_TOKEN");
