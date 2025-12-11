@@ -3,10 +3,7 @@ package tests.test_scripts.api.booking.checkin;
 import com.aventstack.extentreports.ExtentTest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import common.utilities.AssertionHelper;
-import common.utilities.ExcelUtils;
-import common.utilities.RequestLogHelper;
-import common.utilities.StringUtils;
+import common.utilities.*;
 import framework.core.FlowRunnable;
 import helpers.ReportHelper;
 import io.restassured.filter.log.LogDetail;
@@ -68,6 +65,8 @@ public class UndoCheckInBagTest extends TestConfig implements FlowRunnable {
 
         // ===== Step 1: In ra testcase được run =====
         System.out.println("Running: " + tcId + " - " + desc);
+        WaitHelper.waitSeconds(2);
+
         // ===== Step 2: Build request =====
         String reqFileName = row.getOrDefault("input_placeholders", "");
         String reqTpl = Files.readString(Paths.get(JSON_DIR + reqFileName));

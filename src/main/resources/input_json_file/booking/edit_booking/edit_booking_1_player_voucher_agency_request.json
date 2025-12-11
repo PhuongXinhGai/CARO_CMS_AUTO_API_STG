@@ -7,6 +7,15 @@
     "customer_booking_name": "${[0].customer_booking_name}",
     "customer_booking_phone": "${[0].customer_booking_phone}",
     "customer_booking_email": "${[0].customer_booking_email}",
+    "agency_id": ${[0].agency_id},
+    "agency_paid_all": ${[0].agency_paid_all},
+    "agency_player_pay": ${[0].agency_player_pay},
+    "fee_info": {
+      "golf_fee": ${[0].fee_info.golf_fee},
+      "buggy_fee": ${[0].fee_info.buggy_fee},
+      "has_price_spread": ${[0].fee_info.has_price_spread},
+      "package_add_on_fee": ${[0].fee_info.package_add_on_fee}
+    },
     "note_of_booking": "${[0].note_of_booking}",
     "sale_name": "${[0].sale_name}",
     "sale_account": "${[0].sale_account}",
@@ -26,11 +35,11 @@
     "booking_date": "${[0].booking_date}",
     "add_ons": ${[0].add_ons},
     "voucher_apply": [
-      {
-        "id": ${[0].voucher_apply[0].id},
-        "voucher_code": "${[0].voucher_apply[0].voucher_code}"
-      }
-    ],
+    {
+      "id": ${[0].voucher_apply[0].id},
+    "voucher_code": "${[0].voucher_apply[0].voucher_code}"
+    }
+  ],
     "is_change_voucher": ${[0].is_change_voucher},
     "member_uid_of_guest": "${[0].member_uid_of_guest}",
     "member_card_uid": "${[0].member_card_uid}",

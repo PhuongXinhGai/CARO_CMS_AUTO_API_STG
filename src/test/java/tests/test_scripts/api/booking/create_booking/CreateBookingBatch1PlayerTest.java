@@ -162,7 +162,6 @@ public class CreateBookingBatch1PlayerTest extends TestConfig implements FlowRun
 
             String bagStatus   = jp.getString("[" + i + "].bag_status");
 
-
             if (uid != null)            ctx.setAttribute("BOOKING_UID_" + i, uid);
             if (bill_code != null)            ctx.setAttribute("BILL_CODE_" + i, bill_code);
             if (guestStyle != null)     ctx.setAttribute("GUEST_STYLE_" + i, guestStyle);
