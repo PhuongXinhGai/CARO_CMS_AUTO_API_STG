@@ -5,19 +5,19 @@
       "partner_uid": "${data[0].partner_uid}",
       "booking_uid": "${data[0].booking_uid}",
       "round_id": ${data[0].round_id},
-    "voucher_apply_old": ${data[0].voucher_apply_old},
-    "voucher_apply": [
-      {
-        "voucher_code": "${data[0].voucher_apply[0].voucher_code}",
-        "id": ${data[0].voucher_apply[0].id}
-      },
-      {
-        "voucher_code": "${data[0].voucher_apply[1].voucher_code}",
-        "id": ${data[0].voucher_apply[1].id}
+      "voucher_apply_old": ${data[0].voucher_apply_old},
+      "voucher_apply": [
+        {
+          "voucher_code": "${data[0].voucher_apply[0].voucher_code}",
+          "id": ${data[0].voucher_apply[0].id}
+        },
+        {
+          "voucher_code": "${data[0].voucher_apply[1].voucher_code}",
+          "id": ${data[0].voucher_apply[1].id}
+      }
+      ],
+      "is_change_voucher": ${data[0].is_change_voucher},
+      "vouchers_to_remove": ${data[0].vouchers_to_remove}
     }
-    ],
-    "is_change_voucher": ${data[0].is_change_voucher},
-    "vouchers_to_remove": ${data[0].vouchers_to_remove}
-  }
   ]
 }

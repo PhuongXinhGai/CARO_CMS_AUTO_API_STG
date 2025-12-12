@@ -5,84 +5,84 @@
       "partner_uid": "${data[0].partner_uid}",
       "booking_uid": "${data[0].booking_uid}",
       "round_id": ${data[0].round_id},
-    "voucher_apply_old": ${data[0].voucher_apply_old},
-    "voucher_apply": ${data[0].voucher_apply},
-    "is_change_voucher": ${data[0].is_change_voucher},
-    "vouchers_to_remove": [
-      {
-        "course_uid": "${data[0].vouchers_to_remove[0].course_uid}",
-        "partner_uid": "${data[0].vouchers_to_remove[0].partner_uid}",
-        "booking_uid": "${data[0].vouchers_to_remove[0].booking_uid}",
-        "round_id": ${data[0].vouchers_to_remove[0].round_id},
-      "voucher_index": ${data[0].vouchers_to_remove[0].voucher_index},
-      "voucher_apply_uid": "${data[0].vouchers_to_remove[0].voucher_apply_uid}",
-      "id": ${data[0].vouchers_to_remove[0].id},
-      "voucher_code": "${data[0].vouchers_to_remove[0].voucher_code}"
-      }
-    ]
-  },
+      "voucher_apply_old": ${data[0].voucher_apply_old},
+      "voucher_apply": ${data[0].voucher_apply},
+      "is_change_voucher": ${data[0].is_change_voucher},
+      "vouchers_to_remove": [
+        {
+          "course_uid": "${data[0].vouchers_to_remove[0].course_uid}",
+          "partner_uid": "${data[0].vouchers_to_remove[0].partner_uid}",
+          "booking_uid": "${data[0].vouchers_to_remove[0].booking_uid}",
+          "round_id": ${data[0].vouchers_to_remove[0].round_id},
+        "voucher_index": ${data[0].vouchers_to_remove[0].voucher_index},
+        "voucher_apply_uid": "${data[0].vouchers_to_remove[0].voucher_apply_uid}",
+        "id": ${data[0].vouchers_to_remove[0].id},
+        "voucher_code": "${data[0].vouchers_to_remove[0].voucher_code}"
+        }
+      ]
+    },
     {
       "course_uid": "${data[1].course_uid}",
       "partner_uid": "${data[1].partner_uid}",
       "booking_uid": "${data[1].booking_uid}",
       "round_id": ${data[1].round_id},
-    "voucher_apply_old": ${data[1].voucher_apply_old},
-    "voucher_apply": ${data[1].voucher_apply},
-    "is_change_voucher": ${data[1].is_change_voucher},
-    "vouchers_to_remove": [
-      {
-        "course_uid": "${data[1].vouchers_to_remove[0].course_uid}",
-        "partner_uid": "${data[1].vouchers_to_remove[0].partner_uid}",
-        "booking_uid": "${data[1].vouchers_to_remove[0].booking_uid}",
-        "round_id": ${data[1].vouchers_to_remove[0].round_id},
-      "voucher_index": ${data[1].vouchers_to_remove[0].voucher_index},
-      "voucher_apply_uid": "${data[1].vouchers_to_remove[0].voucher_apply_uid}",
-      "id": ${data[1].vouchers_to_remove[0].id},
-      "voucher_code": "${data[1].vouchers_to_remove[0].voucher_code}"
-      }
-    ]
-  },
+      "voucher_apply_old": ${data[1].voucher_apply_old},
+      "voucher_apply": ${data[1].voucher_apply},
+      "is_change_voucher": ${data[1].is_change_voucher},
+      "vouchers_to_remove": [
+        {
+          "course_uid": "${data[1].vouchers_to_remove[0].course_uid}",
+          "partner_uid": "${data[1].vouchers_to_remove[0].partner_uid}",
+          "booking_uid": "${data[1].vouchers_to_remove[0].booking_uid}",
+          "round_id": ${data[1].vouchers_to_remove[0].round_id},
+        "voucher_index": ${data[1].vouchers_to_remove[0].voucher_index},
+        "voucher_apply_uid": "${data[1].vouchers_to_remove[0].voucher_apply_uid}",
+        "id": ${data[1].vouchers_to_remove[0].id},
+        "voucher_code": "${data[1].vouchers_to_remove[0].voucher_code}"
+        }
+      ]
+    },
     {
       "course_uid": "${data[2].course_uid}",
       "partner_uid": "${data[2].partner_uid}",
       "booking_uid": "${data[2].booking_uid}",
       "round_id": ${data[2].round_id},
-    "voucher_apply_old": ${data[2].voucher_apply_old},
-    "voucher_apply": ${data[2].voucher_apply},
-    "is_change_voucher": ${data[2].is_change_voucher},
-    "vouchers_to_remove": [
-      {
-        "course_uid": "${data[2].vouchers_to_remove[0].course_uid}",
-        "partner_uid": "${data[2].vouchers_to_remove[0].partner_uid}",
-        "booking_uid": "${data[2].vouchers_to_remove[0].booking_uid}",
-        "round_id": ${data[2].vouchers_to_remove[0].round_id},
-      "voucher_index": ${data[2].vouchers_to_remove[0].voucher_index},
-      "voucher_apply_uid": "${data[2].vouchers_to_remove[0].voucher_apply_uid}",
-      "id": ${data[2].vouchers_to_remove[0].id},
-      "voucher_code": "${data[2].vouchers_to_remove[0].voucher_code}"
-      }
-    ]
-  },
+      "voucher_apply_old": ${data[2].voucher_apply_old},
+      "voucher_apply": ${data[2].voucher_apply},
+      "is_change_voucher": ${data[2].is_change_voucher},
+      "vouchers_to_remove": [
+        {
+          "course_uid": "${data[2].vouchers_to_remove[0].course_uid}",
+          "partner_uid": "${data[2].vouchers_to_remove[0].partner_uid}",
+          "booking_uid": "${data[2].vouchers_to_remove[0].booking_uid}",
+          "round_id": ${data[2].vouchers_to_remove[0].round_id},
+        "voucher_index": ${data[2].vouchers_to_remove[0].voucher_index},
+        "voucher_apply_uid": "${data[2].vouchers_to_remove[0].voucher_apply_uid}",
+        "id": ${data[2].vouchers_to_remove[0].id},
+        "voucher_code": "${data[2].vouchers_to_remove[0].voucher_code}"
+        }
+      ]
+    },
     {
       "course_uid": "${data[3].course_uid}",
       "partner_uid": "${data[3].partner_uid}",
       "booking_uid": "${data[3].booking_uid}",
       "round_id": ${data[3].round_id},
-    "voucher_apply_old": ${data[3].voucher_apply_old},
-    "voucher_apply": ${data[3].voucher_apply},
-    "is_change_voucher": ${data[3].is_change_voucher},
-    "vouchers_to_remove": [
-      {
-        "course_uid": "${data[3].vouchers_to_remove[0].course_uid}",
-        "partner_uid": "${data[3].vouchers_to_remove[0].partner_uid}",
-        "booking_uid": "${data[3].vouchers_to_remove[0].booking_uid}",
-        "round_id": ${data[3].vouchers_to_remove[0].round_id},
-      "voucher_index": ${data[3].vouchers_to_remove[0].voucher_index},
-      "voucher_apply_uid": "${data[3].vouchers_to_remove[0].voucher_apply_uid}",
-      "id": ${data[3].vouchers_to_remove[0].id},
-      "voucher_code": "${data[3].vouchers_to_remove[0].voucher_code}"
-      }
-    ]
-  }
+      "voucher_apply_old": ${data[3].voucher_apply_old},
+      "voucher_apply": ${data[3].voucher_apply},
+      "is_change_voucher": ${data[3].is_change_voucher},
+      "vouchers_to_remove": [
+        {
+          "course_uid": "${data[3].vouchers_to_remove[0].course_uid}",
+          "partner_uid": "${data[3].vouchers_to_remove[0].partner_uid}",
+          "booking_uid": "${data[3].vouchers_to_remove[0].booking_uid}",
+          "round_id": ${data[3].vouchers_to_remove[0].round_id},
+        "voucher_index": ${data[3].vouchers_to_remove[0].voucher_index},
+        "voucher_apply_uid": "${data[3].vouchers_to_remove[0].voucher_apply_uid}",
+        "id": ${data[3].vouchers_to_remove[0].id},
+        "voucher_code": "${data[3].vouchers_to_remove[0].voucher_code}"
+        }
+      ]
+    }
   ]
 }

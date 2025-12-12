@@ -24,11 +24,11 @@ import static io.restassured.RestAssured.given;
 
 import tests.test_config.TestConfig;
 
-public class  VoucherApplyBulkAddTest extends TestConfig implements FlowRunnable {
+public class VoucherApplyBulkTest extends TestConfig implements FlowRunnable {
     // ==== ĐƯỜNG DẪN — chỉnh cho khớp project của bạn ====
     private static final String EXCEL_FILE = System.getProperty("user.dir")
             + "/src/main/resources/input_excel_file/booking/voucher.xlsx";
-    private static final String SHEET_NAME = "Voucher_Apply_Bulk_Add";
+    private static final String SHEET_NAME = "Voucher_Apply_Bulk";
     // Thư mục chứa JSON request/expect cho API này
     private static final String JSON_DIR = System.getProperty("user.dir")
             + "/src/main/resources/input_json_file/voucher/vouchers_golf_fee_apply_bulk/";

@@ -200,8 +200,7 @@ public class ApiRegistry {
         put("voucher_apply_player2_case_id", "tests.test_scripts.api.voucher.VoucherApplyPlayer2Test");
         put("voucher_apply_player3_case_id", "tests.test_scripts.api.voucher.VoucherApplyPlayer3Test");
         put("voucher_apply_player4_case_id", "tests.test_scripts.api.voucher.VoucherApplyPlayer4Test");
-        put("voucher_apply_bulk_add_case_id", "tests.test_scripts.api.voucher.VoucherApplyBulkAddTest");
-        put("voucher_apply_bulk_remove_case_id", "tests.test_scripts.api.voucher.VoucherApplyBulkRemoveTest");
+        put("voucher_apply_bulk_case_id", "tests.test_scripts.api.voucher.VoucherApplyBulkTest");
         put("voucher_remove_player1_case_id", "tests.test_scripts.api.voucher.VoucherRemovePlayer1Test");
         put("voucher_remove_player2_case_id", "tests.test_scripts.api.voucher.VoucherRemovePlayer2Test");
         put("voucher_remove_player3_case_id", "tests.test_scripts.api.voucher.VoucherRemovePlayer3Test");

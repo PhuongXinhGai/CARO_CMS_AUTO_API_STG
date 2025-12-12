@@ -36,7 +36,7 @@ public class AddRoundPlayer1Test extends TestConfig implements FlowRunnable {
     // ==== ĐƯỜNG DẪN — chỉnh cho khớp project của bạn ====
     private static final String EXCEL_FILE = System.getProperty("user.dir")
             + "/src/main/resources/input_excel_file/booking/GO_Course_Information.xlsx";
-    private static final String SHEET_NAME = "Add_Round";
+    private static final String SHEET_NAME = "Add_Round_Player1";
     // Thư mục chứa JSON request/expect cho API này
     private static final String JSON_DIR = System.getProperty("user.dir")
             + "/src/main/resources/input_json_file/go_course_information/add_round/";
@@ -121,14 +121,12 @@ public class AddRoundPlayer1Test extends TestConfig implements FlowRunnable {
         // ===== Step 8: Extract lưu biến cho bước sau (nếu cần) =====
         JsonPath jp = resp.jsonPath();
 
-        for (int i = 0; i < 4; i++) {
-            String booking_uid_round1     = jp.getString("rounds[" + i + "].booking_uid");
-            String booking_uid_round2     = jp.getString("rounds[" + i + "].booking_uid");
+        String booking_uid_round_2            = jp.getString("uid");
+        String round_id_round_2             = jp.getString("round_id");
 
-            if (booking_uid_round1 != null)            ctx.setAttribute("BOOKING_UID_PLAYER1_R1_", booking_uid_round1);
-            if (booking_uid_round2 != null)            ctx.setAttribute("BOOKING_UID_PLAYER1_R2_", booking_uid_round2);
+        if (booking_uid_round_2 != null) ctx.setAttribute("BOOKING_UID_0_ROUND2", booking_uid_round_2);
+        if (round_id_round_2 != null) ctx.setAttribute("ROUND_ID_0_ROUND2", round_id_round_2);
 
-        }
     }
     //    Flow chạy tích hợp
     @Override
