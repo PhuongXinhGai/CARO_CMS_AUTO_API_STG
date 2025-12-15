@@ -20,7 +20,7 @@ public class IntegrationVoucherTest {
     @DataProvider(name = "flowData")
     public Object[][] flowData() throws Exception {
         String excelPath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/flow_definition.xlsx";
-        String sheetName = "VC_DAI_LY";
+        String sheetName = "VC_CA_NHAN_ROUND2";
 
         List<Map<String, String>> list = FlowDataLoader.readFlows(excelPath, sheetName);
 
