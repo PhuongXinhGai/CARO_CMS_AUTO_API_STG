@@ -14,6 +14,137 @@ public class ExtractHelper {
     private ExtractHelper() {
         // tránh khởi tạo
     }
+    private static final Gson GSON = new Gson();
+
+    /**
+     * Recursive extract voucher_apply anywhere in request body
+     */
+
+    public static void extractVoucherApplyRecursive(
+            String requestBody,
+            ITestContext ctx
+    ) {
+        try {
+            Object root = GSON.fromJson(requestBody, Object.class);
+            scanNode(root, ctx);
+        } catch (Exception e) {
+            System.out.println("⚠️ extractVoucherApplyRecursive failed: " + e.getMessage());
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void scanNode(Object node, ITestContext ctx) {
+
+        if (node instanceof Map<?, ?> map) {
+
+            for (Map.Entry<?, ?> entry : map.entrySet()) {
+                String key = String.valueOf(entry.getKey());
+                Object value = entry.getValue();
+
+                // 🎯 FOUND voucher_apply
+                if ("voucher_apply".equals(key) && value instanceof List<?> list) {
+                    extractVoucherList(list, ctx);
+                }
+
+                // 🔁 Recursive
+                scanNode(value, ctx);
+            }
+
+        } else if (node instanceof List<?> list) {
+
+            for (Object item : list) {
+                scanNode(item, ctx);
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void extractVoucherList(List<?> list, ITestContext ctx) {
+
+        for (Object item : list) {
+            if (!(item instanceof Map<?, ?>)) continue;
+
+            Map<String, Object> voucher = (Map<String, Object>) item;
+
+            String voucherCode = String.valueOf(voucher.get("voucher_code"));
+            if (voucherCode == null) continue;
+
+            String id = normalizeId(voucher.get("id"));
+
+            ctx.setAttribute("VOUCHER_CODE_" + voucherCode, voucherCode);
+            ctx.setAttribute("VOUCHER_ID_" + voucherCode, id);
+
+            System.out.println("🔖 [Recursive] Saved:");
+            System.out.println("   VOUCHER_CODE_" + voucherCode + " = " + voucherCode);
+            System.out.println("   VOUCHER_ID_" + voucherCode + " = " + id);
+        }
+    }
+
+    private static String normalizeId(Object idObj) {
+        if (idObj == null) return null;
+        if (idObj instanceof Number) {
+            return String.valueOf(((Number) idObj).longValue());
+        }
+        return String.valueOf(idObj);
+    }
+
+    // ================== 2) BULK APPLY – đọc từ requestBody ==================
+    public static void extractVoucherApplyBulk(String requestBody, ITestContext ctx) {
+        try {
+            Gson gson = new Gson();
+            Type reqType = new TypeToken<Map<String, Object>>() {}.getType();
+            Map<String, Object> reqMap = gson.fromJson(requestBody, reqType);
+
+            Object dataObj = reqMap.get("data");
+            if (!(dataObj instanceof List<?>)) {
+                System.out.println("⚠️ data[] not found in request body");
+                return;
+            }
+
+            List<?> dataList = (List<?>) dataObj;
+
+            for (Object itemObj : dataList) {
+                if (!(itemObj instanceof Map<?, ?>)) continue;
+                Map<String, Object> dataItem = (Map<String, Object>) itemObj;
+
+                // ================================
+                // 1) Xử lý mảng voucher_apply[]
+                // ================================
+                Object vaObj = dataItem.get("voucher_apply");
+                if (vaObj instanceof List<?>) {
+                    List<?> vouchers = (List<?>) vaObj;
+
+                    for (Object vObj : vouchers) {
+                        if (!(vObj instanceof Map<?, ?>)) continue;
+
+                        Map<String, Object> v = (Map<String, Object>) vObj;
+
+                        // voucher_code
+                        String voucherCode = String.valueOf(v.get("voucher_code"));
+
+                        // id (convert tránh 35537.0)
+                        Object idObj = v.get("id");
+                        String id;
+                        if (idObj instanceof Number) {
+                            id = String.valueOf(((Number) idObj).longValue());
+                        } else {
+                            id = String.valueOf(idObj);
+                        }
+
+                        // Save vào context
+                        ctx.setAttribute("VOUCHER_CODE_" + voucherCode, voucherCode);
+                        ctx.setAttribute("VOUCHER_ID_" + voucherCode, id);
+
+                        System.out.println("🔖 Saved: VOUCHER_CODE_" + voucherCode + "=" + voucherCode);
+                        System.out.println("🔖 Saved: VOUCHER_ID_" + voucherCode + "=" + id);
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println("⚠️ extractVoucherApplyBulk failed: " + e.getMessage());
+        }
+    }
 
     /**
      * Extract voucher_apply_uid theo player index
@@ -85,65 +216,5 @@ public class ExtractHelper {
             System.out.println("⚠️ Extract voucher_apply_uid failed: " + e.getMessage());
         }
     }
-
-    // ================== 2) BULK APPLY – đọc từ requestBody ==================
-    public static void extractVoucherApplyBulk(String requestBody, ITestContext ctx) {
-        try {
-            Gson gson = new Gson();
-            Type reqType = new TypeToken<Map<String, Object>>() {}.getType();
-            Map<String, Object> reqMap = gson.fromJson(requestBody, reqType);
-
-            Object dataObj = reqMap.get("data");
-            if (!(dataObj instanceof List<?>)) {
-                System.out.println("⚠️ data[] not found in request body");
-                return;
-            }
-
-            List<?> dataList = (List<?>) dataObj;
-
-            for (Object itemObj : dataList) {
-                if (!(itemObj instanceof Map<?, ?>)) continue;
-                Map<String, Object> dataItem = (Map<String, Object>) itemObj;
-
-                // ================================
-                // 1) Xử lý mảng voucher_apply[]
-                // ================================
-                Object vaObj = dataItem.get("voucher_apply");
-                if (vaObj instanceof List<?>) {
-                    List<?> vouchers = (List<?>) vaObj;
-
-                    for (Object vObj : vouchers) {
-                        if (!(vObj instanceof Map<?, ?>)) continue;
-
-                        Map<String, Object> v = (Map<String, Object>) vObj;
-
-                        // voucher_code
-                        String voucherCode = String.valueOf(v.get("voucher_code"));
-
-                        // id (convert tránh 35537.0)
-                        Object idObj = v.get("id");
-                        String id;
-                        if (idObj instanceof Number) {
-                            id = String.valueOf(((Number) idObj).longValue());
-                        } else {
-                            id = String.valueOf(idObj);
-                        }
-
-                        // Save vào context
-                        ctx.setAttribute("VOUCHER_CODE_" + voucherCode, voucherCode);
-                        ctx.setAttribute("VOUCHER_ID_" + voucherCode, id);
-
-                        System.out.println("🔖 Saved: VOUCHER_CODE_" + voucherCode + "=" + voucherCode);
-                        System.out.println("🔖 Saved: VOUCHER_ID_" + voucherCode + "=" + id);
-                    }
-                }
-            }
-
-        } catch (Exception e) {
-            System.out.println("⚠️ extractVoucherApplyBulk failed: " + e.getMessage());
-        }
-    }
-
-
 
 }

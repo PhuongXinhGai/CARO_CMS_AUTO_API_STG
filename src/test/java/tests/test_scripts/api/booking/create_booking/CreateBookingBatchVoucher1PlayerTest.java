@@ -3,10 +3,7 @@ package tests.test_scripts.api.booking.create_booking;
 import com.aventstack.extentreports.ExtentTest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import common.utilities.AssertionHelper;
-import common.utilities.ExcelUtils;
-import common.utilities.RequestLogHelper;
-import common.utilities.StringUtils;
+import common.utilities.*;
 import framework.core.FlowRunnable;
 import helpers.ReportHelper;
 import io.restassured.filter.log.LogDetail;
@@ -121,6 +118,8 @@ public class CreateBookingBatchVoucher1PlayerTest extends TestConfig implements 
         AssertionHelper.assertFromJson(respJson, expectJson);
 
         // ===== Step 8: Extract lưu biến cho bước sau (nếu cần) =====
+        ExtractHelper.extractVoucherApplyRecursive(requestBody, ctx);
+
         JsonPath jp = resp.jsonPath();
 
         for (int i = 0; i < 4; i++) {

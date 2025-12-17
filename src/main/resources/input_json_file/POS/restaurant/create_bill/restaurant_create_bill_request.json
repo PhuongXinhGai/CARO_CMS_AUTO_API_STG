@@ -2,13 +2,13 @@
   "partner_uid": "${partner_uid}",
   "course_uid": "${course_uid}",
   "is_virtual_bag": ${is_virtual_bag},
-"type": "${type}",
-"service_id": ${service_id},
-"type_code": "${type_code}",
-"number_guest": ${number_guest},
-"floor": ${floor},
-"customer_name": "${customer_name}",
-"golf_bag": "${golf_bag}",
-"booking_uid": "${booking_uid}",
-"action": "${action}"
+  "type": "${type}",
+  "service_id": ${service_id},
+  "type_code": "${type_code}",
+  "number_guest": ${number_guest},
+  "floor": ${floor},
+  "customer_name": "${customer_name}",
+  "golf_bag": "${golf_bag}",
+  "booking_uid": "${booking_uid}",
+  "action": "${action}"
 }

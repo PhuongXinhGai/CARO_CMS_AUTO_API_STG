@@ -2,10 +2,10 @@
   "partner_uid": "${partner_uid}",
   "course_uid": "${course_uid}",
   "is_virtual_bag": ${is_virtual_bag},
-"service_id": ${service_id},
-"floor": ${floor},
-"customer_name": "${customer_name}",
-"golf_bag": "${golf_bag}",
-"booking_uid": "${booking_uid}",
-"action": "${action}"
+  "service_id": ${service_id},
+  "floor": ${floor},
+  "customer_name": "${customer_name}",
+  "golf_bag": "${golf_bag}",
+  "booking_uid": "${booking_uid}",
+  "action": "${action}"
 }

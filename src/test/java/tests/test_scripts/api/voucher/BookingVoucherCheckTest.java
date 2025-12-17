@@ -27,7 +27,7 @@ import tests.test_config.TestConfig;
 public class BookingVoucherCheckTest extends TestConfig implements FlowRunnable {
     // ==== ĐƯỜNG DẪN — chỉnh cho khớp project của bạn ====
     private static final String EXCEL_FILE = System.getProperty("user.dir")
-            + "/src/main/resources/input_excel_file/booking/voucher.xlsx";
+            + "/src/main/resources/input_excel_file/booking/Voucher.xlsx";
     private static final String SHEET_NAME = "Booking_Voucher_Check";
     // Thư mục chứa JSON request/expect cho API này
     private static final String JSON_DIR = System.getProperty("user.dir")

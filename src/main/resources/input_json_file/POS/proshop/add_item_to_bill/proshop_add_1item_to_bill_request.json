@@ -2,28 +2,28 @@
   "partner_uid": "${partner_uid}",
   "course_uid": "${course_uid}",
   "is_virtual_bag": ${is_virtual_bag},
-"service_id": ${service_id},
-"number_guest": ${number_guest},
-"type": "${type}",
-"floor": ${floor},
-"items": [
-{
-"item_code": "${items[0].item_code}",
-"quantity": ${items[0].quantity},
-"action": "${items[0].action}",
-"unit_price": ${items[0].unit_price},
-"discount_type": "${items[0].discount_type}",
-"discount_value": ${items[0].discount_value},
-"id": ${items[0].id},
-"discount_reason": "${items[0].discount_reason}",
-"type": "${items[0].type}"
-}
-],
-"bill_id": ${bill_id},
-"golf_bag": "${golf_bag}",
-"action": "${action}",
-"discount_type": "${discount_type}",
-"discount_value": ${discount_value},
-"note": "${note}",
-"booking_uid": "${booking_uid}"
+  "service_id": ${service_id},
+  "number_guest": ${number_guest},
+  "type": "${type}",
+  "floor": ${floor},
+  "items": [
+    {
+    "item_code": "${items[0].item_code}",
+    "quantity": ${items[0].quantity},
+    "action": "${items[0].action}",
+    "unit_price": ${items[0].unit_price},
+    "discount_type": "${items[0].discount_type}",
+    "discount_value": ${items[0].discount_value},
+    "id": ${items[0].id},
+    "discount_reason": "${items[0].discount_reason}",
+    "type": "${items[0].type}"
+    }
+  ],
+  "bill_id": ${bill_id},
+  "golf_bag": "${golf_bag}",
+  "action": "${action}",
+  "discount_type": "${discount_type}",
+  "discount_value": ${discount_value},
+  "note": "${note}",
+  "booking_uid": "${booking_uid}"
 }

@@ -109,6 +109,8 @@ public class  CheckInBagPlayer1VoucherTest extends TestConfig implements FlowRun
         AssertionHelper.assertFromJson(respJson, expectJson);
 
         // ===== Step 8: Extract lưu biến cho bước sau (nếu cần) =====
+        ExtractHelper.extractVoucherApplyRecursive(requestBody, ctx);
+
         JsonPath jp = resp.jsonPath();
         String bag      = jp.getString("bag");
         String round_id = jp.getString("round_id");

@@ -108,6 +108,7 @@ public class  QuoteFeeVoucherTest extends TestConfig implements FlowRunnable {
         AssertionHelper.assertFromJson(respJson, expectJson);
 
         // ===== Step 8: Extract lưu biến cho bước sau (nếu cần) =====
+        ExtractHelper.extractVoucherApplyRecursive(requestBody, ctx);
 
     }
     //    Flow chạy tích hợp
