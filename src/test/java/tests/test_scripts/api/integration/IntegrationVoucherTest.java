@@ -114,10 +114,6 @@ public class IntegrationVoucherTest {
                 // ⚡ CHẠY API STEP
                 Class<?> clazz = Class.forName(className);
                 FlowRunnable apiTest = (FlowRunnable) clazz.getDeclaredConstructor().newInstance();
-
-
-
-
                 apiTest.runCase(caseId, ctx, stepLogger);
 
                 // ⚡ nếu chạy
