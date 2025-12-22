@@ -58,8 +58,25 @@ public class FlowDataLoader {
                     map.put(key, value);
                 }
 
-                if (!emptyRow) list.add(map);
+                if (emptyRow) continue;
+
+                // ==================================================
+                // 🔥 FILTER FLOW THEO CỘT is_run
+                // ==================================================
+                String isRun = map.get("is_run");
+
+                if (isRun == null || isRun.isBlank()) {
+                    continue; // không có is_run → skip
+                }
+
+                if (!"TRUE".equalsIgnoreCase(isRun)) {
+                    continue; // FALSE → skip
+                }
+
+                list.add(map);
             }
+
+
         }
         return list;
     }

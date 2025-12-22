@@ -3,6 +3,7 @@ package tests.test_scripts.api.integration;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.markuputils.CodeLanguage;
 import com.aventstack.extentreports.markuputils.MarkupHelper;
+import common.utilities.ContextHelper;
 import framework.core.ApiRegistry;
 import framework.core.FlowDataLoader;
 import framework.core.FlowRunnable;
@@ -36,6 +37,8 @@ public class IntegrationVoucherTest {
     // ==========================================================
     @Test(dataProvider = "flowData", description = "Flow Integration – Booking API chain")
     public void runIntegrationFlow(Map<String, String> flow, ITestContext ctx) throws Exception {
+        // 🔥 CLEAR CONTEXT cho mỗi FLOW
+        ContextHelper.clearContext(ctx);
 
         String excelPath = System.getProperty("user.dir") + "/src/main/resources/input_excel_file/flow_definition.xlsx";
 
